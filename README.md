@@ -1,5 +1,7 @@
 # SUits
 
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
+
 Sabancı Üniversitesi ders programı planlayıcısı. Aday derslerini seçersin,
 SUits tüm ders–recitation kombinasyonlarını tarayıp çakışmasız ve en derli toplu
 programı bulur.
@@ -9,11 +11,10 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
 
 ## Ne yapar
 
-- Sabancı kataloğundaki **471 dersin tamamı** içinde arama, aday havuzu oluşturma
+- Sabancı kataloğundaki **472 dersin tamamı** (Fall 2026-2027) içinde arama, aday havuzu oluşturma
+- **Ön koşul** ve **kontenjan** bilgisi ders kartlarında görünür
 - Seçtiğin dersler için **bütün section kombinasyonlarını** dener; önce çakışmayı,
   sonra boş gün / ders arası boşluk / kampüste geçen süreyi optimize eder
-- Ders section'ı harfliyse (A, B) recitation grubunun da aynı harfle başlaması
-  kuralına uyar
 - Recitation, discussion ve lab'ları dersin parçası sayar — ayrı ders olarak değil,
   ama programda ve çakışma hesabında gösterir
 - Hangi ders çiftlerinin **hiçbir kombinasyonda** bir arada alınamadığını gösterir
@@ -57,27 +58,27 @@ Sayfa açılır açılmaz **içine gömülü** kopyayla çalışmaya başlar —
 da açılır. Arka planda sırayla şunları dener, ilk sağlam yanıtı kullanır:
 
 1. **`data.json`** — sitenin yanındaki dosya (koyarsan öncelik onda)
-2. **SUchedule deposu** — güncel `data-vXX.min.json`. Dosya adındaki sürüm
-   numarasını GitHub API ile kendi bulur, elle güncelleme gerekmez
-3. Hiçbiri olmazsa gömülü kopyada kalır
+2. **[bannerweb-fetch](https://omerrifat.github.io/bannerweb-fetch/)** — Sabancı'nın
+   kendi BannerWeb sisteminden her gün otomatik çekilen veri. Ön koşul, kontenjan,
+   ECTS, kredi ve hoca bilgisini de taşır
+3. **[SUchedule](https://github.com/mustafacani/suchedule)** — yedek kaynak; dosya
+   adındaki sürüm numarasını GitHub API ile kendi bulur
+4. Hiçbiri olmazsa gömülü kopyada kalır
 
 Başlıktaki rozet hangisinin kullanıldığını ve gömülü verinin tarihini gösterir;
 tıklayınca yeniden dener. Gelen veri "makul mü" diye kontrol edilir — bozuk
 gelirse yok sayılır. Başarılı sonuç 12 saat önbelleğe alınır.
 
-İki veri biçimini de tanır: gömülü sıkıştırılmış biçim ve SUchedule'ın ham
-`{courses, instructors, places}` biçimi.
+Üç veri biçimini de tanır: gömülü sıkıştırılmış biçim, bannerweb-fetch dizisi ve
+SUchedule'ın `{courses, instructors, places}` biçimi.
 
-### Neden Sabancı'nın kendi sitesinden çekilmiyor
+### Neden Sabancı'nın sitesine doğrudan bağlanmıyor
 
-Denendi, tarayıcıdan mümkün değil. Ders programı SUIS (Banner) üzerinde ve
-yanıtlarında `Access-Control-Allow-Origin` başlığı yok — başka bir alan adındaki
-sayfanın oradan veri çekmesini tarayıcı engelliyor; sitenin nerede barındığı bunu
-değiştirmiyor. Ayrıca JSON değil, form gönderimiyle üretilen HTML döndürüyor ve
-`robots.txt` otomatik erişime kapalı.
-
-Bu yüzden zincir SUchedule verisine dayanıyor ve **her koşulda gömülü kopyaya
-düşüyor** — yani site hiçbir durumda boş açılmıyor.
+Tarayıcıdan mümkün değil: SUIS (Banner) yanıtlarında `Access-Control-Allow-Origin`
+başlığı yok, JSON değil HTML döndürüyor ve `robots.txt` otomatik erişime kapalı.
+Doğru çözüm veriyi sunucu tarafında çekmek — bannerweb-fetch tam olarak bunu yapıyor,
+GitHub Actions ile her gün BannerWeb'i tarayıp JSON olarak yayınlıyor. SUits de o
+yayını kullanıyor.
 
 ## Veriyi güncelleme
 
@@ -87,12 +88,28 @@ kopyaya tercih eder, `index.html`'e hiç dokunmana gerek kalmaz.
 
 ## Sınırlar
 
+- Ders section'ı ile recitation grubunun aynı harfle eşleşmesi kuralı
+  (A dersi → A recitation) şu an **kapalı** — her derste geçerli olmadığı için.
+  `index.html` içindeki `ENFORCE_GROUP_LETTERS` değerini `true` yapmak geri açar.
 - Ön koşul (prerequisite) bilgisi bu veride yok.
 - Kontenjan/doluluk bilgisi yok — sadece saat çakışması hesaplanıyor.
-- Veri SUchedule'ın topladığı kataloğa dayanıyor; kayıt öncesi CRN'leri
-  SUIS'ten teyit et.
+- Kayıt öncesi CRN'leri SUIS'ten teyit et.
+- Ön koşullar BannerWeb'den geldiği gibi aktarılıyor; eş koşul (corequisite) alanı
+  kaynakta tutarsız olduğu için kullanılmıyor.
+
+## Lisans
+
+Bu proje **AGPL-3.0** lisanslıdır — bkz. [LICENSE](LICENSE).
+
+Ders verisi [bannerweb-fetch](https://github.com/omerrifat/bannerweb-fetch)
+projesinden geliyor; o proje AGPL-3.0 lisanslı ve sahibi verinin bu koşulla
+kullanılmasını istedi. SUits de aynı lisansı benimsiyor: kaynak kodu herkese açık,
+projeyi alıp değiştiren de kaynağını açık tutmak zorunda.
+
+Yedek veri kaynağı [SUchedule](https://github.com/mustafacani/suchedule) (MIT).
 
 ## Teşekkür
 
-Ders verisi [SUchedule](https://github.com/mustafacani/suchedule) projesinden
-geliyor.
+[omerrifat/bannerweb-fetch](https://github.com/omerrifat/bannerweb-fetch) ve
+[mustafacani/suchedule](https://github.com/mustafacani/suchedule) — bu araç
+onların topladığı veri olmadan çalışmazdı.
