@@ -416,6 +416,9 @@ const NSLOT = 11;                 // 0 => 08:40 … 10 => 18:40
 
 const PALETTE = ["--c1","--c2","--c3","--c4","--c5","--c6","--c7","--c8","--c9","--c10"];
 let MAXSEL = 6;
+/* Ders section'ı harfliyse (A, B) recitation grubunun da aynı harfle başlaması kuralı.
+   Bu kural her derste geçerli değil — şimdilik kapalı. true yapmak yeniden açar. */
+const ENFORCE_GROUP_LETTERS = false;
 const BUILD_ISO = "2026-08-23";
 
 /* ================= dil ================= */
@@ -526,7 +529,7 @@ const norm = s => s.toLocaleLowerCase("tr")
 const _opts = new Map();
 function buildOptions(course, enforceLetters){
   const lecGroups = course.classes[0].sections.map(s => s.group);
-  const lettered = enforceLetters && lecGroups.some(g => /^[A-Za-z]+$/.test(g));
+  const lettered = ENFORCE_GROUP_LETTERS && enforceLetters && lecGroups.some(g => /^[A-Za-z]+$/.test(g));
   let opts = [{picks:[], mask:new Set()}];
   for (const cls of course.classes){
     const next = [];
