@@ -1,0 +1,1192 @@
+<!doctype html><html lang='tr'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><meta name='description' content='Sabancı Üniversitesi ders programı planlayıcısı — çakışmasız kombinasyonları bulur.'><title>SUits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#EEF1F2; --surface:#FFFFFF; --surface2:#F5F8F8; --sunken:#E4E9EA;
+  --ink:#111A1D; --muted:#5C6B70; --faint:#87979C; --line:#D2DADC; --line2:#BFCACD;
+  --accent:#0B6E7F; --accent-ink:#FFFFFF; --accent-soft:#D9EDF0;
+  --ok:#276E52; --ok-soft:#DBEDE4;
+  --warn:#9A6608; --warn-soft:#F5E9CE;
+  --bad:#A8352A; --bad-soft:#F6DFDC;
+  --shadow:0 1px 2px rgba(17,26,29,.06), 0 8px 24px -12px rgba(17,26,29,.18);
+  --c1:#0B6E7F; --c2:#7A4E9B; --c3:#B0561B; --c4:#2C6A3F; --c5:#9A2B58; --c6:#3B5BA5;
+  --c7:#8A6A12; --c8:#1F6C86; --c9:#6B3F86; --c10:#8C3A2E; --blk-ink:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A1113; --surface:#121C1F; --surface2:#172327; --sunken:#0E181B;
+    --ink:#DEE8EA; --muted:#8A9BA0; --faint:#6B7C81; --line:#223136; --line2:#2E4046;
+    --accent:#4CC3D6; --accent-ink:#07191D; --accent-soft:#11313A;
+    --ok:#5CBE8D; --ok-soft:#123024;
+    --warn:#DCA845; --warn-soft:#33280E;
+    --bad:#E5786A; --bad-soft:#381915;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+    --c1:#4CC3D6; --c2:#B18CD9; --c3:#E09455; --c4:#6FC08C; --c5:#E082A8; --c6:#7E9EE8;
+    --c7:#D9C05C; --c8:#6FBBD4; --c9:#C79BE8; --c10:#E8917F; --blk-ink:#08161A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A1113; --surface:#121C1F; --surface2:#172327; --sunken:#0E181B;
+  --ink:#DEE8EA; --muted:#8A9BA0; --faint:#6B7C81; --line:#223136; --line2:#2E4046;
+  --accent:#4CC3D6; --accent-ink:#07191D; --accent-soft:#11313A;
+  --ok:#5CBE8D; --ok-soft:#123024;
+  --warn:#DCA845; --warn-soft:#33280E;
+  --bad:#E5786A; --bad-soft:#381915;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.7);
+  --c1:#4CC3D6; --c2:#B18CD9; --c3:#E09455; --c4:#6FC08C; --c5:#E082A8; --c6:#7E9EE8;
+    --c7:#D9C05C; --c8:#6FBBD4; --c9:#C79BE8; --c10:#E8917F; --blk-ink:#08161A;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:Archivo, ui-sans-serif, system-ui, sans-serif; text-wrap:balance; margin:0}
+.mono{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums}
+button{font:inherit; color:inherit; cursor:pointer}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:3px}
+
+/* ---------- shell ---------- */
+.wrap{max-width:1280px; margin:0 auto; padding:0 20px 72px}
+
+header.top{
+  border-bottom:1px solid var(--line); background:var(--surface);
+  position:sticky; top:0; z-index:40;
+}
+.top-in{max-width:1280px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+.brand{display:flex; align-items:baseline; gap:10px; margin-right:auto}
+.brand h1{font-size:19px; font-weight:700; letter-spacing:-.02em}
+.brand .sub{font-size:12px; color:var(--faint); letter-spacing:.08em; text-transform:uppercase; font-weight:500}
+.counter{
+  font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600;
+  padding:5px 11px; border-radius:999px; background:var(--sunken); border:1px solid var(--line);
+  font-variant-numeric:tabular-nums;
+}
+.counter.full{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+.counter.over{background:var(--bad-soft); border-color:var(--bad); color:var(--bad)}
+.btn{
+  border:1px solid var(--line2); background:var(--surface2); padding:6px 13px;
+  border-radius:7px; font-size:13.5px; font-weight:500; transition:background .12s, border-color .12s;
+}
+.btn:hover{background:var(--sunken); border-color:var(--accent)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.srcchip{
+  display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-family:"IBM Plex Mono",monospace;
+  padding:4px 9px; border-radius:999px; border:1px solid var(--line); background:var(--sunken);
+  color:var(--muted); cursor:pointer; transition:border-color .12s, background .12s;
+}
+.srcchip:hover{border-color:var(--accent); color:var(--accent)}
+.srcchip .dot{width:7px; height:7px; border-radius:50%; background:var(--faint); flex:none}
+.srcchip.live .dot{background:var(--ok)}
+.srcchip.loading .dot{background:var(--warn)}
+.srcchip.embedded .dot{background:var(--faint)}
+.langsw{display:inline-flex; border:1px solid var(--line2); border-radius:999px; overflow:hidden; background:var(--surface2)}
+.langsw button{
+  border:0; background:transparent; padding:4px 11px; font-size:11.5px; font-weight:600;
+  font-family:"IBM Plex Mono",monospace; color:var(--faint); letter-spacing:.04em;
+}
+.langsw button:hover{color:var(--ink)}
+.langsw button.on{background:var(--accent); color:var(--accent-ink)}
+.limitbox{display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--muted)}
+.limitbox select{
+  font:inherit; font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600;
+  background:var(--surface2); color:var(--ink); border:1px solid var(--line2);
+  border-radius:7px; padding:5px 8px; cursor:pointer;
+}
+
+/* ---------- verdict ---------- */
+.verdict{
+  margin:22px 0 0; padding:18px 22px; border-radius:12px; border:1px solid var(--line);
+  background:var(--surface); box-shadow:var(--shadow);
+  display:flex; gap:20px; align-items:center; flex-wrap:wrap;
+}
+.verdict.ok{border-left:5px solid var(--ok)}
+.verdict.warn{border-left:5px solid var(--warn)}
+.verdict.bad{border-left:5px solid var(--bad)}
+.verdict.idle{border-left:5px solid var(--line2)}
+.v-main{flex:1 1 320px; min-width:0}
+.v-title{font-family:Archivo,sans-serif; font-size:21px; font-weight:700; letter-spacing:-.015em}
+.v-sub{color:var(--muted); font-size:14px; margin-top:4px}
+.v-stats{display:flex; gap:26px; flex-wrap:wrap}
+.stat{min-width:74px}
+.stat .n{font-family:"IBM Plex Mono",monospace; font-size:22px; font-weight:600; font-variant-numeric:tabular-nums; line-height:1.1}
+.stat .l{font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--faint); font-weight:500; margin-top:3px}
+
+/* ---------- layout ---------- */
+.cols{display:grid; grid-template-columns:322px minmax(0,1fr); gap:22px; margin-top:22px; align-items:start}
+@media (max-width:960px){ .cols{grid-template-columns:minmax(0,1fr)} }
+
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); overflow:hidden}
+.panel > h2{
+  font-size:12px; letter-spacing:.11em; text-transform:uppercase; font-weight:600; color:var(--muted);
+  padding:13px 16px; border-bottom:1px solid var(--line); background:var(--surface2);
+  display:flex; align-items:center; gap:8px;
+}
+.panel > h2 .hint{margin-left:auto; text-transform:none; letter-spacing:0; font-weight:400; color:var(--faint); font-size:11.5px}
+.pbody{padding:14px 16px}
+
+/* ---------- search + pool ---------- */
+.searchwrap{padding:12px 14px; border-bottom:1px solid var(--line); background:var(--surface2); position:relative}
+.searchrow{display:flex; gap:8px; flex-wrap:wrap}
+#q{
+  flex:1; min-width:0; font:inherit; font-size:13.5px; padding:8px 11px; border-radius:8px;
+  border:1px solid var(--line2); background:var(--surface); color:var(--ink);
+}
+#q::placeholder{color:var(--faint)}
+#subj{
+  font:inherit; font-family:"IBM Plex Mono",monospace; font-size:12px; padding:8px 6px; border-radius:8px;
+  border:1px solid var(--line2); background:var(--surface); color:var(--ink); max-width:96px; cursor:pointer;
+}
+.results{max-height:290px; overflow-y:auto; border-top:1px solid var(--line); background:var(--surface)}
+.res{
+  display:flex; gap:10px; align-items:center; padding:8px 14px; border-bottom:1px solid var(--line);
+  cursor:pointer; font-size:12.5px;
+}
+.res:hover{background:var(--accent-soft)}
+.res .code{font-family:"IBM Plex Mono",monospace; font-size:12px; font-weight:600; flex:none; width:78px}
+.res .nm{color:var(--muted); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.res .add{font-family:"IBM Plex Mono",monospace; color:var(--accent); font-weight:700; flex:none}
+.res.have{opacity:.45; cursor:default}
+.res.have .add{color:var(--faint)}
+.resnote{padding:9px 14px; font-size:12px; color:var(--faint); border-bottom:1px solid var(--line)}
+.poolhead{
+  display:flex; align-items:baseline; gap:8px; padding:10px 16px 4px;
+  font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); font-weight:600;
+}
+.rm{
+  flex:none; border:0; background:transparent; color:var(--faint); font-size:15px; line-height:1;
+  padding:2px 4px; border-radius:5px;
+}
+.rm:hover{background:var(--bad-soft); color:var(--bad)}
+.warnbar{
+  margin:10px 0 0; padding:9px 12px; border-radius:8px; background:var(--warn-soft); color:var(--warn);
+  font-size:12.5px; line-height:1.45;
+}
+
+/* ---------- course picker ---------- */
+.rail{position:sticky; top:78px; min-width:0}
+.clist{max-height:min(46vh,430px); overflow-y:auto}
+@media (max-width:960px){ .rail{position:static} }
+.clist{display:flex; flex-direction:column; gap:0}
+.crow{
+  display:flex; gap:11px; padding:11px 16px; border-bottom:1px solid var(--line);
+  cursor:pointer; transition:background .1s; align-items:flex-start;
+}
+.crow:last-child{border-bottom:0}
+.crow:hover{background:var(--surface2)}
+.crow.on{background:var(--accent-soft)}
+.crow.dim{opacity:.45}
+.crow input{margin:3px 0 0; accent-color:var(--accent); width:15px; height:15px; flex:none; cursor:pointer}
+.crow .txt{min-width:0; flex:1}
+.crow .code{font-family:"IBM Plex Mono",monospace; font-size:13px; font-weight:600; letter-spacing:-.01em}
+.crow .nm{font-size:12.5px; color:var(--muted); line-height:1.35; margin-top:1px}
+.crow .tags{display:flex; gap:5px; margin-top:5px; flex-wrap:wrap}
+.tag{
+  font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:500; padding:1.5px 6px;
+  border-radius:4px; background:var(--sunken); color:var(--muted); border:1px solid var(--line);
+}
+.tag.r{background:var(--warn-soft); color:var(--warn); border-color:transparent}
+.crow .swatch{width:4px; align-self:stretch; border-radius:2px; flex:none; background:transparent}
+
+/* ---------- grid ---------- */
+.gridwrap{overflow-x:auto}
+table.sched{border-collapse:separate; border-spacing:0; width:100%; min-width:660px; table-layout:fixed}
+table.sched th{
+  font-family:Archivo,sans-serif; font-size:11.5px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--muted); font-weight:600; padding:9px 6px; border-bottom:1px solid var(--line2);
+  background:var(--surface2);
+}
+table.sched th.tcol{width:66px}
+table.sched td{
+  border-bottom:1px solid var(--line); border-right:1px solid var(--line);
+  height:44px; padding:0; vertical-align:top; position:relative;
+}
+table.sched td:last-child{border-right:0}
+table.sched td.time{
+  font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--faint);
+  text-align:right; padding:4px 8px 0 0; background:var(--surface2); font-variant-numeric:tabular-nums;
+  border-right:1px solid var(--line2); white-space:nowrap;
+}
+.blk{
+  position:absolute; inset:2px; border-radius:6px; padding:5px 7px; overflow:hidden;
+  color:var(--blk-ink); display:flex; flex-direction:column; justify-content:flex-start;
+}
+.blk .bc{font-family:"IBM Plex Mono",monospace; font-size:11.5px; font-weight:600; line-height:1.2}
+.blk .bm{font-size:10px; opacity:.85; line-height:1.25; margin-top:1px}
+.blk.half{inset:2px 2px 2px 2px; width:calc(50% - 3px)}
+.blk.half2{left:50%; width:calc(50% - 3px)}
+td.clash{background:
+  repeating-linear-gradient(45deg, var(--bad-soft) 0 6px, transparent 6px 12px);
+}
+td.clash::after{
+  content:""; position:absolute; inset:0; border:2px solid var(--bad); border-radius:2px; pointer-events:none;
+}
+
+/* ---------- sections ---------- */
+.secgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(255px,1fr)); gap:11px}
+.sec{border:1px solid var(--line); border-radius:9px; padding:11px 13px; background:var(--surface2); border-left-width:4px}
+.sec h3{font-family:"IBM Plex Mono",monospace; font-size:13.5px; font-weight:600; display:flex; align-items:baseline; gap:7px}
+.sec .cn{font-size:12px; color:var(--muted); margin:2px 0 8px; font-family:"IBM Plex Sans",sans-serif; line-height:1.35}
+.sec .row{display:flex; gap:8px; font-size:12px; padding:3px 0; border-top:1px solid var(--line); align-items:baseline}
+.sec .row:first-of-type{border-top:0}
+.sec .k{font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:600; color:var(--faint); width:34px; flex:none; letter-spacing:.04em}
+.sec .v{font-family:"IBM Plex Mono",monospace; font-size:11.5px; font-variant-numeric:tabular-nums}
+.sec .pl{color:var(--muted); font-family:"IBM Plex Sans",sans-serif; font-size:11.5px}
+
+/* ---------- matrix ---------- */
+.mtx{overflow-x:auto}
+table.matrix{border-collapse:collapse; font-family:"IBM Plex Mono",monospace; font-size:10.5px}
+table.matrix th{font-weight:500; color:var(--muted); padding:3px 5px; white-space:nowrap}
+table.matrix th.rowh{text-align:right; padding-right:9px; color:var(--ink); font-weight:600}
+table.matrix th.colh{writing-mode:vertical-rl; transform:rotate(180deg); height:78px; vertical-align:bottom; padding-bottom:5px}
+table.matrix td{width:26px; height:26px; text-align:center; border:1px solid var(--surface); border-radius:0}
+.m-ok{background:var(--ok-soft); color:var(--ok)}
+.m-bad{background:var(--bad-soft); color:var(--bad); font-weight:600}
+.m-self{background:var(--sunken); color:var(--faint)}
+.legend{display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; font-size:12px; color:var(--muted); align-items:center}
+.legend i{display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:6px; vertical-align:-1px}
+
+.alts{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.altbtn{
+  border:1px solid var(--line2); background:var(--surface2); border-radius:7px; padding:7px 11px;
+  font-size:12px; text-align:left; line-height:1.35; min-width:132px;
+}
+.altbtn.on{border-color:var(--accent); background:var(--accent-soft); color:var(--accent)}
+.altbtn b{display:block; font-family:"IBM Plex Mono",monospace; font-size:12.5px; font-weight:600}
+.altbtn span{color:var(--muted); font-size:10.5px}
+.altbtn.on span{color:var(--accent); opacity:.8}
+
+.empty{padding:34px 20px; text-align:center; color:var(--faint); font-size:13.5px}
+.note{font-size:12.5px; color:var(--muted); line-height:1.55}
+.stack{display:flex; flex-direction:column; gap:22px; min-width:0}
+.pairlist{display:flex; flex-direction:column; gap:6px; margin-top:2px}
+.pair{
+  display:flex; align-items:center; gap:9px; font-size:12.5px; padding:6px 9px;
+  border-radius:7px; background:var(--bad-soft); border:1px solid transparent;
+}
+.pair .mono{font-weight:600; font-size:12px}
+.pair .x{color:var(--bad); font-weight:700}
+.pair .when{margin-left:auto; color:var(--muted); font-size:11px; font-family:"IBM Plex Mono",monospace}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important} }
+</style>
+</head><body><header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <h1>SUits</h1>
+      <span class="sub" id="brandSub"></span>
+    </div>
+    <span class="langsw" id="langsw">
+      <button data-lang="tr">TR</button><button data-lang="en">EN</button>
+    </span>
+    <button class="srcchip embedded" id="srcChip">
+      <span class="dot"></span><span id="srcTxt"></span>
+    </button>
+    <span class="limitbox"><span id="lblLimit"></span>
+      <select id="limit">
+        <option>3</option><option>4</option><option>5</option><option selected>6</option>
+        <option>7</option><option>8</option><option>9</option><option>10</option>
+      </select>
+    </span>
+    <span class="counter" id="counter">0 / 6</span>
+    <button class="btn" id="btnClear"></button>
+    <button class="btn primary" id="btnAuto"></button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="verdict idle" id="verdict">
+    <div class="v-main">
+      <div class="v-title" id="vTitle"></div>
+      <div class="v-sub" id="vSub"></div>
+    </div>
+    <div class="v-stats" id="vStats"></div>
+  </div>
+
+  <div class="cols">
+
+    <div class="rail">
+      <div class="panel">
+        <h2><span id="lblPool"></span> <span class="hint" id="poolHint"></span></h2>
+
+        <div class="searchwrap">
+          <div class="searchrow">
+            <input id="q" type="search" autocomplete="off">
+            <select id="subj"><option value="">Tümü</option></select>
+          </div>
+        </div>
+        <div class="results" id="results" hidden></div>
+
+        <div class="poolhead" id="poolHead" hidden></div>
+        <div class="clist" id="clist"></div>
+      </div>
+    </div>
+
+    <div class="stack">
+
+      <div class="panel">
+        <h2><span id="lblGrid"></span> <span class="hint" id="gridHint">—</span></h2>
+        <div class="gridwrap"><table class="sched" id="sched"></table></div>
+      </div>
+
+      <div class="panel" id="altPanel" hidden>
+        <h2><span id="lblAlt"></span> <span class="hint" id="hintAlt"></span></h2>
+        <div class="pbody"><div class="alts" id="alts"></div></div>
+      </div>
+
+      <div class="panel" id="secPanel" hidden>
+        <h2><span id="lblSec"></span> <span class="hint" id="crnHint"></span></h2>
+        <div class="pbody">
+          <div class="secgrid" id="secgrid"></div>
+          <div style="margin-top:13px"><button class="btn" id="btnCrn"></button></div>
+        </div>
+      </div>
+
+      <div class="panel" id="mtxPanel" hidden>
+        <h2><span id="lblMtx"></span> <span class="hint" id="hintMtx"></span></h2>
+        <div class="pbody">
+          <div class="mtx"><table class="matrix" id="matrix"></table></div>
+          <div class="legend">
+            <span><i style="background:var(--ok-soft);border:1px solid var(--ok)"></i><span id="lgOk"></span></span>
+            <span><i style="background:var(--bad-soft);border:1px solid var(--bad)"></i><span id="lgBad"></span></span>
+          </div>
+          <div id="pairbox"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==== DATA INJECTED BELOW ==== */
+const RAW={"p":["FASS 1001","FASS 1103","FASS 1079","FASS 1102","FMAN G050","FASS 1080","FASS G056","FASS 1099","FASS 1089","FASS 1097","FMAN G041","FASS 1101","FASS G052","FMAN G056","FASS 1096","FASS G043","FASS G050","FASS 1081","FASS G018","FASS 1010","FENS L035","FMAN G060","FMAN L018","","FENS L063","FENS 2019","FMAN G042","FENS L067","FENS L048","FENS G049/G050","FENS L061","FENS L062","FENS L047","FENS G029","FENS G077","FASS G049","FENS G035","FENS G032","FMAN G098","FENS L027","FMAN G071","FENS L065","FENS L058","FENS L029","FASS 1076","FASS G062","UC G030","FASS 1050","FENS 1033","FMAN L014","FENS L045","FASS G006","FENS L056","FENS L030","FENS G015","FASS 1011","FASS G048","FASS 1098","FASS G025","FASS 1075","FASS 2023","FASS 2031","FENS L055","FASS 2101","FASS 2080","FENS G025","FMAN G062","FASS G022","FMAN G045","FMAN G013","FASS 2128","FMAN G065","TPHI Building CLAS","FENS G055","FENS G059","FENS L001","FENS L002","FASS G030","Art and Research Center 1012","Art and Research Center 1010","Art and Research Center 1001","FASS 1015","Art and Research Center 1008","Art and Research Center G010","FASS 1014"],"i":["Ali Nihat Eken (P)","Naime Meltem Aygüneş (P)","Deniz Kurtoğlu Eken (P)","Tuğçe Gürer (P)","Onuralp Armağan (P)","Turgay Sakin (P)","Ulf Nilsson (P)","Hüsnü Yenigün (P), Andrew Christopher Bosson , Levent Çoban , İlkem Kayıcan","Ayşe Kocabıyıkoğlu (P)","","Daniel Lee Calvey (P)","Hüsnü Yenigün (P)","Ayşecan Terzioğlu (P)","Muhammed Fatih Büyükkörükcü (P)","Hayriye Ünal (P)","Alp Yürüm (P)","Selmiye Alkan Gürsel (P)","Zeynep Bahar (P)","Saima Gül (P)","Kamer Kaya (P)","Cemal Yılmaz (P)","Kemal İnan (P)","Özcan Öztürk (P)","Ayhan Bozkurt (P)","Yücel Saygın (P)","Süha Orhun Mutluergil (P)","Mohammad Yusaf Azimi (P)","Selim Saffet Balcısoy (P)","Albert Levi (P)","Nasim Tavakkoli (P)","Ayşe Berrin Yanıkoğlu (P)","Erchan Aptoula (P)","Özlem Salehi Köken (P)","Orçun Çetin (P)","Emre Kaplan (P)","Dilara Keküllüoğlu (P)","Polat Göktaş (P)","Utku Günay Acer (P)","Öznur Taştan Okan (P)","Kubilay Atasu (P)","Mohaned Chariti (P)","Esra Erdem (P)","Altuğ Tanaltay (P)","Onur Varol (P)","Erkay Savaş (P)","Sibel Irzık (P)","Ateş Ali Altınordu (P)","Cenk Özbay (P)","Aslı İkizoğlu Erensü (P)","Kristen Sarah Biehl Öztuzcu (P)","İnanç Arın (P)","Kemal Kılıç (P)","Ezgi Karabulut Türkseven (P)","Duygu Taş Küten (P)","Ogün Adebali (P)","Sinan Yıldırım (P)","Eren İnci (P)","Emine Deniz (P)","Riccardo Franceschin (P)","Alpay Filiztekin (P)","Ivan Lopez Cruz (P)","Erdal Aydın (P)","Cavit Baran (P)","Alexander Rodivilov (P)","Emrehan Aktuğ (P)","Abdurrahman Bekir Aydemir (P)","Mehmet Barlo (P)","Yaşar Gürbüz (P)","Murat Kaya Yapıcı (P)","Çağlar Tunç (P)","Ömer Ceylan (P)","Muhammad Umar (P)","İbrahim Tekin (P)","İlker Kalyoncu (P), Yaşar Gürbüz","Özgür Gürbüz (P)","Hüseyin Özkan (P)","Mustafa Ünel (P)","Özgür Erçetin (P)","İbrahim Kürşat Şendur (P)","Korkut Kaan Tokgöz (P)","Yusuf Leblebici (P)","Güllü Kızıltaş Şendur (P)","Nikolaos Koltsaklis (P)","Tuğçe Yüksel (P)","Alp Yürüm (P), Selmiye Alkan Gürsel","Canan Atılgan (P)","Özge Akbulut (P)","Morteza Ghorbani (P)","Utku Seven (P)","İsmet İnönü Kaya (P)","Adnan Kefal (P)","Ali Rıza Umut Şahin (P)","Bekir Dızman (P)","Semih Onur Sezer (P)","Serkan Ünal (P)","İhsan Sadati (P)","Volkan Patoğlu (P)","Erhan Budak (P)","Fevzi Çakmak Cebeci (P)","Nur Mustafaoğlu Varol (P)","Ongun Özçelik (P)","Kemalettin Erbatur (P)","Lütfi Taner Tunç (P)","Murat Kaya (P)","Meral Yüce (P)","Levent Öztürk (P)","Göktuğ Karpat (P)","Birgül Köktürk (P)","Türkan Yosun (P)","Şerif Aziz Şimşir (P)","Orhan Erem Ateşağaoğlu (P)","Ali Doruk Günaydın (P)","Erkut Baloğlu (P)","Ata Bertay (P)","Şerif Aziz Şimşir (P), Evrim Akdoğu","Zeynep Nevin Yelçe (P)","Ahu Antmen Akiska (P)","Mehmet Kuru (P), Burhan İzgin , Ayşe Ozil","Berna Kamay (P), Atacan Atakan , Burhan İzgin","Atacan Atakan (P), Burhan İzgin","Ayşe Ozil (P)","Tommaso Stefini (P)","Mehmet Kuru (P)","Abdurrahman Atçıl (P)","Emre Erol (P)","Neriman Kuyucu (P), Zeynep Nevin Yelçe","Sinem Erdoğan İşkorkutan (P)","Elif Yavnık (P), Faik Kurtulmuş","Elif Yavnık (P)","Neriman Kuyucu (P)","Kenan Sharpe (P)","Tonguç Ünlüyurt (P)","Bülent Çatay (P)","Murat Fadıloğlu (P)","Bahattin Koç (P)","Esra Koca (P)","Ahmet Barış Balcıoğlu (P)","Ece Naz Duman (P)","Erhun Kundakcıoğlu (P)","Burak Kocuk (P)","Duygu Karaoğlan Altop (P)","Yalçın Can Kılıç (P)","Duygu Karaoğlan Altop (P), İnanç Arın , Yalçın Can Kılıç","Burcu Saner Okan (P)","Oya Yeğen (P)","Füsun Ülengin (P)","Melek Akın Ateş (P)","Nuri Zafer Yenal (P)","Nihat Kasap (P)","Asma Nairi Ep Ozen (P)","Nüfer Yasin Ateş (P)","Aras Can Aktan (P)","Ozan Duygulu (P)","Yusuf Soner (P)","İpek Aldatmaz Şener (P)","Arzu Syeda Wasti (P)","Mehmet Yıldız (P)","Mustafa Kemal Bayazıt (P)","Zeynep Karagür (P)","Ezgi Özgen (P)","İpek Nur Nibat (P)","Zeynep Aydın Gökgöz (P)","Jongwon Park (P)","Ezgi Akpınar (P)","Ali Rana Atılgan (P)","Burç Mısırlıoğlu (P)","Gözde İnce (P)","Emre Erdem (P)","Yusuf Ziya Menceloğlu (P)","Mahmut Faruk Akşit (P)","Mehmet Ali Gülgün (P)","Sibel Çetinel (P)","Serap Hayat Soytaş (P)","Ali Koşar (P)","Şirin Kaya (P), Matteo Paganin","Ayesha Asloob Qureshi (P), Şirin Kaya , Matteo Paganin","Matteo Paganin (P), Şirin Kaya","Gamze Kuruk (P)","Gamze Kuruk (P), Matteo Paganin","Kağan Kurşungöz (P), Matteo Paganin","Nurdagül Anbar Meidl (P)","Dimitrios Papathanasıou (P)","Gökalp Alpan (P)","Canan Kaşıkcı (P)","Nilay Duruk Mutlubaş (P)","Nihat Gökhan Göğüş (P)","Kağan Kurşungöz (P)","Ferruh Özbudak (P)","Ayesha Asloob Qureshi (P)","Turgay Bayraktar (P)","Mohammad Sadek (P)","Bekir Bediz (P)","Mehmet Mert Gülhan (P)","Meltem Elitaş (P)","Serhat Yeşilyurt (P)","Melih Türkseven (P)","Duygu Kuzuoğlu Öztürk (P)","Alex Lyakhovich (P)","Hüveyda Başağa (P)","Özlem Kutlu (P)","Stuart J. Lucas (P)","Emine Süphan Bakkal (P), Canan Atılgan , Yuki Kaneko Göğüş , Ezgi Gülçay Özcan","Emine Süphan Bakkal (P), Serkan Ateş , Ezgi Gülçay Özcan","Emine Süphan Bakkal (P), Emrah Kalemci , Ezgi Gülçay Özcan","Emine Süphan Bakkal (P), Ezgi Gülçay Özcan , Aslıhan Muazzez Ünsal","Emine Süphan Bakkal (P)","Çiğdem Altıntaş (P), Aslıhan Muazzez Ünsal","Çiğdem Altıntaş (P), Emre Erdem , Gözde İnce","Çiğdem Altıntaş (P)","İnanç Adagideli (P)","Ünal Ertan (P)","Fatma Tevhide Altekin (P)","Abdullah Daşcı (P)","Can Akkan (P)","Raha Akhavan Tabatabaei (P)","Celile Itır Göğüş (P)","Öykü Arkan Tunç (P)","Alex Cayrol (P)","Kadir Turgut (P)","Gürol Irzık (P)","Hüseyin Sungur Kuyumcuoğlu (P)","Faik Kurtulmuş (P)","Yuki Kaneko Göğüş (P), Ünal Ertan","Yuki Kaneko Göğüş (P)","Alhun Aydın (P)","Mehmet Zafer Gedik (P)","Ersin Göğüş (P)","Emrah Kalemci (P)","Fatih Serkant Adıgüzel (P)","Mert Moral (P)","Banu Turnaoğlu (P)","Berk Esen (P)","Özge Kemahlıoğlu (P)","Muhammet Tahir Kılavuz (P)","Ersin Mahmut Kalaycıoğlu (P)","Meltem Müftüler-Baç (P)","Senem Aydın Düzgit (P)","Ayşe Betül Çelik (P)","Çiğdem Bağcı (P), Nihan Alp , Çağla Aydın , Olesya Blazhenkova , Robert Booth , Feyza Çorapçı , Junko Kanero","Robert Booth (P)","Olesya Blazhenkova (P)","Junko Kanero (P)","Çağla Aydın (P)","Çiğdem Bağcı (P)","Nihan Alp (P)","Feyza Çorapçı (P)","Feyza Çorapçı (P), Nihan Alp , Çağla Aydın , Çiğdem Bağcı , Olesya Blazhenkova , Robert Booth , Junko Kanero","Nebi Sümer (P)","Gül Günaydın (P)","Eren Günseli (P)","Emre Selçuk (P)","Melike Ayşe Kocacık Şenol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Emre Erol , Burhan İzgin , Tommaso Stefini","Emre Erol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Burhan İzgin , Fatma Merve Karabulut , Melike Ayşe Kocacık Şenol","Emre Erol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Burhan İzgin , Melike Ayşe Kocacık Şenol , Hale Överoğlu","Emre Erol (P), Marloes Cornelissen Aydemir , Alper Çakmak , Gizem Damla Çakmak , Burhan İzgin , Melike Ayşe Kocacık Şenol","Emre Erol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Burhan İzgin , Melike Ayşe Kocacık Şenol , Ozan Tekin","Emre Erol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Burhan İzgin , Melike Ayşe Kocacık Şenol , Kassandra Robertson","Emre Erol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Burhan İzgin , Melike Ayşe Kocacık Şenol , Burçin Şenyurt","Emre Erol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Elif Çam , Burhan İzgin , Melike Ayşe Kocacık Şenol","Emre Erol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Burhan İzgin , Melike Ayşe Kocacık Şenol , Ulaş Yalvaç","Emre Erol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Burhan İzgin , Esra Kaliber , Melike Ayşe Kocacık Şenol","Emre Erol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Burhan İzgin , Melike Ayşe Kocacık Şenol , Michael John Thomas","Emre Erol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Burhan İzgin , Melike Ayşe Kocacık Şenol , Engin Onuk","Emre Erol (P), Marloes Cornelissen Aydemir , Gizem Damla Çakmak , Levent Çoban , Burhan İzgin , Melike Ayşe Kocacık Şenol","İsmail Erkan Irmak (P)","Aykun Özgen (P)","Elif Sezer Aydınlı (P)","Engin Kılıç (P)","Deniz Aktan Küçük (P)","Arif Tapan (P)","Sevgin Özer (P)","Ayşe Nur Kolivar Abadoğlu (P)","Tamer Kütükçü (P)","Ayten Sönmez (P)","Bilal Küçükkaya (P)","Ayşe Gözde Kurtuluş (P)","Christopher Çolak (P)","Kerem Ozan Bayraktar (P)","Onur Fatih Yazıcıgil (P)","Murat Germen (P)","Yoong Wah Alex Wong (P)","Selçuk Hüseyin Artut (P)","Selim Birsel (P)"],"c":[["AL 102","Academic Literacies",[["",[["10263","A1",0,[[0,1,2,0],[1,3,1,1]]],["10267","A2",1,[[0,1,2,2],[1,3,1,3]]],["10270","A3",2,[[0,1,2,4],[1,3,1,5]]],["10271","A4",3,[[0,1,2,6],[1,3,1,2]]],["10273","B1",0,[[2,0,2,7],[3,3,1,8]]],["10274","B2",1,[[2,0,2,2],[3,3,1,9]]],["10275","B3",2,[[2,0,2,10],[3,3,1,10]]],["10276","B4",3,[[2,0,2,11],[3,3,1,7]]],["10280","C1",0,[[1,4,2,1],[3,1,1,12]]],["10281","C2",1,[[1,4,2,3],[3,1,1,5]]],["10283","C3",2,[[1,4,2,5],[3,1,1,13]]],["10284","C4",3,[[1,4,2,11],[3,1,1,11]]],["10286","D1",0,[[2,4,2,14],[3,4,1,8]]],["10287","D2",1,[[2,4,2,2],[3,4,1,9]]],["10288","D3",2,[[2,4,2,15],[3,4,1,10]]],["10289","D4",3,[[2,4,2,16],[3,4,1,17]]]]]]],["ACC 201","Introduction to Financial Accounting and Reporting",[["",[["10174","A",4,[[1,1,1,18],[3,1,2,19]]],["10176","B",5,[[4,0,3,20]]],["13492","C",5,[[4,6,3,21]]]]]]],["ACC 301","Managerial Accounting",[["",[["10004","0",6,[[1,5,3,22]]]]]]],["GR 500","Academic Practices and Development",[["E",[["12750","0",7,[[5,-1,-1,23]]]]],["",[["12388","0",8,[[5,-1,-1,23]]]]],["S",[["12396","CUL",9,[[5,-1,-1,23]]],["12397","ECO",9,[[5,-1,-1,23]]],["12399","GEN",9,[[5,-1,-1,23]]],["12398","HIS",9,[[5,-1,-1,23]]],["12400","POL",9,[[5,-1,-1,23]]],["12401","PSY",9,[[5,-1,-1,23]]],["12403","VAC",9,[[5,-1,-1,23]]]]]]],["GR 555","Scientific and Technical Communication",[["E",[["11790","A",10,[[1,2,3,24]]],["11791","B",10,[[0,4,3,24]]],["11792","C",10,[[2,2,3,25]]]]],["",[["11193","0",10,[[5,-1,-1,23]]]]]]],["GR 700","PhD Qualifying Exam Preparation",[["E",[["12387","0",11,[[5,-1,-1,23]]]]]]],["ANTH 326","Anthropology of the Body",[["",[["13497","0",12,[[0,1,3,7]]]]]]],["ANTH 526","Anthropology of the Body",[["",[["13498","0",12,[[0,1,3,7]]]]]]],["ARA 510","Basic Arabic I",[["",[["13322","0",13,[[1,2,3,26]]]]],["D",[["13324","0",13,[[1,6,2,13]]]]]]],["ARA 530","Intermediate Arabic I",[["",[["13323","0",13,[[2,2,3,4]]]]],["D",[["13325","0",13,[[2,6,2,4]]]]]]],["CHEM 212","General Chemistry for Engineers",[["",[["13625","0",14,[[1,3,1,27],[2,0,2,28]]]]],["L",[["13626","0",14,[[0,6,2,29]]]]]]],["CHEM 301","Inorganic Chemistry",[["",[["10073","0",15,[[0,2,2,30],[1,5,1,31]]]]],["L",[["10076","0",15,[[2,1,3,29]]]]]]],["CHEM 405","Electrochemistry",[["",[["11931","0",16,[[2,7,1,32],[3,2,2,33]]]]]]],["CHEM 505","Electrochemistry",[["",[["11932","0",16,[[2,7,1,32],[3,2,2,33]]]]]]],["CIP 101","Civic Involvement Projects I",[["N",[["10322","A",17,[[0,4,3,23]]],["12158","AY",17,[[0,4,3,23]]],["10323","B",17,[[1,4,3,23]]],["12159","BY",17,[[1,4,3,23]]],["10325","C",17,[[2,4,3,23]]],["12160","CY",17,[[2,4,3,23]]],["10326","D",17,[[3,4,3,23]]],["12161","DY",17,[[3,4,3,23]]]]]]],["CS 201","Programming Fundamentals",[["",[["10190","A",18,[[1,0,1,34],[2,3,2,34]]],["10192","B",18,[[1,7,1,34],[2,7,2,34]]]]],["R",[["10195","A1",18,[[3,9,2,21]]],["10197","A2",18,[[3,9,2,35]]],["10198","A3",18,[[3,9,2,36]]],["10200","B1",18,[[3,4,2,36]]],["10203","B2",18,[[3,4,2,37]]],["10204","B3",18,[[3,4,2,38]]],["10207","B4",18,[[3,4,2,24]]],["10206","C",18,[[4,9,2,37]]],["10212","D1",18,[[4,2,2,22]]],["10214","D2",18,[[4,2,2,39]]]]]]],["CS 204","Advanced Programming",[["",[["10218","0",19,[[0,8,2,34],[2,4,1,40]]]]],["L",[["10221","A1",19,[[4,2,2,41]]],["10222","A2",19,[[4,2,2,42]]],["13581","A3",19,[[4,2,2,43]]],["10223","B1",19,[[4,0,2,27]]],["10225","B2",19,[[4,0,2,21]]],["13582","B3",19,[[4,0,2,35]]],["10226","C1",19,[[4,6,2,37]]],["10227","C2",19,[[4,6,2,39]]],["13583","C3",19,[[4,6,2,44]]]]]]],["CS 300","Data Structures",[["",[["12538","0",20,[[1,0,1,40],[4,6,2,40]]]]],["R",[["10101","A1",20,[[0,9,2,37]]],["10103","A2",20,[[0,9,2,36]]],["10104","B1",20,[[1,9,2,37]]],["10105","B2",20,[[1,9,2,18]]]]]]],["CS 301","Algorithms",[["",[["10106","0",11,[[2,8,1,40],[4,6,2,34]]]]],["R",[["10111","A1",11,[[0,10,1,45]]],["12541","A2",11,[[0,10,1,46]]]]]]],["CS 302","Formal Languages and Automata Theory",[["",[["10116","0",21,[[0,4,1,19],[3,4,2,47]]]]],["R",[["10118","0",21,[[2,9,1,19]]]]]]],["CS 303","Logic and Digital System Design",[["",[["10119","A",22,[[2,1,1,46],[3,4,2,46]]],["12542","B",23,[[0,4,1,46],[3,2,2,46]]]]],["L",[["10123","A1",22,[[0,5,2,48]]],["12545","A2",22,[[0,5,2,25]]],["10129","B1",23,[[1,4,2,48]]],["10130","B2",23,[[1,4,2,12]]],["10122","C1",22,[[2,2,2,48]]],["12544","C2",22,[[2,2,2,3]]],["10127","D1",23,[[2,8,2,48]]],["12543","D2",23,[[2,8,2,25]]],["10131","E1",22,[[3,8,2,48]]],["10133","E2",22,[[3,8,2,49]]]]]]],["CS 305","Programming Languages",[["",[["11936","0",11,[[0,1,2,19],[2,7,1,19]]]]]]],["CS 306","Database Systems",[["",[["10141","0",24,[[0,8,2,46],[2,2,1,34]]]]],["R",[["10146","A",24,[[1,10,1,50]]],["11155","B",24,[[4,10,1,50]]]]]]],["CS 307","Operating Systems",[["",[["10135","0",25,[[1,3,1,40],[3,0,2,40]]]]],["R",[["10147","0",25,[[4,10,1,40]]]]]]],["CS 308","Software Engineering",[["",[["10150","0",26,[[1,8,1,46],[4,0,2,46]]]]],["L",[["12026","0",26,[[4,8,3,46]]]]]]],["CS 310","Mobile Application Development",[["",[["10160","0",18,[[0,6,2,40],[2,0,1,46]]]]]]],["CS 401","Computer Architectures",[["",[["12451","0",22,[[2,6,1,19],[3,2,2,18]]]]],["L",[["12452","0",22,[[0,8,3,48]]]]]]],["CS 405","Computer Graphics",[["",[["10172","0",27,[[0,0,1,45],[3,4,2,45]]]]],["L",[["10173","0",27,[[2,3,2,50]]]]]]],["CS 406","Parallel Computing",[["",[["12454","0",19,[[1,7,1,51],[4,1,2,47]]]]]]],["CS 408","Computer Networks",[["",[["10175","0",28,[[0,4,2,45],[1,6,1,45]]]]],["L",[["10178","A",28,[[0,8,2,50]]],["10180","B",28,[[2,9,2,50]]]]]]],["CS 411","Cryptography",[["",[["10182","0",29,[[2,10,1,40],[3,9,2,40]]]]]]],["CS 412","Machine Learning",[["",[["10188","A",9,[[1,0,2,46],[3,0,2,45]]],["13602","B",30,[[0,2,2,46],[2,3,2,46]]]]],["R",[["10189","0",30,[[2,9,1,40]]]]]]],["CS 415","Introduction to deep learning",[["",[["12937","0",31,[[0,7,1,46],[1,2,2,46]]]]],["L",[["12938","0",31,[[4,8,2,50]]]]]]],["CS 419","Digital Image and Video Analysis",[["",[["12157","0",31,[[0,1,2,31],[1,1,1,24]]]]],["L",[["12939","0",31,[[4,6,2,51]]]]]]],["CS 435","Quantum Programming I",[["",[["13123","0",32,[[2,0,3,52]]]]]]],["CS 437","Cybersecurity Practices and Applications",[["",[["12027","0",33,[[0,3,1,19],[3,7,2,19]]]]]]],["CS 442","Software Design Patterns",[["",[["13503","0",34,[[2,7,3,53]]]]]]],["CS 445","Natural Language Processing",[["",[["12455","0",35,[[0,6,1,37],[3,0,2,47]]]]]]],["CS 449","Human Computer Interaction",[["",[["10194","0",36,[[1,4,2,50],[3,6,1,50]]]]]]],["CS 48012","Special Topics in CS: Agentic AI Systems: Architecture and Deployment",[["",[["13505","0",37,[[1,8,3,33]]]]]]],["CS 507","Cryptography",[["",[["10184","0",29,[[2,10,1,40],[3,9,2,40]]]]]]],["CS 512","Machine Learning",[["",[["10213","0",38,[[2,6,1,24],[3,2,2,22]]]]]]],["CS 531","Parallel Processing and Algorithms",[["",[["12456","0",19,[[1,7,1,51],[4,1,2,47]]]]]]],["CS 535","Wireless Network Security",[["",[["13507","0",28,[[2,0,3,39]]]]]]],["CS 540","Data and Artificial Intelligence (AI) Ethics",[["",[["13508","0",35,[[0,4,1,50],[3,7,2,50]]]]]]],["CS 542","Software Design Patterns",[["",[["13504","0",34,[[2,7,3,53]]]]]]],["CS 543","Computer Graphics and Visualization",[["",[["11943","0",27,[[0,5,2,54],[3,1,1,41]]]]]]],["CS 549","Human Computer Interaction",[["",[["10199","0",36,[[1,4,2,50],[3,6,1,50]]]]]]],["CS 551","Graduate Seminar I",[["",[["11342","0",35,[[5,-1,-1,23]]]]]]],["CS 552","Graduate Seminar II",[["",[["11343","0",35,[[5,-1,-1,23]]]]]]],["CS 58010","Special Topics in CS: Scalable Learning Systems",[["",[["13072","0",39,[[2,3,2,42],[3,5,1,39]]]]]]],["CS 58012","Agentic AI Systems: Architecture and Deployment",[["",[["13506","0",37,[[1,8,3,33]]]]]]],["CS 590","Master Thesis",[["",[["11506","01",28,[[5,-1,-1,23]]],["11507","02",30,[[5,-1,-1,23]]],["12784","05",11,[[5,-1,-1,23]]],["11511","06",38,[[5,-1,-1,23]]],["12423","07",40,[[5,-1,-1,23]]],["11513","08",27,[[5,-1,-1,23]]],["12785","09",41,[[5,-1,-1,23]]],["11515","10",19,[[5,-1,-1,23]]],["13206","11",22,[[5,-1,-1,23]]],["13207","12",42,[[5,-1,-1,23]]],["12242","13",43,[[5,-1,-1,23]]],["13208","14",25,[[5,-1,-1,23]]],["13209","15",35,[[5,-1,-1,23]]],["12419","16",33,[[5,-1,-1,23]]],["11812","17",31,[[5,-1,-1,23]]]]]]],["CS 591","Directed Research",[["",[["13406","01",38,[[5,-1,-1,23]]],["13407","02",43,[[5,-1,-1,23]]],["13408","03",41,[[5,-1,-1,23]]],["13409","04",31,[[5,-1,-1,23]]],["13410","05",35,[[5,-1,-1,23]]],["13411","06",25,[[5,-1,-1,23]]],["13434","07",20,[[5,-1,-1,23]]]]]]],["CS 790","Ph.D.Dissertation",[["",[["12878","01",20,[[5,-1,-1,23]]],["12879","02",44,[[5,-1,-1,23]]],["12880","03",41,[[5,-1,-1,23]]],["12883","06",24,[[5,-1,-1,23]]]]]]],["CS 791","Directed Research I",[["",[["13412","01",43,[[5,-1,-1,23]]],["13413","02",41,[[5,-1,-1,23]]],["13433","03",27,[[5,-1,-1,23]]],["13448","04",44,[[5,-1,-1,23]]]]]]],["CULT 500","Core Issues in Cultural Studies",[["",[["10259","0",45,[[1,1,3,17]]]]]]],["CULT 590","Pro",[["",[["10261","0",46,[[5,-1,-1,23]]]]]]],["CULT 599","Master's Thesis",[["",[["10264","A",47,[[5,-1,-1,23]]],["10265","B",45,[[5,-1,-1,23]]],["10266","C",46,[[5,-1,-1,23]]],["12902","D",48,[[5,-1,-1,23]]],["13319","E",49,[[5,-1,-1,23]]]]]]],["DSA 201","Advanced Programming for Data Science",[["",[["12641","0",50,[[0,0,2,46],[2,6,1,34]]]]],["R",[["12643","A1",50,[[3,7,2,21]]],["13034","A2",50,[[3,7,2,39]]],["12647","B1",50,[[3,0,2,21]]],["13603","B2",50,[[3,0,2,35]]],["13035","C1",50,[[4,2,2,44]]],["13036","C2",50,[[4,2,2,49]]]]]]],["DSA 210","Introduction to Data Science",[["",[["12655","A",43,[[1,7,1,45],[3,6,2,45]]],["12656","B",26,[[0,2,2,45],[2,2,1,46]]]]],["R",[["12657","A",43,[[2,9,1,36]]],["12658","B",43,[[1,3,1,36]]],["12659","C",26,[[1,5,1,36]]],["12660","D",26,[[1,9,1,36]]]]]]],["DSA 440","Data and Artificial Intelligence (AI) Ethics",[["",[["13509","0",35,[[0,4,1,50],[3,7,2,50]]]]]]],["DS 551","Graduate Seminar I",[["",[["11344","0",35,[[5,-1,-1,23]]]]]]],["DS 552","Graduate Seminar II",[["",[["13203","0",35,[[5,-1,-1,23]]]]]]],["DS 590","Master Thesis",[["",[["13445","01",24,[[5,-1,-1,23]]],["12787","02",35,[[5,-1,-1,23]]],["11541","03",51,[[5,-1,-1,23]]],["11542","04",38,[[5,-1,-1,23]]],["12253","05",52,[[5,-1,-1,23]]],["11545","06",43,[[5,-1,-1,23]]],["13214","07",53,[[5,-1,-1,23]]],["12254","08",27,[[5,-1,-1,23]]],["12788","09",31,[[5,-1,-1,23]]],["13451","10",54,[[5,-1,-1,23]]],["13216","11",55,[[5,-1,-1,23]]]]]]],["DS 591","Directed Research",[["",[["13414","01",43,[[5,-1,-1,23]]],["13415","02",54,[[5,-1,-1,23]]],["13429","03",31,[[5,-1,-1,23]]]]]]],["ECON 201","Games and Strategies",[["",[["10229","A",56,[[0,5,2,0],[2,6,1,0]]],["10230","B",57,[[0,3,2,0],[2,8,1,55]]],["12029","C",57,[[1,4,2,55],[3,4,1,55]]]]],["R",[["10232","A",56,[[4,8,1,51]]],["10233","B",57,[[4,3,1,56]]],["12030","C",57,[[4,6,1,7]]]]]]],["ECON 202","Macroeconomics",[["",[["10235","A",58,[[1,6,1,12],[2,6,2,2]]],["10237","B",58,[[1,2,2,51],[2,9,1,51]]],["10238","C",59,[[1,7,1,3],[3,6,2,14]]]]],["R",[["10240","A",58,[[4,8,1,12]]],["10242","B",58,[[4,3,1,14]]],["10243","C",59,[[4,6,1,57]]]]]]],["ECON 204","Microeconomics",[["",[["10245","A",9,[[0,5,1,1],[2,6,2,11]]],["10246","B",60,[[0,3,2,1],[1,6,1,58]]],["13628","C",59,[[0,0,2,59],[1,0,1,59]]]]],["R",[["10251","A",9,[[4,8,1,32]]],["10252","B",60,[[4,3,1,9]]],["13629","C",59,[[4,6,1,1]]]]]]],["ECON 300","Project and Internship",[["",[["13655","0",61,[[5,-1,-1,23]]]]]]],["ECON 301","Econometrics",[["",[["10256","0",62,[[2,1,2,12],[4,3,1,60]]]]],["R",[["10258","0",62,[[4,6,1,8]]]]]]],["ECON 330","Industrial Organization",[["",[["12460","0",63,[[1,5,1,16],[3,6,2,58]]]]],["R",[["12462","0",63,[[4,7,1,12]]]]]]],["ECON 350","Financial Institutions and Markets",[["",[["12943","0",64,[[0,0,2,57],[1,3,1,8]]]]]]],["ECON 401","Applied Econometrics",[["",[["11960","0",65,[[0,2,1,57],[1,4,2,9]]]]]]],["ECON 430","Labor Economics",[["",[["10297","0",65,[[0,3,2,57],[1,2,1,14]]]]]]],["ECON 494","Spatial Data Science",[["",[["12949","0",60,[[0,6,3,12]]]]]]],["ECON 501","Microeconomics I",[["",[["10302","0",63,[[2,6,3,7]]]]],["R",[["10304","0",63,[[3,9,1,61]]]]]]],["ECON 503","Macroeconomics I",[["",[["10307","0",64,[[1,0,3,9]]]]],["R",[["10308","0",64,[[3,7,1,17]]]]]]],["ECON 505","Quantitative Methods",[["",[["10309","0",61,[[0,6,3,14]]]]],["R",[["10310","0",61,[[2,5,1,0]]]]]]],["ECON 571","Mathematics for Economists",[["",[["13646","0",9,[[3,0,3,61]]]]]]],["ECON 591","Seminar I",[["",[["10311","0",62,[[5,-1,-1,23]]]]]]],["ECON 603","Advanced Macroeconomics",[["",[["12463","0",9,[[3,5,3,2]]]]]]],["ECON 604","Applied Econometrics",[["",[["11961","0",65,[[0,2,1,57],[1,4,2,9]]]]]]],["ECON 635","Discrete Choice Methods",[["",[["12952","0",56,[[1,6,3,17]]]]]]],["ECON 691","Seminar III",[["",[["10312","0",62,[[5,-1,-1,23]]]]]]],["ECON 699","Master Thesis",[["",[["10314","A",61,[[5,-1,-1,23]]],["10316","C",59,[[5,-1,-1,23]]],["10319","D",65,[[5,-1,-1,23]]],["13089","E",66,[[5,-1,-1,23]]],["13090","F",56,[[5,-1,-1,23]]],["13318","G",64,[[5,-1,-1,23]]]]]]],["ECON 700","PhD Pro",[["",[["13649","0",62,[[5,-1,-1,23]]]]]]],["ECON 799","PhD Dissertation",[["",[["13085","A",66,[[5,-1,-1,23]]],["13086","B",58,[[5,-1,-1,23]]],["13088","D",65,[[5,-1,-1,23]]]]]]],["EE 303","Analog Integrated Circuits",[["",[["10346","0",67,[[0,5,1,31],[3,7,2,32]]]]],["R",[["10347","A1",67,[[4,8,2,41]]],["13029","A2",67,[[4,8,2,27]]]]]]],["EE 307","Semiconductor Physics and Devices",[["",[["10349","0",68,[[1,8,2,24],[2,6,1,62]]]]],["R",[["11148","A",68,[[2,7,2,52]]],["13030","B",68,[[0,2,2,28]]]]]]],["EE 311","Introduction to Signal Processing and Information Systems",[["",[["10350","0",69,[[0,7,1,53],[1,1,2,62]]]]],["R",[["10352","0",69,[[3,3,1,24]]]]]]],["EE 313","Introduction to Communication Systems",[["",[["10355","0",40,[[1,3,1,53],[3,0,2,25]]]]],["R",[["12131","0",40,[[2,9,2,20]]]]]]],["EE 321","Introduction to Digital Circuits",[["",[["13634","0",23,[[0,4,1,20],[3,4,2,20]]]]],["L",[["13632","A",23,[[4,0,2,48]]],["13633","B",23,[[4,2,2,48]]]]]]],["EE 401","Very Large Scale Integrated System Design I",[["",[["10365","0",70,[[0,1,2,41],[2,8,1,41]]]]],["L",[["10362","0",70,[[3,9,1,39]]]]]]],["EE 403","Optoelectronics",[["",[["12963","0",71,[[3,4,3,42]]]]],["R",[["12964","0",71,[[4,8,2,43]]]]]]],["EE 407","Microelectronic Fabrication",[["",[["10367","0",68,[[2,1,3,31]]]]],["L",[["10369","A",68,[[4,0,3,63]]],["11216","B",68,[[2,6,3,64]]],["12034","C",68,[[3,6,3,63]]],["11219","D",68,[[1,7,3,28]]],["13604","E",68,[[0,4,3,27]]],["12549","F",68,[[1,0,3,64]]]]]]],["EE 409","Microwaves",[["",[["13511","0",72,[[1,7,1,42],[4,1,2,32]]]]]]],["EE 411","RF Integrated Circuits I",[["",[["10380","0",73,[[3,1,3,39]]]]],["L",[["10382","0",73,[[4,6,2,42]]]]]]],["EE 414","Multimedia  Communication",[["",[["10395","0",74,[[0,6,2,39],[1,4,1,39]]]]],["R",[["12464","0",74,[[2,4,1,41]]]]]]],["EE 423","Embedded Systems",[["",[["13640","0",23,[[1,0,2,30],[3,0,1,30]]]]],["L",[["13641","0",23,[[1,2,2,48]]]]]]],["EE 473","Biomedical Instrumentation",[["",[["12967","0",23,[[2,6,2,20],[4,3,1,32]]]]],["L",[["12971","0",23,[[0,0,1,48]]]]]]],["EE 48009","Special Topics in EE: Machine Learning for Communication Systems",[["",[["12972","0",69,[[1,5,2,41],[3,8,1,27]]]]]]],["EE 4801","Special Topics in EE: Brain",[["L",[["13514","0",75,[[3,5,2,41]]]]]]],["EE 48010","Special Topics in EE: Brain",[["",[["13512","0",75,[[0,3,2,65],[2,0,1,41]]]]]]],["EE 48011","Secure and Energy",[["",[["13638","0",9,[[1,1,3,43]]]]]]],["EE 529","Vision Based Control",[["",[["13516","0",76,[[1,3,1,65],[4,6,2,33]]]]]]],["EE 533","Semiconductor Process Technology",[["",[["10368","0",68,[[2,1,3,31]]]]],["L",[["12550","A",68,[[4,0,3,63]]],["10371","B",68,[[2,6,3,64]]],["12551","C",68,[[3,6,3,63]]],["12036","D",68,[[1,7,3,28]]],["13605","E",68,[[0,4,3,66]]],["12553","F",68,[[1,0,3,64]]]]]]],["EE 550","Random Processes",[["",[["10406","0",77,[[2,4,1,53],[3,4,2,32]]]]]]],["EE 551","Graduate Seminar I",[["",[["11328","0",69,[[5,-1,-1,23]]]]]]],["EE 567","Nano",[["",[["11966","0",78,[[0,5,3,30]]]]]]],["EE 568","Detection and Estimation Theory",[["",[["12973","0",40,[[0,8,2,53],[2,4,1,21]]]]]]],["EE 573","Biomedical Instrumentation",[["",[["12968","0",23,[[2,6,2,20],[4,3,1,32]]]]]]],["EE 58003","Special Topics in EE: VLSI Systems Design I",[["",[["12468","0",70,[[0,1,2,41],[2,8,1,41]]]]]]],["EE 58009","Machine Learning for Communication Systems",[["",[["13431","0",69,[[1,5,2,41],[3,8,1,27]]]]]]],["EE 5801","Special Topics in EE: Brain",[["L",[["13515","0",75,[[3,5,2,41]]]]]]],["EE 58010","Special Topics in EE: Brain",[["",[["13513","0",75,[[0,3,2,65],[2,0,1,41]]]]]]],["EE 58011","Secure and Energy",[["",[["13639","0",9,[[1,1,3,43]]]]]]],["EE 5807","Special Topics in EE:Millimeter",[["",[["12974","0",79,[[1,7,1,62],[3,6,2,62]]]]],["R",[["12976","0",79,[[4,8,2,42]]]]]]],["EE 590","Master Thesis",[["",[["12791","01",67,[[5,-1,-1,23]]],["13443","02",80,[[5,-1,-1,23]]],["12256","03",79,[[5,-1,-1,23]]],["13218","04",74,[[5,-1,-1,23]]],["11554","06",68,[[5,-1,-1,23]]],["13220","08",40,[[5,-1,-1,23]]],["13221","09",22,[[5,-1,-1,23]]]]]]],["EE 591","Directed Research",[["",[["13416","0",79,[[5,-1,-1,23]]]]]]],["EE 633","Microwave Devices and Circuits",[["",[["11967","0",73,[[3,1,3,39]]]]]]],["EE 790","Ph.D.Dissertation",[["",[["12886","02",68,[[5,-1,-1,23]]],["11564","03",72,[[5,-1,-1,23]]]]]]],["ETM 551","Graduate Seminar I",[["",[["13205","0",81,[[5,-1,-1,23]]]]]]],["ETM 590","Master Thesis",[["",[["13222","0",82,[[5,-1,-1,23]]]]]]],["ENRG 315","Energy",[["",[["12163","0",83,[[2,2,1,20],[3,1,2,36]]]]]]],["ENRG 420","Energy Systems Optimization",[["",[["12151","0",82,[[1,3,2,67],[3,6,1,37]]]]]]],["ENRG 424","Cell Design, Modelling and Battery Pack Development",[["",[["12978","0",84,[[0,5,2,28],[3,1,1,42]]]]],["L",[["12980","A1",84,[[2,6,3,65]]],["13606","A2",15,[[2,6,3,30]]]]]]],["ENRG 520","Energy Systems Optimization",[["",[["12154","0",82,[[1,3,2,67],[3,6,1,37]]]]]]],["ENRG 524","Cell Design, Modelling and Battery Pack Development",[["",[["13334","0",84,[[0,5,2,28],[3,1,1,42]]]]],["L",[["13335","0",84,[[2,6,3,65]]]]]]],["ENS 202","Thermodynamics",[["",[["10335","0",85,[[0,8,2,33],[3,3,1,37]]]]],["R",[["10336","0",85,[[4,0,2,44]]]]]]],["ENS 203","Electronic Circuits I",[["",[["10337","0",23,[[0,1,2,50],[3,6,1,19]]]]],["R",[["10338","A1",23,[[4,7,1,65]]],["10339","A2",23,[[4,7,1,41]]],["10340","B1",23,[[3,1,1,32]]],["10341","B2",23,[[3,1,1,17]]]]]]],["ENS 204","Mechanics",[["",[["10342","0",83,[[1,1,1,67],[3,7,2,36]]]]],["R",[["10343","A1",83,[[4,2,2,65]]],["10344","A2",83,[[4,2,2,27]]]]]]],["ENS 205","Introduction to Materials Science",[["",[["10345","0",86,[[1,9,1,40],[3,4,2,40]]]]],["R",[["13052","A1",86,[[4,2,2,15]]],["13607","A2",86,[[4,2,2,16]]],["13049","B1",86,[[4,6,2,52]]],["13608","B2",86,[[4,6,2,48]]],["13046","C1",86,[[4,7,2,20]]],["13609","C2",86,[[4,7,2,17]]],["13042","D1",86,[[4,8,2,24]]],["13610","D2",86,[[4,8,2,28]]],["10351","E1",86,[[4,9,2,20]]],["13611","E2",86,[[4,9,2,15]]]]]]],["ENS 207","Introduction to Energy Systems",[["",[["10413","0",87,[[2,8,3,31]]]]],["R",[["10414","0",87,[[3,9,2,51]]]]]]],["ENS 208","Introduction to Industrial Engineering",[["",[["10374","A",53,[[0,5,1,46],[1,1,2,45]]],["10376","B",53,[[0,6,2,50],[1,3,1,50]]]]]]],["ENS 209","Introduction to Computer Aided Drafting and Solid Modeling",[["",[["10387","0",88,[[0,1,2,36],[1,4,1,37]]]]],["L",[["10391","A",88,[[4,1,2,6]]],["10397","B",88,[[4,6,2,22]]]]]]],["ENS 210","Computational Biology",[["",[["10420","0",54,[[2,6,3,39]]]]],["L",[["10424","0",54,[[2,9,2,39]]]]]]],["ENS 211","Signals",[["",[["10418","0",75,[[0,6,1,46],[1,2,2,19]]]]],["R",[["10419","A1",75,[[2,9,2,28]]],["10421","A2",75,[[2,9,2,43]]],["13612","B",75,[[3,5,2,54]]]]]]],["ENS 413","Experimental Methods in Nanoscience I",[["",[["13517","0",89,[[3,6,3,66]]]]]]],["ENS 492","Graduation Project  (Implementation)",[["",[["11242","01",90,[[5,-1,-1,23]]],["11243","02",51,[[5,-1,-1,23]]],["11244","03",11,[[5,-1,-1,23]]],["11245","04",41,[[5,-1,-1,23]]],["12611","05",43,[[5,-1,-1,23]]],["11247","06",91,[[5,-1,-1,23]]],["11248","07",31,[[5,-1,-1,23]]],["11249","08",23,[[5,-1,-1,23]]],["11250","09",27,[[5,-1,-1,23]]],["11251","10",92,[[5,-1,-1,23]]],["13135","11",86,[[5,-1,-1,23]]],["11260","12",53,[[5,-1,-1,23]]],["13136","13",74,[[5,-1,-1,23]]],["13137","14",93,[[5,-1,-1,23]]],["13138","15",94,[[5,-1,-1,23]]],["11264","16",95,[[5,-1,-1,23]]],["11265","17",19,[[5,-1,-1,23]]],["11266","18",96,[[5,-1,-1,23]]],["11267","19",85,[[5,-1,-1,23]]],["13139","20",25,[[5,-1,-1,23]]],["11278","21",97,[[5,-1,-1,23]]],["13140","22",24,[[5,-1,-1,23]]],["12911","23",15,[[5,-1,-1,23]]],["11272","24",33,[[5,-1,-1,23]]],["11273","25",88,[[5,-1,-1,23]]],["12414","26",20,[[5,-1,-1,23]]],["12427","27",98,[[5,-1,-1,23]]],["12612","28",99,[[5,-1,-1,23]]],["12613","29",40,[[5,-1,-1,23]]],["12614","30",100,[[5,-1,-1,23]]],["12912","31",22,[[5,-1,-1,23]]],["12616","32",101,[[5,-1,-1,23]]],["12617","33",82,[[5,-1,-1,23]]],["12607","34",102,[[5,-1,-1,23]]],["12608","35",103,[[5,-1,-1,23]]],["12654","36",104,[[5,-1,-1,23]]],["12662","37",44,[[5,-1,-1,23]]],["12735","38",52,[[5,-1,-1,23]]],["12897","39",87,[[5,-1,-1,23]]],["12905","40",105,[[5,-1,-1,23]]],["12907","41",70,[[5,-1,-1,23]]]]]]],["ENS 513","Experimental Methods in Nanoscience I",[["",[["13518","0",89,[[3,6,3,66]]]]]]],["ENS 525","Mathematical Methods for Scientists and Engineers I",[["",[["12597","0",106,[[1,4,2,25],[4,6,1,43]]]]]]],["ENG 300","Professional Communication Skills in English",[["",[["10332","A",107,[[1,3,3,68]]],["10334","B",107,[[2,1,3,26]]],["13475","C",107,[[3,1,3,68]]]]]]],["ENT 201","The Foundations of Entrepreneurship",[["",[["13486","0",108,[[0,7,2,21],[2,0,1,21]]]]]]],["FIN 301","Financial Management",[["",[["10429","0",109,[[0,6,1,18],[2,5,2,47]]]]],["R",[["13226","0",109,[[3,7,1,18]]]]]]],["FIN 401","Corporate Finance",[["",[["10434","0",110,[[0,1,2,18],[1,4,1,47]]]]]]],["FIN 402","Investments",[["",[["13478","0",111,[[2,2,3,69]]]]]]],["FIN 403","Derivative Securities",[["",[["10436","0",110,[[0,4,2,70],[1,8,1,18]]]]]]],["FIN 405","Corporate Mergers & Acquisitions",[["",[["13067","0",112,[[3,0,3,69]]]]]]],["FIN 409","Banking and Financial Intermediation",[["",[["13479","0",113,[[0,2,3,69]]]]]]],["FIN 499","Wealth Management",[["",[["10441","0",9,[[2,-1,-1,69]]]]]]],["FIN 619","Empirical Corporate Finance",[["",[["13495","0",114,[[0,0,3,13]]]]]]],["GEN 341","Gender and Society",[["",[["10442","0",12,[[1,6,3,14]]]]],["D",[["10443","0",12,[[4,3,1,61]]]]]]],["GEN 399","Independent Study in Gender Studies",[["",[["12622","0",46,[[5,-1,-1,23]]]]]]],["GEN 540","Gender and Society",[["",[["13519","0",12,[[1,6,3,14]]]]]]],["GEN 699","PhD Thesis",[["",[["12903","A",12,[[5,-1,-1,23]]],["13084","B",49,[[5,-1,-1,23]]]]]]],["GEN 700","Readings and Research on Gender",[["",[["11976","0",46,[[5,-1,-1,23]]]]]]],["HART 234","Classical Mythology in Art",[["",[["10456","0",115,[[0,6,2,7],[2,5,1,11]]]]]]],["HART 292","From Modern to Contemporary Art",[["",[["12003","0",9,[[2,5,3,56]]]]]]],["HART 425","Art & History at the Museum",[["",[["13520","0",116,[[4,1,3,23]]]]]]],["HART 525","Art & History at the Museum",[["",[["13521","0",116,[[4,1,3,23]]]]]]],["HIST 191","Principles of Atatürk and the History of the Turkish Revolution I",[["",[["10654","A",117,[[0,1,2,34]]],["10655","B",117,[[2,6,2,40]]],["10656","Y",118,[[2,0,2,45]]]]]]],["HIST 192","Principles of Atatürk and the History of the Turkish Revolution II",[["",[["10658","Y",119,[[3,2,2,57]]],["10657","0",119,[[0,6,2,34]]]]]]],["HIST 500","M.A. Pro",[["",[["10459","0",120,[[5,-1,-1,23]]]]]]],["HIST 501","Explorations in World History I",[["",[["10460","0",121,[[0,3,3,64]]]]]]],["HIST 572","Sources and Methods for 17th and 18th century Ottoman History",[["",[["13642","0",122,[[1,3,3,64]]]]]]],["HIST 581","Sources and Methods for 19th Century Ottoman History",[["",[["13522","0",120,[[3,4,3,64]]]]]]],["HIST 599","Master's Thesis",[["",[["10467","A",123,[[5,-1,-1,23]]],["10468","B",120,[[5,-1,-1,23]]],["10471","C",124,[[5,-1,-1,23]]]]]]],["HIST 600","PhD Pro",[["",[["13141","0",120,[[5,-1,-1,23]]]]]]],["HIST 681","Seminar for Late Ottoman history",[["",[["13645","0",9,[[1,6,3,64]]]]]]],["HIST 682","Politics and Society  in Ottoman Cities, 16th",[["",[["12997","0",121,[[2,6,3,63]]]]]]],["HIST 699","PhD Thesis",[["",[["10472","A",123,[[5,-1,-1,23]]]]]]],["HIST 715","Literature Survey: From the Age of Revolution",[["",[["13690","0",120,[[5,-1,-1,23]]]]]]],["HIST 762","Literature Survey : Ottoman History, 1300",[["",[["13691","0",123,[[5,-1,-1,23]]]]]]],["HUM 201","Major Works of Literature",[["",[["10660","0",125,[[1,4,2,45]]]]],["D",[["10661","A1",125,[[3,2,1,0]]],["10662","A2",125,[[3,2,1,60]]],["10664","B1",125,[[3,3,1,0]]],["10665","B2",125,[[3,3,1,60]]],["10667","C1",125,[[3,6,1,35]]],["13110","C2",125,[[3,6,1,55]]],["13111","C3",125,[[3,6,1,60]]],["10668","D1",125,[[3,7,1,35]]],["13112","D2",125,[[3,7,1,55]]],["13113","D3",125,[[3,7,1,60]]]]]]],["HUM 202","Major Works of Western Art",[["",[["10681","0",126,[[2,2,2,45]]]]],["D",[["10682","A1",126,[[3,2,1,56]]],["10683","A2",126,[[3,2,1,35]]],["10684","A3",126,[[3,2,1,11]]],["10686","B1",126,[[3,3,1,56]]],["10687","B2",126,[[3,3,1,35]]],["10688","B3",126,[[3,3,1,11]]],["10689","C1",126,[[3,6,1,59]]],["10685","C2",126,[[3,6,1,9]]],["13114","D1",126,[[3,7,1,59]]],["13115","D2",126,[[3,7,1,9]]]]]]],["HUM 207","Major Works of Western Philosophy",[["",[["10690","0",127,[[1,6,2,19]]]]],["D",[["10691","A",128,[[3,2,1,59]]],["10692","B",128,[[3,3,1,59]]],["10693","C",128,[[3,6,1,25]]],["10694","D",128,[[3,7,1,25]]]]]]],["HUM 311","Major Works of Literature: The World Before Modernity",[["",[["10697","0",129,[[2,6,2,68],[3,2,1,5]]]]]]],["HUM 312","Major Works of Modern Art",[["",[["10698","0",9,[[2,1,3,5]]]]]]],["HUM 317","Major Works of Moral Philosophy",[["",[["10700","0",127,[[2,2,2,11],[3,3,1,3]]]]]]],["HUM 321","Major Works of Literature: The Modern World",[["",[["13020","0",130,[[1,4,2,59],[3,6,1,5]]]]]]],["HUM 322","Major Works of Art: The World Before Modernity",[["",[["12162","0",126,[[1,2,2,58],[3,5,1,11]]]]]]],["IE 303","Decision Economics",[["",[["10474","0",131,[[2,0,2,34],[3,6,1,34]]]]]]],["IE 304","Production and Service Systems Planning and Design",[["",[["10481","0",132,[[0,7,1,19],[2,3,2,19]]]]]]],["IE 305","Simulation",[["",[["11181","A",133,[[1,2,2,18],[3,4,1,18]]],["12591","B",133,[[1,6,2,18],[3,5,1,18]]]]],["R",[["10702","A1",133,[[4,2,2,21]]],["10868","A2",133,[[4,2,2,69]]],["13063","A3",133,[[4,2,2,36]]],["10704","B1",133,[[4,6,2,16]]],["10869","B2",133,[[4,6,2,71]]],["13064","B3",133,[[4,6,2,54]]]]]]],["IE 309","Manufacturing Processes I",[["",[["10486","0",134,[[0,8,2,18],[2,6,1,36]]]]],["R",[["10487","A",134,[[1,9,2,62]]],["10488","B",134,[[3,9,2,52]]]]]]],["IE 311","Operations Research I",[["",[["10705","A",52,[[1,1,1,37],[3,7,2,37]]],["13613","B",52,[[1,0,1,37],[3,0,2,37]]]]],["R",[["12558","A",52,[[4,8,2,36]]],["10709","B",52,[[4,6,2,49]]]]]]],["IE 312","Operations Research II",[["",[["10714","A",135,[[1,4,2,19],[2,7,1,50]]],["13037","B",135,[[1,1,2,50],[2,6,1,50]]]]],["R",[["10717","A1",135,[[4,1,1,12]]],["13038","A2",135,[[4,1,1,45]]],["10722","B1",135,[[4,3,1,45]]],["13039","B2",135,[[4,3,1,12]]]]]]],["IE 313","Operations Research III",[["",[["10726","0",55,[[1,6,2,50],[3,5,1,50]]]]],["R",[["10727","A",55,[[4,0,1,39]]],["10729","B",55,[[4,7,1,35]]],["10730","C",55,[[4,2,1,54]]]]]]],["IE 401","Production and Service Systems Operations",[["",[["10491","0",103,[[0,5,2,19],[3,3,1,47]]]]]]],["IE 402","Integrated Manufacturing Systems",[["",[["13524","0",102,[[1,3,1,41],[2,6,2,28]]]]],["L",[["13525","0",102,[[0,8,2,28]]]]]]],["IE 403","Quality Planning and Control",[["",[["11137","0",93,[[0,8,2,67],[2,6,1,37]]]]]]],["IE 404","Digital Transformation",[["",[["13000","0",51,[[0,7,1,36],[1,6,2,36]]]]]]],["IE 405","Decision Analysis",[["",[["10499","0",136,[[2,2,1,18],[3,7,2,47]]]]]]],["IE 409","Project Scheduling and Management",[["",[["13001","0",137,[[0,1,3,37]]]]],["R",[["13526","A",137,[[5,-1,-1,72]]],["13527","B",137,[[5,-1,-1,72]]]]]]],["IE 413","Information Systems",[["",[["11221","0",9,[[1,0,3,36]]]]]]],["IE 416","Additive Manufacturing",[["",[["12483","0",134,[[1,4,2,4],[3,4,1,58]]]]],["L",[["12484","0",134,[[2,9,2,27]]]]]]],["IE 430","Logistics Systems Planning and Design",[["",[["10504","0",95,[[0,4,1,36],[2,3,2,47]]]]]]],["IE 451","Data Analytics and Optimization",[["",[["13528","0",138,[[1,8,1,36],[2,0,2,36]]]]]]],["IE 501","Linear Programming and Extensions",[["",[["10508","0",139,[[1,6,1,27],[2,2,2,27]]]]]]],["IE 503","Stochastic Processes",[["",[["10509","0",136,[[1,1,2,33],[2,4,1,27]]]]]]],["IE 525","Operations Research and Data Mining",[["",[["12485","0",51,[[0,3,2,39],[1,3,1,39]]]]]]],["IE 551","Graduate Seminar I",[["",[["12725","0",82,[[5,-1,-1,23]]]]]]],["IE 552","Graduate Seminar II",[["",[["11321","0",82,[[5,-1,-1,23]]]]]]],["IE 58006","Special Topics in Industrial Engineering: Heuristic Optimization",[["",[["13529","0",95,[[0,1,1,28],[1,4,2,42]]]]]]],["IE 590","Master Thesis",[["",[["11589","01",139,[[5,-1,-1,23]]],["13452","02",55,[[5,-1,-1,23]]],["13223","04",135,[[5,-1,-1,23]]],["13224","05",52,[[5,-1,-1,23]]],["13227","07",53,[[5,-1,-1,23]]],["13228","08",95,[[5,-1,-1,23]]]]]]],["IE 640","Behavioral and Experimental Methods in Operations Management",[["",[["13009","0",103,[[2,6,3,42]]]]]]],["IE 751","Graduate Seminar I",[["",[["12726","0",82,[[5,-1,-1,23]]]]]]],["IE 752","Graduate Seminar II",[["",[["12727","0",82,[[5,-1,-1,23]]]]]]],["IE 790","Ph.D. Dissertation",[["",[["12285","01",139,[[5,-1,-1,23]]],["11610","03",135,[[5,-1,-1,23]]],["12803","04",132,[[5,-1,-1,23]]]]]]],["IF 100","Computational Approaches to Problem Solving",[["",[["10733","A",140,[[1,4,2,40]]],["10735","B",50,[[1,8,2,34]]],["10737","C",141,[[0,8,2,45]]],["12924","X",141,[[5,-1,-1,23]]]]],["R",[["10739","A1",142,[[3,0,2,73]]],["10741","A2",142,[[3,0,2,74]]],["10742","B1",142,[[3,2,2,73]]],["10743","B2",142,[[3,2,2,74]]],["10745","C1",142,[[3,4,2,73]]],["10746","C2",142,[[3,4,2,74]]],["10748","D1",142,[[3,6,2,73]]],["10750","D2",142,[[3,6,2,74]]],["10753","E1",142,[[3,8,2,73]]],["10755","E2",142,[[3,8,2,74]]],["10757","F1",142,[[4,0,2,73]]],["10759","F2",142,[[4,0,2,74]]],["10761","G1",142,[[4,2,2,73]]],["10762","G2",142,[[4,2,2,74]]],["10763","H1",142,[[2,-1,-1,73]]],["10765","H2",142,[[2,-1,-1,74]]],["10766","K1",142,[[4,6,2,73]]],["10768","K2",142,[[4,6,2,74]]],["10770","L1",142,[[2,8,2,73]]],["10772","L2",142,[[2,8,2,74]]],["11422","M1",142,[[4,8,2,73]]],["13695","N1",142,[[3,-1,-1,73]]],["13696","N2",142,[[3,-1,-1,74]]]]]]],["IF 402","Sustainability and Circularity in Materials",[["",[["12945","0",143,[[0,3,3,33]]]]]]],["IR 201","International Relations Theory",[["",[["10773","0",144,[[0,1,1,9],[2,1,2,0]]]]],["D",[["10774","0",144,[[4,7,1,61]]]]]]],["IR 405","European Foreign Policy",[["",[["13530","0",9,[[4,6,3,47]]]]]]],["IR 489","Human Rights in World Affairs",[["",[["13531","0",144,[[0,7,2,58],[2,3,1,7]]]]]]],["LIT 440","Literature and Psychoanalysis",[["",[["13533","0",45,[[2,6,3,14]]]]]]],["LIT 540","Literature and Psychoanalysis",[["",[["13534","0",45,[[2,6,3,14]]]]]]],["MGMT 201","Introduction to Management",[["",[["10933","0",8,[[1,2,2,22],[2,2,1,22]]]]],["R",[["10934","0",8,[[2,3,1,20]]]]]]],["MGMT 203","Introduction to Data Analysis and Research in Business",[["",[["10937","0",145,[[1,0,1,18],[2,5,2,22]]]]],["R",[["11152","0",145,[[3,10,1,18]]]]]]],["MGMT 300","Summer Internship",[["",[["13481","0",146,[[5,-1,-1,23]]]]]]],["MGMT 301","Introduction to Sustainability",[["",[["12962","0",147,[[2,5,2,3],[3,2,1,21]]]]]]],["MGMT 302","Sustainability Assessment Methods and Tools",[["",[["13483","0",148,[[3,7,3,69]]]]]]],["MGMT 309","NGO Management and Impact: Organizational Design, Positioning, and Sustainable Futures",[["",[["13134","0",149,[[1,1,1,12],[4,2,2,8]]]]]]],["MGMT 401","Business Strategy",[["",[["13484","0",150,[[1,0,3,35]]]]]]],["MGMT 402","Entrepreneurship",[["",[["12080","0",108,[[1,5,2,24],[2,3,1,22]]]]]]],["MGMT 403","International Business",[["",[["10616","0",151,[[0,3,1,21],[1,3,2,21]]]]]]],["MGMT 404","Technology Management",[["",[["11893","0",151,[[0,4,1,56],[3,5,2,22]]]]]]],["MGMT 410","Corporate Governance and Social Responsibility",[["",[["13637","0",152,[[3,3,3,69]]]]]]],["MGMT 418","Fundamentals of Family Business",[["",[["10623","0",153,[[0,6,3,47]]]]]]],["MGMT 423","Entrepreneurial Finance",[["",[["13693","0",108,[[1,7,3,69]]]]]]],["MGMT 426","Strategic Management of AI and Emerging Technologies",[["",[["13491","0",154,[[0,3,3,22]]]]]]],["MGMT 495","Entrepreneurial Skills Workshop I",[["",[["13198","0",108,[[1,2,1,53]]]]]]],["MGMT 499","Independent Study",[["",[["13488","0",42,[[5,-1,-1,23]]]]]]],["MRES 601","Research Methods in Management and Organization Studies",[["",[["12571","0",155,[[1,6,3,4]]]]]]],["MRES 609","Professional Development Seminar I",[["",[["13494","0",150,[[3,5,3,26]]]]]]],["MRES 699","Ph.D. Qualifying Exam Preparation",[["",[["11194","0",8,[[5,-1,-1,23]]]]]]],["MRES 700","Ph.D. Dissertation",[["",[["11195","0",8,[[5,-1,-1,23]]]]]]],["MFE 551","Graduate Seminar I",[["",[["11324","0",134,[[5,-1,-1,23]]]]]]],["MFE 552","Graduate Seminar I",[["",[["13199","0",134,[[5,-1,-1,23]]]]]]],["MFE 590","Master Thesis",[["",[["11757","01",134,[[5,-1,-1,23]]],["11760","02",90,[[5,-1,-1,23]]],["11754","03",97,[[5,-1,-1,23]]],["13387","05",143,[[5,-1,-1,23]]]]]]],["MFE 591","Directed Research",[["",[["13444","01",97,[[5,-1,-1,23]]],["13432","02",79,[[5,-1,-1,23]]]]]]],["MFE 751","Graduate Seminar I",[["",[["12728","0",134,[[5,-1,-1,23]]]]]]],["MFE 752","Graduate Seminar II",[["",[["13200","0",134,[[5,-1,-1,23]]]]]]],["MFE 790","PHD Dissertation",[["",[["11764","01",156,[[5,-1,-1,23]]],["11765","02",97,[[5,-1,-1,23]]],["13442","03",157,[[5,-1,-1,23]]],["11767","04",134,[[5,-1,-1,23]]],["13386","06",102,[[5,-1,-1,23]]]]]]],["MFE 791","Directed Research I",[["",[["13426","0",97,[[5,-1,-1,23]]]]]]],["MFG 516","Additive Manufacturing",[["",[["12521","0",134,[[1,4,2,4],[3,4,1,58]]]]],["L",[["12522","0",134,[[2,9,2,27]]]]]]],["MFG 565","Machine Tool Engineering",[["",[["10609","0",97,[[0,5,3,63]]]]],["L",[["10610","0",97,[[4,7,2,23]]]]]]],["MKTG 301","Introduction to Marketing",[["",[["10626","A",158,[[3,4,3,67]]],["12081","B",159,[[2,5,3,67]]],["13490","C",159,[[0,4,3,67]]],["13694","D",9,[[1,2,3,69]]]]]]],["MKTG 402","Consumer Behavior",[["",[["10628","0",160,[[2,1,3,35]]]]]]],["MKTG 404","Digital Marketing",[["",[["13487","0",161,[[2,2,3,59]]]]]]],["MKTG 601","Quantitative Research Methods in Business",[["",[["13700","0",162,[[3,5,3,71]]]]]]],["MKTG 603","Marketing Theory",[["",[["13701","0",163,[[2,2,3,10]]]]]]],["MAT 305","Polymer Engineering: Fundamentals",[["",[["10521","0",98,[[0,4,2,52],[2,3,1,24]]]]]]],["MAT 307","Composite Materials",[["",[["13537","0",164,[[1,2,2,42],[3,6,1,28]]]]],["R",[["13538","0",164,[[3,0,2,28]]]]]]],["MAT 312","Materials Characterization",[["",[["10524","0",98,[[2,4,1,24],[3,4,2,62]]]]],["L",[["10525","A",98,[[2,7,4,23]]],["13032","B",98,[[4,6,4,23]]]]]]],["MAT 314","Mechanical Properties of Materials",[["",[["12054","0",165,[[0,0,1,42],[1,0,2,25]]]]]]],["MAT 401","Surface Science and Engineering",[["",[["12953","0",166,[[1,5,1,30],[2,0,2,43]]]]]]],["MAT 404","Polymer Physics",[["",[["13539","0",86,[[2,2,1,50],[4,6,2,50]]]]]]],["MAT 405","Advanced Materials Characterization",[["",[["13541","0",167,[[1,6,3,37]]]]],["L",[["13543","0",167,[[0,4,2,53]]]]]]],["MAT 48004","Special Topics in MAT: Polymer Matrix Composites",[["",[["12486","0",92,[[0,1,2,52],[1,4,1,52]]]]]]],["MAT 501","Thermodynamics",[["",[["10532","0",164,[[0,4,2,37],[3,4,1,31]]]]]]],["MAT 504","Computer Modeling in Materials Science",[["",[["13544","0",9,[[0,3,1,27],[4,1,2,30]]]]]]],["MAT 509","Structure and Properties of Materials",[["",[["10533","0",100,[[0,8,2,62],[2,6,1,31]]]]]]],["MAT 511","Polymer Chemistry",[["",[["13545","0",168,[[0,0,1,41],[2,3,2,43]]]]],["L",[["13546","0",168,[[0,1,4,29]]]]]]],["MAT 514","Principles and Applications of Polymer Physics",[["",[["13540","0",86,[[2,2,1,50],[4,6,2,50]]]]]]],["MAT 520","Surface Science and Engineering",[["",[["12954","0",166,[[1,5,1,30],[2,0,2,43]]]]]]],["MAT 521","Tribology",[["",[["13381","0",169,[[1,1,3,13]]]]]]],["MAT 525","Advanced Materials Characterization",[["",[["13542","0",167,[[1,6,3,37]]]]]]],["MAT 551","Graduate Seminar I",[["",[["11332","0",164,[[5,-1,-1,23]]]]]]],["MAT 552","Graduate Seminar II",[["",[["11333","0",164,[[5,-1,-1,23]]]]]]],["MAT 571","Introduction to Electron Microscopy",[["",[["12487","0",170,[[0,6,2,62],[3,5,1,43]]]]],["L",[["12489","0",170,[[3,6,2,43]]]]]]],["MAT 590","Master Thesis",[["",[["11613","02",68,[[5,-1,-1,23]]],["11633","03",168,[[5,-1,-1,23]]],["12293","06",92,[[5,-1,-1,23]]],["12820","08",86,[[5,-1,-1,23]]],["12813","09",170,[[5,-1,-1,23]]],["11621","10",166,[[5,-1,-1,23]]],["12298","11",104,[[5,-1,-1,23]]],["12296","12",167,[[5,-1,-1,23]]],["13234","13",16,[[5,-1,-1,23]]],["13237","16",171,[[5,-1,-1,23]]],["13240","19",172,[[5,-1,-1,23]]],["13383","20",85,[[5,-1,-1,23]]]]]]],["MAT 591","Directed Research",[["",[["13417","0",85,[[5,-1,-1,23]]]]]]],["MAT 68004","Special Topics in MAT: Polymer Matrix Composites",[["",[["11010","0",92,[[0,1,2,52],[1,4,1,52]]]]]]],["MAT 790","Ph.D. Dissertation",[["",[["12316","01",86,[[5,-1,-1,23]]],["12823","02",165,[[5,-1,-1,23]]],["11671","03",168,[[5,-1,-1,23]]],["11650","04",173,[[5,-1,-1,23]]],["11651","05",134,[[5,-1,-1,23]]],["12309","06",92,[[5,-1,-1,23]]],["11654","07",167,[[5,-1,-1,23]]],["11655","08",98,[[5,-1,-1,23]]],["11670","09",143,[[5,-1,-1,23]]],["11658","11",156,[[5,-1,-1,23]]],["11662","15",68,[[5,-1,-1,23]]],["11663","16",16,[[5,-1,-1,23]]],["13244","17",157,[[5,-1,-1,23]]],["11665","18",94,[[5,-1,-1,23]]]]]]],["MAT 791","Directed Research I",[["",[["13418","0",85,[[5,-1,-1,23]]]]]]],["MATH 101","Calculus I",[["",[["10777","A",174,[[0,4,2,34],[1,3,1,34]]],["10778","B",175,[[0,6,2,45],[1,3,1,45]]],["10779","C",176,[[0,3,1,34],[1,4,2,34]]],["12923","X",177,[[5,-1,-1,23]]]]],["R",[["10780","A1",176,[[4,0,2,31]]],["13456","A10",176,[[4,0,2,2]]],["13692","A11",176,[[4,0,2,9]]],["10781","A2",176,[[4,0,2,14]]],["10782","A3",176,[[4,0,2,33]]],["10783","A4",176,[[4,0,2,11]]],["10785","A5",176,[[4,0,2,24]]],["10786","A6",176,[[4,0,2,0]]],["13453","A7",176,[[4,0,2,57]]],["13454","A8",176,[[4,0,2,7]]],["13455","A9",176,[[4,0,2,1]]],["10792","B1",176,[[4,2,2,0]]],["13459","B10",176,[[4,2,2,50]]],["10794","B2",176,[[4,2,2,31]]],["10795","B3",176,[[4,2,2,37]]],["10796","B4",176,[[4,2,2,7]]],["10797","B5",176,[[4,2,2,52]]],["10798","B6",176,[[4,2,2,24]]],["10800","B7",176,[[4,2,2,33]]],["13457","B8",176,[[4,2,2,19]]],["13458","B9",176,[[4,2,2,18]]],["10790","C1",176,[[4,6,2,3]]],["12567","C2",176,[[4,6,2,67]]],["12062","C3",176,[[4,6,2,2]]],["13460","C4",176,[[4,6,2,30]]],["13461","C5",176,[[4,6,2,59]]],["13462","C6",176,[[4,6,2,32]]],["13463","C7",176,[[4,6,2,53]]]]]]],["MATH 102","Calculus II",[["",[["10819","A",178,[[0,3,1,40],[1,1,2,34]]],["10820","B",179,[[0,8,1,40],[1,6,2,40]]]]],["R",[["10821","A1",178,[[4,0,2,3]]],["10822","A2",178,[[4,0,2,59]]],["10824","A3",178,[[4,0,2,55]]],["13465","A4",178,[[4,0,2,28]]],["13466","A5",178,[[4,0,2,41]]],["10828","B1",178,[[4,2,2,11]]],["10829","B2",178,[[4,2,2,59]]],["10830","B3",178,[[4,2,2,57]]],["10832","B4",178,[[4,2,2,55]]],["13467","B5",178,[[4,2,2,28]]],["13468","B6",178,[[4,2,2,25]]],["10839","C1",178,[[4,6,2,14]]],["13469","C2",178,[[4,6,2,19]]],["13470","C3",178,[[4,6,2,28]]],["13471","C4",178,[[4,6,2,25]]],["13472","C5",178,[[4,6,2,45]]]]]]],["MATH 201","Linear Algebra",[["",[["10842","0",180,[[0,4,2,40],[1,8,1,40]]]]],["R",[["10844","A1",180,[[4,2,1,67]]],["10845","A2",180,[[4,2,1,58]]],["10847","A3",180,[[4,2,1,56]]],["10849","B1",180,[[4,3,1,3]]],["10850","B2",180,[[4,3,1,2]]],["11161","B3",180,[[4,3,1,58]]],["10855","C1",180,[[4,6,1,24]]],["10856","C2",180,[[4,6,1,36]]],["10857","C3",180,[[4,6,1,31]]],["10862","D1",180,[[4,7,1,62]]],["10863","D2",180,[[4,7,1,36]]],["11160","D3",180,[[4,7,1,31]]]]]]],["MATH 203","Introduction to Probability",[["",[["10874","A",181,[[2,0,1,40],[4,0,2,40]]],["10875","B",182,[[2,1,1,40],[3,0,2,34]]]]],["R",[["10877","A1",181,[[1,4,1,2]]],["10878","A2",181,[[1,4,1,30]]],["13043","A3",181,[[1,4,1,32]]],["13045","A4",181,[[1,4,1,54]]],["13614","A5",181,[[1,4,1,10]]],["10880","B1",181,[[0,1,1,30]]],["10881","B2",181,[[0,1,1,53]]],["13051","B3",181,[[0,1,1,32]]],["13053","B4",181,[[0,1,1,54]]],["13615","B5",181,[[0,1,1,10]]],["10884","C1",182,[[0,5,1,39]]],["12069","C2",182,[[0,5,1,7]]],["12068","C3",182,[[0,5,1,32]]],["13056","C4",182,[[0,5,1,20]]],["13616","C5",182,[[0,5,1,10]]],["10887","D1",182,[[0,8,1,54]]],["13058","D2",182,[[0,8,1,32]]],["13059","D3",182,[[0,8,1,39]]],["13061","D4",182,[[0,8,1,20]]],["13617","D5",182,[[0,8,1,10]]]]]]],["MATH 204","Discrete Mathematics",[["",[["10902","0",183,[[1,6,1,34],[3,2,2,34]]]]],["R",[["10904","A1",183,[[3,9,1,14]]],["10905","A2",183,[[3,9,1,9]]],["10906","A3",183,[[3,9,1,57]]],["10907","B1",183,[[4,7,1,1]]],["10908","B2",183,[[4,7,1,58]]],["10909","B3",183,[[4,7,1,57]]],["10911","C1",183,[[4,8,1,14]]],["10912","C2",183,[[4,8,1,3]]],["10913","C3",183,[[4,8,1,11]]]]]]],["MATH 212","Linear Algebra and Differential Equations",[["",[["13547","A",184,[[1,4,2,46],[3,2,2,45]]],["13548","B",183,[[1,0,2,19],[3,6,2,46]]],["13549","C",182,[[1,6,2,46],[3,4,2,34]]],["13550","D",185,[[2,6,2,45],[3,0,2,46]]]]],["R",[["13584","A1",184,[[4,2,1,2]]],["13585","A2",184,[[4,2,1,12]]],["13586","A3",184,[[4,2,1,9]]],["13587","A4",184,[[4,2,1,3]]],["13588","A5",184,[[4,2,1,60]]],["13589","B1",183,[[4,3,1,6]]],["13590","B2",183,[[4,3,1,67]]],["13591","B3",183,[[4,3,1,62]]],["13592","B4",183,[[4,3,1,53]]],["13593","B5",183,[[4,3,1,20]]],["13594","C1",182,[[4,6,1,62]]],["13595","C2",182,[[4,6,1,41]]],["13596","C3",182,[[4,6,1,27]]],["13597","C4",182,[[4,6,1,20]]],["13598","D1",185,[[4,7,1,24]]],["13599","D2",185,[[4,7,1,27]]],["13600","D3",185,[[4,7,1,0]]],["13601","D4",185,[[4,7,1,9]]]]]]],["MATH 301","Introduction to Mathematical Analysis",[["",[["10540","0",181,[[3,2,2,50],[4,2,1,45]]]]],["R",[["12132","0",181,[[1,9,2,45]]]]]]],["MATH 306","Statistical Modelling",[["",[["10917","A",93,[[0,0,1,34],[2,8,2,45]]],["13062","B",61,[[0,1,1,45],[2,6,2,46]]],["13618","C",93,[[0,2,1,47],[2,0,2,18]]]]]]],["MATH 317","Elementary Number Theory",[["",[["12492","0",180,[[1,2,1,31],[2,1,2,33]]]]]]],["MATH 409","Proofs from the Notebook",[["",[["13551","0",186,[[0,5,1,50],[3,4,2,19]]]]]]],["MATH 484","Mathematical Introduction to Quantum Algorithms and Post",[["",[["12955","0",187,[[1,5,2,62],[2,6,1,33]]]]]]],["MATH 501","Analysis I",[["",[["10559","0",185,[[0,4,1,42],[2,1,2,41]]]]]]],["MATH 511","Algebra I",[["",[["10560","0",188,[[2,3,2,39],[3,0,1,42]]]]]]],["MATH 524","Probability Theory",[["",[["13553","0",189,[[1,1,2,27],[3,1,1,27]]]]]]],["MATH 543","Elliptic Curves",[["",[["13554","0",190,[[0,7,2,27],[1,4,1,41]]]]]]],["MATH 551","Graduate Seminar 1",[["",[["11336","0",188,[[5,-1,-1,23]]]]]]],["MATH 555","Proofs from the Notebook",[["",[["13552","0",186,[[0,5,1,50],[3,4,2,19]]]]]]],["MATH 571","Introduction to Mathematical Analysis",[["",[["10541","0",181,[[3,2,2,50],[4,2,1,45]]]]],["R",[["13225","0",181,[[1,9,2,45]]]]]]],["MATH 584","Mathematical Introduction to Quantum Algorithms and Post",[["",[["12956","0",187,[[1,5,2,62],[2,6,1,33]]]]]]],["MATH 590","Master Thesis",[["",[["13246","02",181,[[5,-1,-1,23]]],["11687","03",190,[[5,-1,-1,23]]],["13247","04",187,[[5,-1,-1,23]]],["13248","05",184,[[5,-1,-1,23]]]]]]],["MATH 591","Directed Research",[["",[["13419","01",181,[[5,-1,-1,23]]],["13420","02",190,[[5,-1,-1,23]]]]]]],["MATH 790","Ph.D. Dissertation",[["",[["11698","05",190,[[5,-1,-1,23]]]]]]],["MATH 791","Directed Research I",[["",[["13421","01",188,[[5,-1,-1,23]]],["13422","02",190,[[5,-1,-1,23]]]]]]],["ME 301","Mechanical Systems I",[["",[["10569","0",81,[[0,3,2,51],[3,0,1,36]]]]],["R",[["11145","A1",81,[[3,8,1,20]]],["13619","A2",81,[[3,8,1,26]]]]]]],["ME 303","Control System Design",[["",[["10570","0",101,[[1,0,1,58],[2,0,2,24]]]]],["L",[["13697","A",101,[[0,9,2,75]]],["13698","B",101,[[3,9,2,75]]],["13699","C",101,[[4,1,2,75]]]]]]],["ME 307","Fluid Dynamics",[["",[["12589","0",173,[[0,6,2,41],[2,4,1,28]]]]],["R",[["12590","0",173,[[4,8,2,33]]]]]]],["ME 308","Industrial Control",[["",[["10577","0",101,[[1,1,1,42],[3,2,2,27]]]]],["L",[["10578","A",101,[[1,4,3,76]]],["10579","B",101,[[2,4,3,76]]],["10580","C",101,[[4,1,3,76]]],["10581","D",101,[[3,6,3,76]]]]]]],["ME 405","Mechanical Vibrations",[["",[["13555","0",191,[[1,7,2,25],[2,0,1,25]]]]]]],["ME 408","Mechatronics System Design",[["",[["10590","0",192,[[3,5,3,13]]]]]]],["ME 425","Autonomous Mobile Robotics",[["",[["10594","0",76,[[1,4,2,33],[3,4,1,33]]]]],["L",[["10596","A",76,[[2,6,2,75]]],["10597","B",76,[[2,2,2,75]]]]]]],["ME 435","Scaling in Engineering Systems",[["",[["13557","0",193,[[0,0,3,65]]]]]]],["ME 505","Mechanical Vibrations",[["",[["13556","0",191,[[1,7,2,25],[2,0,1,25]]]]]]],["ME 525","Autonomous Mobile Robotics",[["",[["10595","0",76,[[1,4,2,33],[3,4,1,33]]]]],["L",[["11165","0",76,[[3,6,2,75]]]]]]],["ME 535","Scaling in Engineering Systems",[["",[["13558","0",193,[[0,0,3,65]]]]]]],["ME 551","Graduate Seminar I",[["",[["11330","0",81,[[5,-1,-1,23]]]]]]],["ME 552","Graduate Seminar II",[["",[["11331","0",81,[[5,-1,-1,23]]]]]]],["ME 561","Advanced Fluid Mechanics",[["",[["13559","0",194,[[1,0,1,28],[2,1,2,42]]]]]]],["ME 590","Master Thesis",[["",[["12831","01",191,[[5,-1,-1,23]]],["11700","02",81,[[5,-1,-1,23]]],["11701","03",78,[[5,-1,-1,23]]],["11711","04",96,[[5,-1,-1,23]]],["11713","05",195,[[5,-1,-1,23]]],["11704","06",76,[[5,-1,-1,23]]],["13441","07",83,[[5,-1,-1,23]]],["11717","08",87,[[5,-1,-1,23]]]]]]],["ME 591","Directed Research",[["",[["13423","01",96,[[5,-1,-1,23]]],["13427","02",79,[[5,-1,-1,23]]]]]]],["ME 790","Ph.D.Dissertation",[["",[["11719","01",173,[[5,-1,-1,23]]],["12848","02",191,[[5,-1,-1,23]]],["12849","03",97,[[5,-1,-1,23]]],["12346","04",81,[[5,-1,-1,23]]],["11733","05",24,[[5,-1,-1,23]]],["11724","06",101,[[5,-1,-1,23]]],["12852","08",78,[[5,-1,-1,23]]],["11729","10",76,[[5,-1,-1,23]]],["13250","11",68,[[5,-1,-1,23]]]]]]],["ME 791","Directed Research I",[["",[["13424","0",96,[[5,-1,-1,23]]]]]]],["BIO 303","Genetics",[["",[["10014","0",196,[[0,7,1,31],[3,0,2,54]]]]],["L",[["10016","0",196,[[3,6,3,29]]]]]]],["BIO 306","Microbiology",[["",[["10029","0",197,[[1,4,2,20],[3,3,1,41]]]]],["L",[["10030","0",197,[[2,4,4,29]]]]]]],["BIO 321","Biochemistry I",[["",[["11149","0",198,[[0,0,1,28],[2,6,2,54]]]]],["L",[["11150","0",198,[[4,8,3,29]]]]]]],["BIO 335","Experimental Techniques in Biology",[["",[["12935","0",91,[[0,2,2,42],[1,8,1,41]]]]],["L",[["12936","0",91,[[1,0,3,29]]]]]]],["BIO 363","Ecology",[["",[["10038","0",105,[[1,6,2,43],[3,2,1,41]]]]]]],["BIO 407","Multicellular Organization",[["",[["10039","0",199,[[0,7,2,43],[1,8,1,42]]]]]]],["BIO 421","Tissue Engineering",[["",[["12143","0",171,[[0,2,1,53],[1,1,2,65]]]]],["L",[["12146","0",171,[[3,0,3,29]]]]]]],["BIO 423","Neurobiology",[["",[["10041","0",99,[[2,7,2,33],[4,1,1,56]]]]]]],["BIO 444","Bioengineering",[["",[["10052","0",99,[[2,2,1,62],[3,4,2,53]]]]]]],["BIO 521","Tissue Engineering",[["",[["12144","0",171,[[0,2,1,53],[1,1,2,65]]]]],["L",[["12147","0",171,[[3,0,3,29]]]]]]],["BIO 523","Neurobiology",[["",[["10043","0",99,[[2,7,2,33],[4,1,1,56]]]]]]],["BIO 544","Bioengineering",[["",[["10053","0",99,[[2,2,1,62],[3,4,2,53]]]]]]],["BIO 551","Graduate Seminar I",[["",[["11338","0",99,[[5,-1,-1,23]]]]]]],["BIO 552","Graduate Seminar II",[["",[["11339","0",99,[[5,-1,-1,23]]]]]]],["BIO 590","Master Thesis",[["",[["12776","01",54,[[5,-1,-1,23]]],["12777","02",199,[[5,-1,-1,23]]],["12779","03",171,[[5,-1,-1,23]]],["11485","04",99,[[5,-1,-1,23]]],["12780","05",197,[[5,-1,-1,23]]],["12220","06",91,[[5,-1,-1,23]]],["11481","07",196,[[5,-1,-1,23]]],["12774","08",105,[[5,-1,-1,23]]],["12889","09",134,[[5,-1,-1,23]]]]]]],["BIO 591","Directed Research",[["",[["13393","01",196,[[5,-1,-1,23]]],["13394","02",99,[[5,-1,-1,23]]],["13395","03",91,[[5,-1,-1,23]]],["13397","05",105,[[5,-1,-1,23]]],["13398","06",197,[[5,-1,-1,23]]]]]]],["BIO 635","Nanotoxicology",[["",[["10072","0",199,[[1,5,1,65],[2,0,2,65]]]]]]],["BIO 751","Graduate Seminar I",[["",[["12733","0",99,[[5,-1,-1,23]]]]]]],["BIO 752","Graduate Seminar II",[["",[["13202","0",99,[[5,-1,-1,23]]]]]]],["BIO 790","Ph.D. Dissertation",[["",[["11500","02",104,[[5,-1,-1,23]]],["12871","03",54,[[5,-1,-1,23]]],["12874","05",99,[[5,-1,-1,23]]],["12875","06",92,[[5,-1,-1,23]]],["12876","07",200,[[5,-1,-1,23]]]]]]],["BIO 791","Directed Research I",[["",[["13401","03",91,[[5,-1,-1,23]]],["13403","05",85,[[5,-1,-1,23]]],["13404","06",105,[[5,-1,-1,23]]],["13405","07",197,[[5,-1,-1,23]]]]]]],["NS 101","Science of Nature I",[["",[["10938","A",201,[[0,1,2,70]]],["10939","B",202,[[0,1,2,49]]],["10940","C",201,[[0,6,2,70]]],["10941","D",203,[[0,6,2,49]]],["10942","E",204,[[1,1,2,70]]],["10943","F",202,[[1,1,2,49]]],["10944","G",204,[[1,6,2,70]]],["10945","H",203,[[1,6,2,49]]]]],["R",[["10946","A1",205,[[3,0,2,70]]],["13023","A2",205,[[3,0,2,49]]],["10948","B1",205,[[3,2,2,70]]],["10949","B2",205,[[3,2,2,49]]],["10950","C1",205,[[3,4,2,70]]],["10951","C2",205,[[3,4,2,49]]],["10952","D1",205,[[3,6,2,70]]],["10953","D2",205,[[3,6,2,49]]]]]]],["NS 102","Science of Nature II",[["",[["13285","A",206,[[2,2,2,70]]],["13286","B",207,[[2,2,2,49]]],["13287","C",206,[[2,6,2,70]]],["13288","D",207,[[2,6,2,49]]]]],["R",[["13289","A1",208,[[4,0,2,70]]],["13290","B1",208,[[4,2,2,70]]],["13292","C1",208,[[4,6,2,70]]]]]]],["NS 200","Einstein's Relativity",[["",[["13560","0",209,[[0,0,2,39],[1,0,1,65]]]]]]],["NS 201","Discovering Life",[["",[["13627","0",9,[[0,1,2,33],[1,2,1,20]]]]]]],["NS 206","What is There in the Universe: Inside the Milky Way?",[["",[["10636","0",210,[[0,0,1,36],[2,7,2,36]]]]]]],["OPIM 301","Operations Management",[["",[["13482","0",146,[[1,0,2,53],[2,2,1,32]]]]],["R",[["13635","0",146,[[2,1,1,32]]]]]]],["OPIM 302","Management Information Systems",[["",[["10647","0",148,[[0,7,2,69],[2,5,1,69]]]]],["R",[["10648","0",148,[[2,6,1,69]]]]]]],["OPIM 390","Introduction to Business Analytics",[["",[["10649","0",211,[[2,5,2,21],[4,6,1,69]]]]],["R",[["10651","0",211,[[4,7,1,69]]]]]]],["OPIM 401","Supply Chain Management",[["",[["13477","0",212,[[3,3,3,21]]]]]]],["OPIM 402","Optimization Modeling in Business Analytics",[["",[["10653","0",213,[[0,6,1,22],[2,4,2,35]]]]]]],["OPIM 410","Decision Making Under Uncertainty",[["",[["13480","0",8,[[1,5,2,21],[2,1,1,21]]]]]]],["OPIM 603","Probability Models and Stochastic Processes",[["",[["13496","0",214,[[1,6,3,68]]]]]]],["OPIM 690","Independent Study",[["",[["13702","0",145,[[5,-1,-1,23]]]]]]],["ORG 301","Organizations and Organizing",[["",[["10669","A",150,[[0,3,3,18]]],["13489","B",215,[[1,2,3,0]]]]]]],["ORG 302","Organizational Behavior",[["",[["10670","0",216,[[1,4,2,18],[2,1,1,50]]]]]]],["ORG 401","Human Resources Management",[["",[["10672","0",217,[[2,7,3,47]]]]]]],["ORG 403","Cross",[["",[["11901","0",155,[[2,3,3,55]]]]]]],["ORG 404","Creativity & Leading  Innovations",[["",[["11014","0",217,[[3,7,3,34]]]]]]],["ORG 405","Human Resources Analytics",[["",[["13630","0",217,[[0,3,3,49]]]]]]],["ORG 612","Organizational Behavior",[["",[["13493","0",215,[[2,6,3,10]]]]]]],["PERS 510","Basic Persian I",[["",[["13106","0",218,[[2,3,3,66]]]]],["D",[["13107","0",218,[[2,6,2,66]]]]]]],["PHIL 300","Philosophy of Science",[["",[["10673","0",219,[[1,1,3,7]]]]]]],["PHIL 310","Philosophy of Mind",[["",[["12527","0",128,[[1,4,1,17],[3,5,2,17]]]]]]],["PHIL 370","Philosophy of Artificial Intelligence",[["",[["12970","0",220,[[0,5,3,60]]]]]]],["PHIL 399","Independent Study",[["",[["13650","0",221,[[5,-1,-1,23]]]]]]],["PHIL 570","Philosophy of Artificial Intelligence",[["",[["12975","0",220,[[0,5,3,60]]]]]]],["PHYS 113","Basic Concepts of Physics for Scientists and Engineers",[["",[["13068","A1",222,[[2,1,2,47],[3,8,1,18]]],["13620","A2",223,[[2,1,2,19],[3,8,1,70]]]]],["L",[["13119","A",223,[[0,5,2,73]]],["13121","B",223,[[0,8,2,73]]],["13622","C",223,[[1,1,2,73]]],["13623","D",223,[[1,3,2,73]]],["13624","E",223,[[1,6,2,73]]]]]]],["PHYS 211","Modern Physics",[["",[["13561","0",224,[[2,6,3,27]]]]]]],["PHYS 302","Solid State Physics",[["",[["13255","0",89,[[0,5,2,42],[2,4,1,65]]]]],["R",[["13256","0",89,[[3,5,1,65]]]]]]],["PHYS 303","Quantum Mechanics I",[["",[["10677","0",209,[[1,7,2,32],[3,-1,-1,54]]]]],["R",[["11147","0",209,[[0,-1,-1,20]]]]]]],["PHYS 401","Classical Mechanics",[["",[["13562","0",106,[[2,1,2,53],[4,2,1,53]]]]]]],["PHYS 411","Electromagnetic Theory I",[["",[["13564","0",225,[[0,3,2,32],[1,0,1,32]]]]]]],["PHYS 501","Classical Mechanics",[["",[["13563","0",106,[[2,1,2,53],[4,2,1,53]]]]]]],["PHYS 511","Electromagnetic Theory I",[["",[["12090","0",225,[[0,3,2,32],[1,0,1,32]]]]]]],["PHYS 531","Quantum Mechanics I",[["",[["10680","0",225,[[0,6,1,65],[1,6,2,65]]]]]]],["PHYS 551","Graduate Seminar I",[["",[["11348","0",209,[[5,-1,-1,23]]]]]]],["PHYS 552","Graduate Seminar II",[["",[["12730","0",209,[[5,-1,-1,23]]]]]]],["PHYS 561","High Energy Astrophysics   I",[["",[["13565","0",226,[[0,1,1,42],[1,4,2,27]]]]]]],["PHYS 590","Master Thesis",[["",[["13252","02",225,[[5,-1,-1,23]]],["12865","03",227,[[5,-1,-1,23]]],["12365","05",209,[[5,-1,-1,23]]],["12866","06",89,[[5,-1,-1,23]]]]]]],["PHYS 790","Ph.D. Dissertation",[["",[["11742","01",210,[[5,-1,-1,23]]]]]]],["PSIR 300","Project and Internship",[["",[["13654","0",144,[[5,-1,-1,23]]]]]]],["PSIR 311","Research Methods for Political Science and International Relations I",[["",[["11916","0",228,[[0,2,3,9]]]]],["D",[["11917","0",228,[[0,5,1,9]]]]]]],["PSIR 401","Research Methods for Political Science and International Relations II",[["",[["13643","0",229,[[0,-1,-1,5]]]]]]],["POLS 301","Political Theory I",[["",[["10703","0",230,[[3,-1,-1,59]]]]]]],["POLS 352","Turkish Politics I",[["",[["10706","0",231,[[2,6,2,15],[3,6,1,6]]]]]]],["POLS 434","Formal Modelling and Political Analysis I",[["",[["13566","0",232,[[3,3,3,5]]]]]]],["POLS 446","Latin American Politics",[["",[["13568","0",232,[[2,0,3,15]]]]]]],["POLS 455","Rise and Fall of Democracy",[["",[["10718","0",231,[[2,8,1,17],[3,7,2,6]]]]]]],["POLS 473","Political Theory II",[["",[["10725","0",230,[[3,0,3,16]]]]]]],["POLS 495","Middle Eastern Politics and Government",[["",[["13073","0",233,[[2,0,3,6]]]]]]],["POLS 502","Political Theory",[["",[["13570","0",221,[[3,4,3,61]]]]]]],["POLS 529","Methods and Scope of Political Analysis",[["",[["10734","0",228,[[3,0,3,15]]]]],["D",[["10736","0",228,[[3,3,1,15]]]]]]],["POLS 532","Survey Research Methods",[["",[["13644","0",229,[[0,-1,-1,5]]]]]]],["POLS 534","Formal Modelling and Political Analysis I",[["",[["13567","0",232,[[3,3,3,5]]]]]]],["POLS 540","International Relations Theory",[["",[["10738","0",9,[[0,4,3,59]]]]]]],["POLS 546","Latin American Politics",[["",[["13569","0",232,[[2,0,3,15]]]]]]],["POLS 549","Middle Eastern Politics and Government",[["",[["13075","0",233,[[2,0,3,6]]]]]]],["POLS 550","Turkish Politics",[["",[["10740","0",234,[[1,3,3,6]]]]]]],["POLS 565","Rise and Fall of Democracy",[["",[["10721","0",231,[[2,8,1,17],[3,7,2,6]]]]]]],["POLS 589","Human Rights in World Affairs",[["",[["13532","0",144,[[0,7,2,58],[2,3,1,7]]]]]]],["POLS 599","Pro",[["",[["10747","0",144,[[5,-1,-1,23]]]]]]],["POLS 610","Thesis Preparation Seminar",[["",[["13651","0",144,[[5,-1,-1,23]]]]]]],["POLS 699","Master Thesis",[["",[["10767","A",235,[[5,-1,-1,23]]],["13093","C",236,[[5,-1,-1,23]]],["10760","D",228,[[5,-1,-1,23]]],["13094","E",221,[[5,-1,-1,23]]],["13095","F",231,[[5,-1,-1,23]]]]]]],["POLS 799","Ph.D. Thesis",[["",[["12091","A",232,[[5,-1,-1,23]]],["13081","B",229,[[5,-1,-1,23]]],["10167","C",221,[[5,-1,-1,23]]],["10169","E",231,[[5,-1,-1,23]]],["12432","F",237,[[5,-1,-1,23]]],["13083","G",235,[[5,-1,-1,23]]]]]]],["PROJ 201","Undergraduate Project Course",[["",[["10775","0",124,[[5,-1,-1,23]]]]]]],["PSY 201","Mind and Behavior",[["",[["10970","0",238,[[4,0,3,34]]]]]]],["PSY 202","Research Methods and Statistics for Psychology I",[["",[["10971","0",239,[[0,4,3,44]]]]],["L",[["10972","A",239,[[4,1,1,77]]],["10973","B",239,[[4,2,1,77]]],["10974","C",239,[[4,3,1,77]]]]]]],["PSY 300","Project and Internship",[["",[["13653","0",9,[[5,-1,-1,23]]]]]]],["PSY 310","Cognitive Processes",[["",[["11918","0",240,[[3,6,3,7]]]]]]],["PSY 311","Emotion",[["",[["12531","0",239,[[3,3,3,12]]]]]]],["PSY 314","Language",[["",[["13571","0",241,[[0,7,3,2]]]]]]],["PSY 315","Memory",[["",[["10157","0",242,[[1,5,3,8]]]]]]],["PSY 320","Developmental Psychology",[["",[["13572","0",241,[[2,0,3,61]]]]]]],["PSY 340","Social Psychology",[["",[["10154","0",243,[[0,1,3,8]]]]]]],["PSY 350","Introduction to Neuroscience",[["",[["12993","0",244,[[2,6,3,9]]]]]]],["PSY 360","Abnormal Behavior",[["",[["10149","0",245,[[1,4,1,7],[3,1,2,58]]]]]]],["PSY 398","Independent Study I",[["",[["13069","A",241,[[5,-1,-1,23]]],["13070","B",242,[[5,-1,-1,23]]],["13077","C",244,[[5,-1,-1,23]]],["13656","D",240,[[5,-1,-1,23]]],["12095","E",239,[[5,-1,-1,23]]],["12624","F",245,[[5,-1,-1,23]]],["13657","G",243,[[5,-1,-1,23]]]]]]],["PSY 399","Independent Study II",[["",[["13658","A",239,[[5,-1,-1,23]]],["13659","B",241,[[5,-1,-1,23]]],["13660","C",242,[[5,-1,-1,23]]],["13661","D",243,[[5,-1,-1,23]]],["13662","E",244,[[5,-1,-1,23]]],["13663","F",240,[[5,-1,-1,23]]],["13664","G",245,[[5,-1,-1,23]]]]]]],["PSY 407","EEG Methods and Analyses",[["",[["13004","0",244,[[1,3,2,14],[2,3,1,14]]]]]]],["PSY 412","Visual Cognition",[["",[["13010","0",240,[[2,6,3,12]]]]]]],["PSY 416","Culture and Cognition",[["",[["13574","0",242,[[0,4,3,3]]]]]]],["PSY 445","Selected Topics in Social Psychology",[["",[["13576","0",9,[[1,0,3,5]]]]]]],["PSY 501","Trends in Psychological Science",[["",[["13647","0",246,[[1,0,3,61]]]]]]],["PSY 507","EEG Methods and Analyses",[["",[["13007","0",244,[[1,3,2,14],[2,3,1,14]]]]]]],["PSY 512","Visual Cognition",[["",[["13012","0",240,[[2,6,3,12]]]]]]],["PSY 516","Culture and Cognition",[["",[["13575","0",242,[[0,4,3,3]]]]]]],["PSY 590","Pro",[["",[["13665","0",243,[[5,-1,-1,23]]]]]]],["PSY 599","Master Thesis",[["",[["10086","A",244,[[5,-1,-1,23]]],["10088","B",247,[[5,-1,-1,23]]],["10090","C",240,[[5,-1,-1,23]]],["10091","D",241,[[5,-1,-1,23]]],["10092","E",248,[[5,-1,-1,23]]],["10095","F",245,[[5,-1,-1,23]]],["10096","G",249,[[5,-1,-1,23]]],["13078","H",250,[[5,-1,-1,23]]],["13079","I",243,[[5,-1,-1,23]]],["10100","J",242,[[5,-1,-1,23]]]]]]],["PSY 620","Directed Research in Psychological Science",[["",[["13331","A",243,[[5,-1,-1,23]]],["13430","B",242,[[5,-1,-1,23]]],["13666","C",240,[[5,-1,-1,23]]],["13667","D",239,[[5,-1,-1,23]]],["13668","E",241,[[5,-1,-1,23]]],["13669","F",244,[[5,-1,-1,23]]],["13670","G",245,[[5,-1,-1,23]]]]]]],["PSY 621","Directed Research in Psychological Science II",[["",[["13671","A",242,[[5,-1,-1,23]]],["13672","B",243,[[5,-1,-1,23]]],["13673","C",240,[[5,-1,-1,23]]],["13674","D",239,[[5,-1,-1,23]]],["13675","E",241,[[5,-1,-1,23]]],["13676","F",245,[[5,-1,-1,23]]],["13677","G",244,[[5,-1,-1,23]]]]]]],["PSY 690","Ph.D. Pro",[["",[["12628","0",243,[[5,-1,-1,23]]]]]]],["PSY 699","Ph.D. Thesis",[["",[["12630","B",247,[[5,-1,-1,23]]]]]]],["PSY 799","Ph.D. Thesis",[["",[["12633","C",239,[[5,-1,-1,23]]]]]]],["QL 700","PhD Qualifying Exam Preparation",[["",[["12412","0",245,[[5,-1,-1,23]]]]]]],["SEC 537","Cybersecurity Practices and Applications",[["",[["12028","0",33,[[0,3,1,19],[3,7,2,19]]]]]]],["SEC 551","Graduate Seminar I",[["",[["11346","0",35,[[5,-1,-1,23]]]]]]],["SEC 590","Master Thesis",[["",[["12374","02",33,[[5,-1,-1,23]]]]]]],["SEC 790","PhD Dissertation",[["",[["11781","0",44,[[5,-1,-1,23]]]]]]],["SPS 101","Humanity and Society I",[["",[["10977","A",251,[[1,1,2,40]]],["10978","B",251,[[2,2,2,40]]],["10979","C",251,[[3,2,2,40]]]]],["D",[["10980","A1",252,[[1,6,2,57]]],["10989","A10",253,[[1,8,2,26]]],["12758","A11",254,[[1,8,2,5]]],["10981","A2",255,[[1,6,2,56]]],["10982","A3",256,[[1,6,2,9]]],["10983","A4",257,[[1,6,2,20]]],["10984","A5",254,[[1,6,2,5]]],["10985","A6",253,[[1,6,2,26]]],["10986","A7",255,[[1,8,2,56]]],["10987","A8",252,[[1,8,2,57]]],["10988","A9",256,[[1,8,2,9]]],["10990","B1",256,[[3,6,2,1]]],["10999","B10",256,[[3,8,2,1]]],["13117","B11",258,[[3,8,2,5]]],["13294","B12",259,[[3,8,2,68]]],["13295","B13",260,[[3,8,2,10]]],["10991","B2",258,[[3,6,2,24]]],["10992","B3",257,[[3,6,2,3]]],["10993","B4",254,[[3,6,2,0]]],["10994","B5",255,[[3,6,2,12]]],["10995","B6",259,[[3,6,2,68]]],["10996","B7",260,[[3,6,2,10]]],["10997","B8",255,[[3,8,2,12]]],["10998","B9",254,[[3,8,2,0]]],["11000","C1",258,[[4,2,2,5]]],["13293","C10",260,[[4,6,2,10]]],["11001","C2",253,[[4,2,2,1]]],["11002","C3",252,[[4,2,2,51]]],["11003","C4",257,[[4,2,2,35]]],["11004","C5",260,[[4,2,2,17]]],["11419","C6",259,[[4,2,2,10]]],["11420","C7",258,[[4,6,2,5]]],["11421","C8",259,[[4,6,2,18]]],["12759","C9",257,[[4,6,2,60]]]]]]],["SPS 102","Humanity and Society II",[["",[["11005","A",251,[[0,1,2,40]]],["11006","B",251,[[3,6,2,40]]]]],["D",[["11007","A1",261,[[1,6,2,59]]],["11009","A2",262,[[1,6,2,11]]],["11011","A3",263,[[1,6,2,55]]],["11015","A4",261,[[1,8,2,59]]],["11016","A5",262,[[1,8,2,11]]],["11017","A6",263,[[1,8,2,55]]],["11020","B1",261,[[4,0,2,42]]],["11024","B2",262,[[4,0,2,17]]],["11022","B3",263,[[4,0,2,5]]],["11025","B4",262,[[4,6,2,15]]],["11026","B5",263,[[4,6,2,11]]]]]]],["SPS 303","Law and Ethics",[["",[["11030","A",221,[[4,2,2,40]]],["11031","B",220,[[4,2,2,46]]]]],["D",[["11032","A1",221,[[4,6,1,17]]],["11045","A10",221,[[4,8,1,55]]],["11046","A11",221,[[4,8,1,1]]],["11033","A2",221,[[4,6,1,26]]],["11034","A3",221,[[4,6,1,61]]],["11038","A4",221,[[4,6,1,65]]],["11039","A5",221,[[4,7,1,8]]],["11040","A6",221,[[4,7,1,26]]],["13474","A7",221,[[4,7,1,56]]],["11044","A8",221,[[4,8,1,6]]],["13473","A9",221,[[4,8,1,7]]],["11035","B1",220,[[4,6,1,55]]],["11036","B2",220,[[4,6,1,0]]],["11037","B3",220,[[4,6,1,9]]],["11041","B4",220,[[4,7,1,55]]],["11042","B5",220,[[4,7,1,7]]],["11043","B6",220,[[4,7,1,6]]],["11177","B7",220,[[4,8,1,9]]],["11048","B8",220,[[4,8,1,59]]]]]]],["SPS 500","Teaching Colloquium: Humanity and Society",[["",[["12127","A",124,[[1,0,1,7]]],["12128","B",124,[[0,0,1,5]]]]]]],["SOC 201","Social Theory",[["",[["13577","0",46,[[2,1,1,14],[3,4,2,57]]]]],["D",[["13578","A",46,[[4,2,1,61]]],["13579","B",46,[[4,8,1,60]]]]]]],["TLL 001","Communication Skills in Turkish",[["",[["13124","0",264,[[0,-1,-1,23]]]]]]],["TLL 101","Turkish Language and Literature I",[["",[["11054","A1Y",265,[[0,1,2,58]]],["11055","A2",264,[[0,1,2,27]]],["11058","B1Y",266,[[1,1,2,56]]],["11059","B2",264,[[1,1,2,3]]],["11060","B3",267,[[1,1,2,2]]],["11061","B4",265,[[1,1,2,52]]],["12763","B5",268,[[1,1,2,54]]],["11062","C1Y",266,[[1,6,2,7]]],["11063","C2",267,[[1,6,2,60]]],["11064","C3",264,[[1,6,2,1]]],["11066","C4",269,[[1,6,2,30]]],["13296","C5",268,[[1,6,2,2]]],["11070","D1",270,[[2,0,2,1]]],["11461","D2",265,[[2,0,2,9]]],["11069","D3",268,[[2,0,2,55]]],["11083","D4",269,[[2,0,2,60]]],["11071","E1",270,[[2,4,2,18]]],["11072","E2",268,[[2,4,2,32]]],["11073","E3",267,[[2,4,2,33]]],["11075","F1",265,[[2,6,2,41]]],["11076","F2",267,[[2,6,2,18]]],["11078","F3",269,[[2,6,2,8]]],["11079","G1Y",270,[[3,0,2,24]]],["11080","G2",266,[[3,0,2,1]]],["13297","G3",269,[[3,0,2,7]]],["13300","H",266,[[3,6,2,8]]],["11087","K1Y",270,[[3,4,2,27]]],["11088","K2",267,[[3,4,2,1]]],["11089","K3",266,[[3,4,2,7]]],["13298","K4",269,[[3,4,2,59]]],["11067","L1Y",265,[[0,4,2,43]]],["12216","L2",264,[[0,4,2,58]]],["11468","L3",268,[[0,4,2,35]]],["13299","L4",270,[[0,4,2,2]]]]]]],["TLL 102","Turkish Language and Literature II",[["",[["11091","A1",271,[[0,4,2,41]]],["11092","A2",272,[[0,4,2,61]]],["11095","B1Y",271,[[1,1,2,57]]],["11096","B2",273,[[1,1,2,1]]],["11099","C1",273,[[1,4,2,53]]],["11100","C2",271,[[1,4,2,57]]],["11103","D1",271,[[2,0,2,20]]],["11104","D2",273,[[2,0,2,8]]],["12764","D3",272,[[2,0,2,57]]],["11106","E1Y",271,[[2,4,2,60]]],["11102","E2",273,[[2,4,2,9]]],["12765","E3",272,[[2,4,2,26]]],["11467","G",273,[[3,4,2,28]]],["12766","H",272,[[2,6,2,26]]]]]]],["TLL 510","Ottoman Turkish I",[["",[["12021","0",274,[[0,2,3,68]]]]],["D",[["12022","0",274,[[2,6,2,17]]]]]]],["TLL 550","Ottoman Paleography",[["",[["12019","0",274,[[2,2,3,71]]]]],["D",[["12020","0",274,[[0,6,2,71]]]]]]],["TS 599","Master Thesis",[["",[["12636","A",231,[[5,-1,-1,23]]],["13092","B",120,[[5,-1,-1,23]]],["13449","C",48,[[5,-1,-1,23]]]]]]],["TUR 101","Basic Turkish I",[["",[["11202","A",275,[[1,2,2,66],[2,2,1,66]]],["11203","B",275,[[1,7,1,66],[2,6,2,13]]],["11204","C",275,[[2,1,1,13],[3,2,2,13]]],["11205","D",275,[[2,5,1,13],[3,5,2,4]]]]]]],["TUR 102","Basic Turkish II",[["",[["11200","0",275,[[1,5,2,66],[2,3,1,13]]]]]]],["TUR 511","Basic Turkish I",[["",[["12512","D",275,[[2,5,1,13],[3,5,2,4]]]]]]],["VA 201","Visual Language I",[["",[["11113","0",276,[[0,6,2,78],[1,2,2,78]]]]]]],["VA 203","Language of Drawing I",[["",[["11115","0",277,[[1,7,2,79],[2,6,2,79]]]]]]],["VA 300","Project and Internship",[["",[["13678","0",276,[[5,-1,-1,23]]]]]]],["VA 301","Art Studio I",[["",[["11116","0",9,[[0,5,2,80],[3,1,2,80]]]]]]],["VA 303","Design Studio I",[["",[["12014","0",278,[[1,4,3,81]]]]]]],["VA 325","Interface Design",[["",[["13580","0",279,[[3,7,3,82]]]]]]],["VA 328","Digital and Photographic Imaging",[["",[["11120","0",279,[[4,6,3,83]]]]]]],["VA 399","Independent Study",[["",[["13689","A",278,[[5,-1,-1,23]]],["13100","B",280,[[5,-1,-1,23]]],["13101","C",276,[[5,-1,-1,23]]],["13102","D",277,[[5,-1,-1,23]]],["13104","F",279,[[5,-1,-1,23]]]]]]],["VA 401","Art Studio III",[["",[["12514","0",9,[[0,2,2,80],[3,5,2,80]]]]]]],["VA 403","Design Studio III",[["",[["12016","0",276,[[0,2,3,82]]]]]]],["VA 430","Art Analysis: Theory and Criticism",[["",[["11126","0",277,[[1,1,3,59]]]]]]],["VA 431","Videography and Narrative Making",[["",[["13013","0",280,[[3,2,3,84]]]]]]],["VA 433","3D Modelling",[["",[["13017","0",280,[[2,1,3,84]]]]]]],["VA 501","Introductory Module",[["",[["13679","A",280,[[5,-1,-1,23]]],["12116","B",276,[[5,-1,-1,23]]],["12745","C",116,[[5,-1,-1,23]]],["13680","D",277,[[5,-1,-1,23]]],["13681","E",279,[[5,-1,-1,23]]],["13682","F",278,[[5,-1,-1,23]]],["13683","G",281,[[5,-1,-1,23]]],["13684","H",282,[[5,-1,-1,23]]]]]]],["VA 503","Advanced Module",[["",[["13685","A",278,[[5,-1,-1,23]]],["13686","B",280,[[5,-1,-1,23]]],["12739","C",276,[[5,-1,-1,23]]],["12740","D",277,[[5,-1,-1,23]]],["13687","E",116,[[5,-1,-1,23]]],["12742","F",282,[[5,-1,-1,23]]],["13098","G",281,[[5,-1,-1,23]]],["13688","H",279,[[5,-1,-1,23]]]]]]],["VA 529","3D Modelling",[["",[["13018","0",280,[[2,1,3,84]]]]]]],["VA 530","Art Analysis : Theory and Criticsm",[["",[["11127","0",277,[[1,1,3,59]]]]]]],["VA 538","Videography and Narrative Making",[["",[["13015","0",280,[[3,2,3,84]]]]]]],["VA 590","Project / Exhibition / Thesis Preparation Seminar",[["",[["11426","0",278,[[5,-1,-1,23]]]]]]],["VA 597","Term Project",[["",[["13320","0",278,[[5,-1,-1,23]]]]]]],["VA 599","Master Thesis / Studio Project",[["",[["10007","A",278,[[5,-1,-1,23]]],["10008","B",277,[[5,-1,-1,23]]],["11425","C",116,[[5,-1,-1,23]]],["12736","D",281,[[5,-1,-1,23]]]]]]]]};
+
+/* --- iki veri biçimini de kabul eden çözümleyici ---
+   A) gömülü sıkıştırılmış biçim  {p:[…], i:[…], c:[[code,name,[[type,[[crn,group,instIdx,[[d,s,du,placeIdx]]]]]]]]}
+   B) SUchedule ham biçimi        {places:[…], instructors:[…], courses:[{code,name,classes:[{type,sections:[…]}]}]} */
+function normalize(json){
+  if (json && Array.isArray(json.c) && Array.isArray(json.p)){
+    const P = json.p, I = json.i || [];
+    return json.c.map(([code,name,classes]) => ({
+      code, name,
+      classes: classes.map(([type,secs]) => ({
+        type,
+        sections: secs.map(([crn,group,ii,mt]) => ({
+          crn, group, inst: ii >= 0 ? (I[ii]||"") : "",
+          mt: mt.map(([d,s,du,p]) => ({d, s, du, p: P[p]||""}))
+        }))
+      }))
+    }));
+  }
+  if (json && Array.isArray(json.courses)){
+    const P = json.places || [], I = json.instructors || [];
+    return json.courses.map(c => ({
+      code: c.code, name: (c.name||"").trim(),
+      classes: (c.classes||[]).map(cl => ({
+        type: cl.type || "",
+        sections: (cl.sections||[]).map(s => ({
+          crn: String(s.crn), group: s.group ?? "0",
+          inst: typeof s.instructors === "number" ? (I[s.instructors]||"") : "",
+          mt: (s.schedule||[]).map(x => ({
+            d: x.day, s: x.start, du: x.duration, p: P[x.place] || ""
+          }))
+        }))
+      }))
+    }));
+  }
+  throw new Error("Tanınmayan veri biçimi");
+}
+function sane(list){
+  return Array.isArray(list) && list.length > 50 &&
+    list.every(c => c && typeof c.code === "string" && Array.isArray(c.classes) && c.classes.length) &&
+    list.some(c => c.classes[0].sections.some(s => s.mt.length));
+}
+
+let DATA = normalize(RAW);
+let BY = Object.fromEntries(DATA.map(c => [c.code, c]));
+
+
+const NSLOT = 11;                 // 0 => 08:40 … 10 => 18:40
+
+const PALETTE = ["--c1","--c2","--c3","--c4","--c5","--c6","--c7","--c8","--c9","--c10"];
+let MAXSEL = 6;
+const BUILD_ISO = "2026-08-23";
+
+/* ================= dil ================= */
+const STR = {
+  tr: {
+    tagline:n=>`programına oturan dersler · ${n} ders`,
+    limit:"Ders limiti", clear:"Seçimi temizle", auto:"En iyi kombinasyonu bul", calc:"Hesaplanıyor…",
+    poolTitle:"1 · Aday havuzu", poolEmpty:"boş", poolCount:n=>`${n} ders`,
+    poolHead:"2 · Programa katılacaklar", searchPh:"Ders kodu veya adı ara…", all:"Tümü",
+    noMatch:"Eşleşen ders yok.", tooMany:(a,b)=>`${a} sonuç — ilk ${b} gösteriliyor, aramayı daralt.`,
+    emptyPool:"Havuz boş. Yukarıdan ders ara ve <b>+</b> ile ekle.",
+    secTag:n=>`${n} section`, selfClash:"kendi içinde çakışıyor", removeTitle:"Havuzdan çıkar",
+    gridTitle:"Haftalık program", altTitle:"Alternatif çözümler", altHint:"aynı dersler, farklı section'lar",
+    secTitle:"Seçilen section'lar", crnCount:n=>`${n} CRN`, copyCrn:"CRN'leri kopyala", copied:"Kopyalandı ✓",
+    mtxTitle:"Çakışma haritası", mtxHint:"havuzdaki her ders çifti",
+    lgOk:"Birlikte alınabilir", lgBad:"Hiçbir kombinasyonda alınamaz",
+    idleT1:"Aday derslerini ekle", idleT2:"Havuzdan ders seç",
+    idleS1:"Soldaki kutudan almayı düşündüğün dersleri ara ve havuzuna at. Sonra havuzdan seçtiklerin için tüm ders–recitation kombinasyonları taranır.",
+    idleS2:"Soldaki havuzdan programa katılacak dersleri işaretle; tüm ders–recitation kombinasyonları taranır.",
+    okT:n=>`${n} ders çakışmasız alınabilir`,
+    okS:"Aşağıdaki section'ları seçersen hiçbir dersin saati üst üste gelmiyor.",
+    badT:c=>`En iyi ihtimalle ${c} saat çakışma`,
+    hardPairs:"Kaçınılmaz çakışan çift: ", noPairClash:"Tek tek uyumlu olsalar da bu dersler aynı anda çakışmasız yerleşmiyor.",
+    stats:["Ders","Saat / hafta","Boş gün","Boşluk saati","Çakışma"],
+    gridOk:"çakışmasız", gridBad:c=>`${c} saat çakışıyor (taralı hücreler)`,
+    capped:"Bu ders setinde kombinasyon sayısı çok yüksek olduğu için arama kısaltıldı — daha iyi bir dizilim olabilir.",
+    recommended:"Önerilen", recLower:"önerilen", option:i=>`Seçenek ${i}`,
+    altClash:c=>`${c} saat çakışma`, altFree:n=>`${n} boş gün`, altGaps:n=>`${n} saat boşluk`,
+    mtxOk:(a,b)=>`${a} + ${b}: uyumlu`, mtxBad:(a,b,n)=>`${a} + ${b}: en az ${n} saat çakışma`,
+    pairIntro:n=>`<b>${n} çift</b> hiçbir section kombinasyonunda birlikte alınamaz:`,
+    pairNone:"${T().pairNone}",
+    pairWhen:n=>`${n} saat`,
+    autoNone:"Havuzda çakışmasız hiçbir ikili bile yok — havuza başka dersler ekle.",
+    autoShort:(m,n)=>`${m} ders birlikte çakışmasız alınamıyor — bu havuzda en fazla ${n} ders mümkün, en iyisi yüklendi.`,
+    autoCapped:" (Havuz büyük olduğu için arama kısaltıldı.)",
+    chipEmb:d=>`gömülü veri · ${d}`, chipLoading:"veri aranıyor…", chipSelf:"kendi verin",
+    chipTitle:"Veri kaynağı — tıklayınca yeniden dener",
+    chipLiveTitle:w=>`Canlı veri${w?" · "+w:""} — tıklayınca yeniden dener`,
+    chipEmbTitle:"Canlı veriye ulaşılamadı — sayfaya gömülü kopya kullanılıyor. Tıklayınca yeniden dener.",
+    days:["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"],
+    daysS:["Pzt","Sal","Çar","Per","Cum","Cmt"],
+    types:{"":"Ders","R":"Recitation","D":"Discussion","L":"Lab","S":"Studio","E":"Ek","N":"Ek"},
+    locale:"tr-TR"
+  },
+  en: {
+    tagline:n=>`courses that fit your schedule · ${n} courses`,
+    limit:"Course limit", clear:"Clear selection", auto:"Find the best combination", calc:"Working…",
+    poolTitle:"1 · Candidate pool", poolEmpty:"empty", poolCount:n=>`${n} courses`,
+    poolHead:"2 · In your schedule", searchPh:"Search course code or name…", all:"All",
+    noMatch:"No matching course.", tooMany:(a,b)=>`${a} results — showing the first ${b}, narrow your search.`,
+    emptyPool:"Your pool is empty. Search above and add courses with <b>+</b>.",
+    secTag:n=>`${n} section${n>1?"s":""}`, selfClash:"clashes with itself", removeTitle:"Remove from pool",
+    gridTitle:"Weekly schedule", altTitle:"Alternative solutions", altHint:"same courses, different sections",
+    secTitle:"Chosen sections", crnCount:n=>`${n} CRNs`, copyCrn:"Copy CRNs", copied:"Copied ✓",
+    mtxTitle:"Conflict map", mtxHint:"every course pair in your pool",
+    lgOk:"Can be taken together", lgBad:"Never compatible",
+    idleT1:"Add your candidate courses", idleT2:"Pick courses from your pool",
+    idleS1:"Search on the left for courses you are considering and add them to your pool. Every lecture–recitation combination is then searched for the ones you pick.",
+    idleS2:"Tick the courses from your pool that should go into the schedule; every lecture–recitation combination is searched.",
+    okT:n=>`${n} courses fit with no conflicts`,
+    okS:"Pick the sections below and no two classes overlap.",
+    badT:c=>`${c} hour${c>1?"s":""} of overlap at best`,
+    hardPairs:"Unavoidable clash: ", noPairClash:"Compatible one by one, but these courses cannot all fit together.",
+    stats:["Courses","Hours / week","Free days","Gap hours","Overlap"],
+    gridOk:"no conflicts", gridBad:c=>`${c} hour${c>1?"s":""} overlap (hatched cells)`,
+    capped:"This set has too many combinations, so the search was cut short — a better arrangement may exist.",
+    recommended:"Recommended", recLower:"recommended", option:i=>`Option ${i}`,
+    altClash:c=>`${c}h overlap`, altFree:n=>`${n} free day${n===1?"":"s"}`, altGaps:n=>`${n}h of gaps`,
+    mtxOk:(a,b)=>`${a} + ${b}: compatible`, mtxBad:(a,b,n)=>`${a} + ${b}: at least ${n} hour(s) of overlap`,
+    pairIntro:n=>`<b>${n} pair${n>1?"s":""}</b> cannot be taken together in any section combination:`,
+    pairNone:"No pair in your pool is permanently in conflict — all of them fit with the right sections.",
+    pairWhen:n=>`${n}h`,
+    autoNone:"Not even two courses in your pool fit together — add more courses.",
+    autoShort:(m,n)=>`${m} courses cannot fit without overlap — at most ${n} are possible in this pool, and the best one is loaded.`,
+    autoCapped:" (The pool is large, so the search was cut short.)",
+    chipEmb:d=>`built-in data · ${d}`, chipLoading:"looking for data…", chipSelf:"your own data",
+    chipTitle:"Data source — click to retry",
+    chipLiveTitle:w=>`Live data${w?" · "+w:""} — click to retry`,
+    chipEmbTitle:"Could not reach live data — using the copy built into this page. Click to retry.",
+    days:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+    daysS:["Mon","Tue","Wed","Thu","Fri","Sat"],
+    types:{"":"Lecture","R":"Recitation","D":"Discussion","L":"Lab","S":"Studio","E":"Extra","N":"Extra"},
+    locale:"en-GB"
+  }
+};
+let LANG = "tr";
+try{
+  const saved = localStorage.getItem("dk-lang");
+  LANG = (saved === "tr" || saved === "en") ? saved
+       : ((navigator.language||"").toLowerCase().startsWith("tr") ? "tr" : "en");
+}catch(e){}
+const T  = () => STR[LANG];
+const TX = () => STR[LANG];   // renderVerdict içinde T adı gölgeleniyor
+const buildDateLabel = () => {
+  try{ return new Date(BUILD_ISO + "T00:00:00").toLocaleDateString(T().locale, {day:"numeric",month:"short",year:"numeric"}); }
+  catch(e){ return BUILD_ISO; }
+};
+
+
+const slotStart = i => String(8+i).padStart(2,"0") + ":40";
+const slotEnd   = i => String(9+i).padStart(2,"0") + ":30";
+const rangeLabel = (s,du) => slotStart(s) + "–" + slotEnd(s+du-1);
+const norm = s => s.toLocaleLowerCase("tr")
+  .replace(/ı/g,"i").replace(/İ/g,"i").replace(/ş/g,"s").replace(/ğ/g,"g")
+  .replace(/ü/g,"u").replace(/ö/g,"o").replace(/ç/g,"c");
+
+/* ================= section kombinasyonları (tembel) ================= */
+const _opts = new Map();
+function buildOptions(course, enforceLetters){
+  const lecGroups = course.classes[0].sections.map(s => s.group);
+  const lettered = enforceLetters && lecGroups.some(g => /^[A-Za-z]+$/.test(g));
+  let opts = [{picks:[], mask:new Set()}];
+  for (const cls of course.classes){
+    const next = [];
+    for (const base of opts){
+      const lecG = base.picks.length ? base.picks[0].sec.group : null;
+      for (const sec of cls.sections){
+        // ders section'ı harfliyse alt grup da aynı harfle başlamalı
+        if (lecG !== null && lettered && /^[A-Za-z]+$/.test(lecG) &&
+            !norm(sec.group).startsWith(norm(lecG))) continue;
+        const mask = new Set(base.mask);
+        let clash = false;
+        for (const m of sec.mt) for (let k=0;k<m.du;k++){
+          const key = m.d*NSLOT + m.s + k;
+          if (mask.has(key)) clash = true;
+          mask.add(key);
+        }
+        if (clash) continue;                 // ders kendi recit'iyle çakışıyorsa ele
+        next.push({picks:[...base.picks, {cls, sec}], mask});
+      }
+    }
+    opts = next;
+  }
+  return opts;
+}
+function optsOf(code){
+  if (_opts.has(code)) return _opts.get(code);
+  const c = BY[code];
+  let o = buildOptions(c, true);
+  if (!o.length) o = buildOptions(c, false);        // harf kuralı her şeyi elediyse gevşet
+  if (!o.length){                                    // ders kendi içinde çakışıyor: yine de göster
+    const picks = c.classes.map(cls => ({cls, sec: cls.sections[0]}));
+    const mask = new Set();
+    picks.forEach(({sec}) => sec.mt.forEach(m => { for(let k=0;k<m.du;k++) mask.add(m.d*NSLOT+m.s+k); }));
+    o = [{picks, mask, selfClash:true}];
+  }
+  _opts.set(code, o);
+  return o;
+}
+
+/* ================= ikili çakışma (tembel) ================= */
+const _pair = new Map();
+function pairOf(a,b){
+  const key = a < b ? a+"|"+b : b+"|"+a;
+  if (_pair.has(key)) return _pair.get(key);
+  let best = Infinity, when = null;
+  outer:
+  for (const x of optsOf(a)) for (const y of optsOf(b)){
+    let n = 0, first = null;
+    for (const k of x.mask) if (y.mask.has(k)){ n++; if (first===null) first = k; }
+    if (n < best){ best = n; when = first; if (!best) break outer; }
+  }
+  const r = {n:best, when};
+  _pair.set(key, r);
+  return r;
+}
+
+/* ================= çözücü ================= */
+function score(mask){
+  const perDay = {};
+  for (const k of mask){ const d = Math.floor(k/NSLOT); (perDay[d] = perDay[d]||[]).push(k%NSLOT); }
+  const days = Object.keys(perDay).length;
+  let span = 0, gaps = 0, early = 0, weekdays = 0;
+  for (const d in perDay){
+    const ss = perDay[d].sort((a,b)=>a-b);
+    const lo = ss[0], hi = ss[ss.length-1];
+    span += hi-lo+1;
+    gaps += (hi-lo+1) - new Set(ss).size;
+    if (lo === 0) early++;
+    if (+d <= 4) weekdays++;
+  }
+  // "boş gün" hafta içi üzerinden sayılır; cumartesi dersi varsa ayrıca görünür zaten
+  return {days, span, gaps, early, free: 5 - weekdays};
+}
+const cmpM = (a,b) => a.days-b.days || a.gaps-b.gaps || a.span-b.span || a.early-b.early;
+
+const LEAF_CAP = 120000;
+function solve(codes){
+  if (!codes.length) return null;
+  // az seçenekli dersi öne al: budama daha erken devreye girer
+  const order = codes.map((c,i)=>i).sort((x,y)=>optsOf(codes[x]).length - optsOf(codes[y]).length);
+  const oc = order.map(i => codes[i]);
+  const lists = oc.map(optsOf);
+  const count = new Map();
+  let conf = 0, bestC = Infinity, leaves = 0, capped = false;
+  let results = [];
+  const walk = (i, picks) => {
+    if (capped || conf > bestC) return;
+    if (i === lists.length){
+      if (++leaves > LEAF_CAP){ capped = true; return; }
+      if (conf < bestC){ bestC = conf; results = []; }
+      if (conf === bestC && results.length < 300){
+        const mask = new Set(), conflicts = new Set();
+        for (const [k,n] of count){ mask.add(k); if (n>1) conflicts.add(k); }
+        results.push({codes:oc.slice(), picks:picks.slice(), mask, conflicts, c:conf, m:score(mask)});
+      }
+      return;
+    }
+    for (const opt of lists[i]){
+      let added = 0;
+      for (const k of opt.mask){
+        const n = (count.get(k)||0) + 1;
+        count.set(k, n);
+        if (n === 2) conf++;
+        added++;
+      }
+      picks.push(opt);
+      walk(i+1, picks);
+      picks.pop();
+      for (const k of opt.mask){
+        const n = count.get(k) - 1;
+        if (n === 1) conf--;
+        if (n) count.set(k, n); else count.delete(k);
+      }
+      if (capped) return;
+    }
+  };
+  walk(0, []);
+  if (!results.length) return null;
+  results.sort((a,b) => a.c - b.c || cmpM(a.m, b.m));
+  const out = [], seen = new Set();
+  for (const r of results){
+    const key = r.picks.map(p => p.picks.map(x => x.sec.crn).join("")).join("|");
+    if (seen.has(key)) continue;
+    seen.add(key); out.push(r);
+    if (out.length >= 8) break;
+  }
+  out.capped = capped;
+  return out;
+}
+
+/* sadece tam çakışmasız atamalar — hızlı, otomatik öneri için */
+function solveCF(codes){
+  const order = codes.map((c,i)=>i).sort((x,y)=>optsOf(codes[x]).length - optsOf(codes[y]).length);
+  const oc = order.map(i => codes[i]);
+  const lists = oc.map(optsOf);
+  const mask = new Set();
+  let best = null;
+  const walk = (i, picks) => {
+    if (i === lists.length){
+      const m = score(mask);
+      if (!best || cmpM(m, best.m) < 0)
+        best = {codes:oc.slice(), picks:picks.slice(), mask:new Set(mask), conflicts:new Set(), c:0, m};
+      return;
+    }
+    for (const opt of lists[i]){
+      let ok = true;
+      for (const k of opt.mask) if (mask.has(k)){ ok = false; break; }
+      if (!ok) continue;
+      for (const k of opt.mask) mask.add(k);
+      picks.push(opt); walk(i+1, picks); picks.pop();
+      for (const k of opt.mask) mask.delete(k);
+    }
+  };
+  walk(0, []);
+  return best;
+}
+
+/* ================= durum ================= */
+let pool = [];          // aday havuzu (ders kodları)
+let selected = [];      // havuzdan programa katılanlar
+let solutions = null, altIndex = 0;
+
+const save = () => { try{
+  localStorage.setItem("dk-pool", JSON.stringify(pool));
+  localStorage.setItem("dk-sel", JSON.stringify(selected));
+  localStorage.setItem("dk-limit", String(MAXSEL));
+}catch(e){} };
+
+function addToPool(code){
+  if (pool.includes(code)) return;
+  pool.push(code);
+  pool.sort((a,b)=>a.localeCompare(b,"tr"));
+  render();
+}
+function removeFromPool(code){
+  pool = pool.filter(c => c !== code);
+  selected = selected.filter(c => c !== code);
+  altIndex = 0; render();
+}
+function toggle(code){
+  const i = selected.indexOf(code);
+  if (i >= 0) selected.splice(i,1);
+  else {
+    if (selected.length >= MAXSEL){
+      const el = document.getElementById("counter");
+      el.classList.add("over"); setTimeout(()=>el.classList.remove("over"), 700);
+      return;
+    }
+    selected.push(code);
+  }
+  altIndex = 0; render();
+}
+const colorOf = code => `var(${PALETTE[Math.max(0,selected.indexOf(code)) % PALETTE.length]})`;
+
+/* ================= arama ================= */
+let subjects = [];
+const subjSel = document.getElementById("subj");
+function rebuildSubjects(){
+  const keep = subjSel.value;
+  subjects = [...new Set(DATA.map(c => c.code.split(" ")[0]))].sort();
+  subjSel.innerHTML = `<option value="">${T().all}</option>`;
+  subjects.forEach(s => { const o = document.createElement("option"); o.value = o.textContent = s; subjSel.appendChild(o); });
+  if (subjects.includes(keep)) subjSel.value = keep;
+}
+rebuildSubjects();
+
+function renderResults(){
+  const box = document.getElementById("results");
+  const q = norm(document.getElementById("q").value.trim());
+  const sub = subjSel.value;
+  if (!q && !sub){ box.hidden = true; box.innerHTML = ""; return; }
+  const hits = DATA.filter(c => {
+    if (sub && c.code.split(" ")[0] !== sub) return false;
+    if (!q) return true;
+    return norm(c.code).includes(q) || norm(c.name).includes(q);
+  });
+  box.hidden = false;
+  if (!hits.length){ box.innerHTML = `<div class="resnote">${T().noMatch}</div>`; return; }
+  const shown = hits.slice(0, 60);
+  box.innerHTML =
+    (hits.length > shown.length ? `<div class="resnote">${T().tooMany(hits.length, shown.length)}</div>` : "") +
+    shown.map(c => {
+      const have = pool.includes(c.code);
+      return `<div class="res${have?" have":""}" data-code="${c.code}">
+        <span class="code">${c.code}</span>
+        <span class="nm">${c.name}</span>
+        <span class="add">${have?"✓":"+"}</span>
+      </div>`;
+    }).join("");
+  box.querySelectorAll(".res:not(.have)").forEach(el =>
+    el.addEventListener("click", () => addToPool(el.dataset.code)));
+}
+document.getElementById("q").addEventListener("input", renderResults);
+subjSel.addEventListener("change", renderResults);
+
+/* ================= havuz listesi ================= */
+function renderPool(){
+  const el = document.getElementById("clist"); el.innerHTML = "";
+  document.getElementById("poolHead").hidden = !pool.length;
+  document.getElementById("poolHint").textContent = pool.length ? T().poolCount(pool.length) : T().poolEmpty;
+  if (!pool.length){
+    el.innerHTML = `<div class="empty">${T().emptyPool}</div>`;
+  }
+  pool.forEach(code => {
+    const c = BY[code];
+    const on = selected.includes(code);
+    const blocked = !on && selected.some(s => pairOf(s, code).n > 0);
+    const extras = c.classes.filter(cl => cl.type !== "");
+    const selfClash = optsOf(code)[0].selfClash;
+    const row = document.createElement("div");
+    row.className = "crow" + (on?" on":"") + (blocked?" dim":"");
+    row.innerHTML =
+      `<span class="swatch" style="background:${on?colorOf(code):"transparent"}"></span>
+       <input type="checkbox" ${on?"checked":""} aria-label="${c.code}">
+       <span class="txt">
+         <span class="code">${c.code}</span>
+         <div class="nm">${c.name}</div>
+         <div class="tags">
+           <span class="tag">${T().secTag(c.classes[0].sections.length)}</span>
+           ${extras.map(cl=>`<span class="tag r">${T().types[cl.type]||cl.type} ×${cl.sections.length}</span>`).join("")}
+           ${selfClash?`<span class="tag r">${T().selfClash}</span>`:""}
+         </div>
+       </span>
+       <button class="rm" title="${T().removeTitle}">×</button>`;
+    row.querySelector("input").addEventListener("change", () => toggle(code));
+    row.querySelector(".txt").addEventListener("click", () => toggle(code));
+    row.querySelector(".rm").addEventListener("click", e => { e.stopPropagation(); removeFromPool(code); });
+    el.appendChild(row);
+  });
+  document.getElementById("poolHint").textContent = pool.length ? T().poolCount(pool.length) : T().poolEmpty;
+  const cn = document.getElementById("counter");
+  cn.textContent = selected.length + " / " + MAXSEL;
+  cn.classList.toggle("full", selected.length === MAXSEL && MAXSEL > 0);
+}
+
+/* ================= program tablosu ================= */
+function renderGrid(sol){
+  const t = document.getElementById("sched");
+  const occ = {};
+  let maxDay = 4;
+  if (sol) sol.picks.forEach((opt,i) => {
+    const code = sol.codes[i];
+    opt.picks.forEach(({cls,sec}) => sec.mt.forEach(m => {
+      if (m.d > maxDay) maxDay = m.d;
+      for (let k=0;k<m.du;k++){
+        (occ[m.d*NSLOT+m.s+k] = occ[m.d*NSLOT+m.s+k]||[]).push({
+          code, type:cls.type, place:m.p, first:k===0, crn:sec.crn
+        });
+      }
+    }));
+  });
+  const nDays = maxDay + 1;
+  let html = "<thead><tr><th class='tcol'></th>" +
+    T().days.slice(0,nDays).map(d=>`<th>${d}</th>`).join("") + "</tr></thead><tbody>";
+  for (let s=0;s<NSLOT;s++){
+    html += `<tr><td class="time">${slotStart(s)}</td>`;
+    for (let d=0;d<nDays;d++){
+      const items = occ[d*NSLOT+s] || [];
+      let inner = "";
+      items.slice(0,2).forEach((it,n) => {
+        const cls = items.length>1 ? (n===0?"blk half":"blk half half2") : "blk";
+        inner += `<div class="${cls}" style="background:${colorOf(it.code)}" title="${it.code}${it.type?" "+(T().types[it.type]||it.type):""} · ${it.place||"—"} · CRN ${it.crn}">
+            <span class="bc">${it.code}${it.type?" "+it.type:""}</span>
+            ${it.first?`<span class="bm">${it.place||""}</span>`:""}
+          </div>`;
+      });
+      html += `<td class="${items.length>1?"clash":""}">${inner}</td>`;
+    }
+    html += "</tr>";
+  }
+  t.innerHTML = html + "</tbody>";
+}
+
+/* ================= section kartları ================= */
+function renderSections(sol){
+  const p = document.getElementById("secPanel");
+  if (!sol){ p.hidden = true; return; }
+  p.hidden = false;
+  const grid = document.getElementById("secgrid"); grid.innerHTML = "";
+  const crns = [];
+  const order = sol.codes.map((c,i)=>i).sort((a,b)=>selected.indexOf(sol.codes[a]) - selected.indexOf(sol.codes[b]));
+  order.forEach(i => {
+    const code = sol.codes[i], c = BY[code];
+    const rows = sol.picks[i].picks.map(({cls,sec}) => {
+      crns.push(sec.crn);
+      const times = sec.mt.map(m => `${T().daysS[m.d]} ${rangeLabel(m.s,m.du)}`).join(" · ") || "TBA";
+      const place = [...new Set(sec.mt.map(m=>m.p).filter(Boolean))].join(", ");
+      return `<div class="row">
+        <span class="k">${(T().types[cls.type]||cls.type).slice(0,4).toUpperCase()}</span>
+        <span class="v">${sec.crn}</span>
+        <span class="pl">${sec.group!=="0"?sec.group+" · ":""}${times}${place?" · "+place:""}</span>
+      </div>`;
+    }).join("");
+    const div = document.createElement("div");
+    div.className = "sec";
+    div.style.borderLeftColor = colorOf(code);
+    div.innerHTML = `<h3>${code}</h3><div class="cn">${c.name}</div>${rows}`;
+    grid.appendChild(div);
+  });
+  document.getElementById("crnHint").textContent = T().crnCount(crns.length);
+  document.getElementById("btnCrn").onclick = e => {
+    navigator.clipboard.writeText(crns.join(", "));
+    e.target.textContent = T().copied;
+    setTimeout(()=>e.target.textContent = T().copyCrn, 1600);
+  };
+}
+
+/* ================= alternatifler ================= */
+function renderAlts(){
+  const p = document.getElementById("altPanel");
+  if (!solutions || solutions.length < 2){ p.hidden = true; return; }
+  p.hidden = false;
+  const box = document.getElementById("alts"); box.innerHTML = "";
+  const varying = new Set();
+  solutions.forEach(s => s.picks.forEach((opt,i) => opt.picks.forEach(({sec},j) => {
+    if (solutions[0].picks[i].picks[j].sec.crn !== sec.crn) varying.add(i+":"+j);
+  })));
+  solutions.forEach((s,i) => {
+    const b = document.createElement("button");
+    b.className = "altbtn" + (i===altIndex?" on":"");
+    const diff = [];
+    s.picks.forEach((opt,ci) => {
+      const g = opt.picks.filter((_,j)=>varying.has(ci+":"+j)).map(({sec})=>sec.group);
+      if (g.length) diff.push(`${s.codes[ci]} · ${g.join("/")}`);
+    });
+    b.innerHTML = `<b>${diff.length ? diff.join(" · ") : (i===0?T().recommended:T().option(i+1))}</b>
+      <span>${i===0?T().recLower+" · ":""}${s.c ? T().altClash(s.c)+" · " : ""}${T().altFree(s.m.free)} · ${T().altGaps(s.m.gaps)}</span>`;
+    b.onclick = () => { altIndex = i; render(); };
+    box.appendChild(b);
+  });
+}
+
+/* ================= verdict ================= */
+function renderVerdict(sol){
+  const v = document.getElementById("verdict");
+  const T = document.getElementById("vTitle"), S = document.getElementById("vSub"), St = document.getElementById("vStats");
+  v.className = "verdict";
+  St.innerHTML = "";
+  if (!sol){
+    v.classList.add("idle");
+    T.textContent = pool.length ? TX().idleT2 : TX().idleT1;
+    S.textContent = pool.length ? TX().idleS2 : TX().idleS1;
+    document.getElementById("gridHint").textContent = "—";
+    return;
+  }
+  const hard = [];
+  for (let i=0;i<selected.length;i++) for (let j=i+1;j<selected.length;j++){
+    const pr = pairOf(selected[i], selected[j]);
+    if (pr.n > 0) hard.push([selected[i], selected[j]]);
+  }
+  if (sol.c === 0){
+    v.classList.add("ok");
+    T.textContent = TX().okT(selected.length);
+    S.textContent = TX().okS;
+  } else {
+    v.classList.add(sol.c <= 1 ? "warn" : "bad");
+    T.textContent = TX().badT(sol.c);
+    S.innerHTML = hard.length
+      ? TX().hardPairs + hard.map(([a,b])=>`<b class="mono">${a} ↔ ${b}</b>`).join(", ") + "."
+      : TX().noPairClash;
+  }
+  St.innerHTML = [selected.length, sol.mask.size, sol.m.free, sol.m.gaps, sol.c]
+    .map((n,i) => `<div class="stat"><div class="n">${n}</div><div class="l">${TX().stats[i]}</div></div>`).join("");
+  document.getElementById("gridHint").textContent =
+    sol.c === 0 ? TX().gridOk : TX().gridBad(sol.c);
+  if (solutions && solutions.capped && sol.c > 0)
+    S.innerHTML += ` <span style="color:var(--warn)">${TX().capped}</span>`;
+}
+
+/* ================= çakışma matrisi ================= */
+function renderMatrix(){
+  const p = document.getElementById("mtxPanel");
+  if (pool.length < 2){ p.hidden = true; return; }
+  p.hidden = false;
+  const t = document.getElementById("matrix");
+  let html = "<thead><tr><th></th>" + pool.map(c=>`<th class="colh">${c}</th>`).join("") + "</tr></thead><tbody>";
+  for (const a of pool){
+    html += `<tr><th class="rowh">${a}</th>`;
+    for (const b of pool){
+      if (a === b){ html += `<td class="m-self">·</td>`; continue; }
+      const pr = pairOf(a,b);
+      html += pr.n === 0
+        ? `<td class="m-ok" title="${T().mtxOk(a,b)}">✓</td>`
+        : `<td class="m-bad" title="${T().mtxBad(a,b,pr.n)}">✕</td>`;
+    }
+    html += "</tr>";
+  }
+  t.innerHTML = html + "</tbody>";
+
+  const bad = [];
+  for (let i=0;i<pool.length;i++) for (let j=i+1;j<pool.length;j++){
+    const pr = pairOf(pool[i], pool[j]);
+    if (pr.n > 0) bad.push([pool[i], pool[j], pr]);
+  }
+  document.getElementById("pairbox").innerHTML = bad.length
+    ? `<div class="note" style="margin-top:14px">${T().pairIntro(bad.length)}</div>
+       <div class="pairlist">` + bad.map(([a,b,pr]) => {
+         const d = Math.floor(pr.when/NSLOT), s = pr.when%NSLOT;
+         return `<div class="pair"><span class="mono">${a}</span><span class="x">✕</span><span class="mono">${b}</span>
+           <span class="when">${T().pairWhen(pr.n)} · ${T().daysS[d]} ${slotStart(s)}</span></div>`;
+       }).join("") + `</div>`
+    : `<div class="note" style="margin-top:14px">${T().pairNone}</div>`;
+}
+
+/* ================= render ================= */
+function render(){
+  renderPool();
+  renderResults();
+  renderMatrix();
+  solutions = selected.length ? solve(selected) : null;
+  if (solutions && altIndex >= solutions.length) altIndex = 0;
+  const sol = solutions ? solutions[altIndex] : null;
+  renderVerdict(sol);
+  renderGrid(sol);
+  renderSections(sol);
+  renderAlts();
+  save();
+}
+
+/* ================= otomatik öneri ================= */
+const SUBSET_CAP = 40000;
+function autoSuggest(){
+  if (pool.length < 2) return {n:0};
+  for (let n = Math.min(MAXSEL, pool.length); n >= 2; n--){
+    let best = null, bestSol = null, tried = 0, capped = false;
+    const rec = (start, acc) => {
+      if (capped) return;
+      if (acc.length === n){
+        if (++tried > SUBSET_CAP){ capped = true; return; }
+        const sol = solveCF(acc);
+        if (sol && (!bestSol || cmpM(sol.m, bestSol.m) < 0)){ best = acc.slice(); bestSol = sol; }
+        return;
+      }
+      if (pool.length - start < n - acc.length) return;
+      for (let i=start;i<pool.length;i++){
+        if (acc.some(a => pairOf(a, pool[i]).n > 0)) continue;
+        acc.push(pool[i]); rec(i+1, acc); acc.pop();
+        if (capped) return;
+      }
+    };
+    rec(0, []);
+    if (best){
+      selected = best.slice().sort((a,b)=>pool.indexOf(a)-pool.indexOf(b));
+      altIndex = 0; render();
+      return {n, capped, short: n < Math.min(MAXSEL, pool.length)};
+    }
+  }
+  return {n:0};
+}
+
+/* ================= olaylar ================= */
+document.getElementById("btnAuto").onclick = e => {
+  const label = T().auto;
+  e.target.textContent = T().calc;
+  setTimeout(() => {
+    const r = autoSuggest();
+    e.target.textContent = label;
+    const S = document.getElementById("vSub");
+    if (!r.n){
+      S.textContent = T().autoNone;
+    } else if (r.short){
+      S.textContent = T().autoShort(MAXSEL, r.n);
+    }
+    if (r.capped) S.textContent += T().autoCapped;
+  }, 20);
+};
+document.getElementById("btnClear").onclick = () => { selected = []; altIndex = 0; render(); };
+
+const limitSel = document.getElementById("limit");
+limitSel.onchange = () => {
+  MAXSEL = +limitSel.value;
+  if (selected.length > MAXSEL) selected = selected.slice(0, MAXSEL);
+  altIndex = 0; render();
+};
+
+/* ================= başlangıç ================= */
+try{
+  const L = +localStorage.getItem("dk-limit");
+  if (L >= 3 && L <= 10){ MAXSEL = L; limitSel.value = String(L); }
+  const P = JSON.parse(localStorage.getItem("dk-pool") || "[]");
+  if (Array.isArray(P)) pool = P.filter(c => BY[c]);
+  const S = JSON.parse(localStorage.getItem("dk-sel") || "[]");
+  if (Array.isArray(S)) selected = S.filter(c => pool.includes(c)).slice(0, MAXSEL);
+}catch(e){}
+
+function embeddedLabel(){ return T().chipEmb(buildDateLabel()); }
+
+function applyStatic(){
+  const S = T(), set = (id,v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
+  document.documentElement.lang = LANG;
+  set("lblLimit", S.limit); set("btnClear", S.clear); set("btnAuto", S.auto);
+  set("lblPool", S.poolTitle); set("poolHead", S.poolHead);
+  set("lblGrid", S.gridTitle);
+  set("lblAlt", S.altTitle); set("hintAlt", S.altHint);
+  set("lblSec", S.secTitle); set("btnCrn", S.copyCrn);
+  set("lblMtx", S.mtxTitle); set("hintMtx", S.mtxHint);
+  set("lgOk", S.lgOk); set("lgBad", S.lgBad);
+  document.getElementById("q").placeholder = S.searchPh;
+  document.getElementById("srcChip").title = S.chipTitle;
+  document.querySelectorAll("#langsw button").forEach(btn =>
+    btn.classList.toggle("on", btn.dataset.lang === LANG));
+}
+function setLang(l){
+  if (l === LANG) return;
+  LANG = l;
+  try{ localStorage.setItem("dk-lang", l); }catch(e){}
+  applyStatic(); refreshBrand(); rebuildSubjects(); render(); repaintChip();
+}
+document.getElementById("langsw").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-lang]");
+  if (btn) setLang(btn.dataset.lang);
+});
+function refreshBrand(){
+  document.getElementById("brandSub").textContent = T().tagline(DATA.length);
+}
+applyStatic();
+refreshBrand();
+render();
+document.getElementById("srcTxt").textContent = embeddedLabel();
+
+/* ================= canlı veri: dene, olmazsa gömülüye düş =================
+   Sıra:
+   1) ./data.json      — kendi sitenin yanındaki dosya (kendi güncelleme işin buraya yazabilir)
+   2) SUchedule deposundaki güncel data-vXX.min.json (sürümü GitHub API ile bulur)
+   Hiçbiri olmazsa sayfa zaten gömülü veriyle açılmış durumda kalır. */
+const SELF_SRC   = new URL("data.json", location.href).href;
+const GH_REPO    = "mustafacani/suchedule";
+const GH_API     = `https://api.github.com/repos/${GH_REPO}/contents/`;
+const GH_FALLBACK= `https://raw.githubusercontent.com/${GH_REPO}/master/data-v93.min.json`;
+const CACHE_KEY  = "dk-data-cache";
+const MAX_AGE_MS = 12 * 60 * 60 * 1000;
+
+let chipInfo = {state:"embedded", key:"emb", when:""};
+function setChip(state, text, title){
+  const chip = document.getElementById("srcChip");
+  chip.className = "srcchip " + state;
+  document.getElementById("srcTxt").textContent = text;
+  if (title) chip.title = title;
+}
+/* rozeti içinde bulunduğu duruma göre yeniden çiz (dil değişince) */
+function repaintChip(){
+  const S = T();
+  if (chipInfo.key === "loading") setChip("loading", S.chipLoading, S.chipTitle);
+  else if (chipInfo.key === "self") setChip("live", S.chipSelf, S.chipLiveTitle(chipInfo.when));
+  else if (chipInfo.key === "live") setChip("live", chipInfo.label, S.chipLiveTitle(chipInfo.when));
+  else setChip("embedded", embeddedLabel(), S.chipEmbTitle);
+}
+async function getJSON(url, ms=8000){
+  const ctrl = new AbortController();
+  const t = setTimeout(()=>ctrl.abort(), ms);
+  try{
+    const r = await fetch(url, {signal:ctrl.signal, cache:"no-store"});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return await r.json();
+  } finally { clearTimeout(t); }
+}
+function applyData(list, label, stamp){
+  DATA = list;
+  BY = Object.fromEntries(DATA.map(c => [c.code, c]));
+  _opts.clear(); _pair.clear();
+  pool = pool.filter(c => BY[c]);
+  selected = selected.filter(c => pool.includes(c));
+  altIndex = 0;
+  rebuildSubjects(); refreshBrand(); render();
+  const when = stamp ? new Date(stamp).toLocaleDateString(T().locale) : "";
+  chipInfo = (label === T().chipSelf) ? {key:"self", when} : {key:"live", label, when};
+  setChip("live", label, T().chipLiveTitle(when));
+}
+
+async function loadLive(force){
+  // önbellek
+  if (!force) try{
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+    if (c && Date.now() - c.t < MAX_AGE_MS){
+      const list = normalize(c.d);
+      if (sane(list)){ applyData(list, c.label === "__SELF__" ? T().chipSelf : c.label, c.t); return; }
+    }
+  }catch(e){}
+
+  chipInfo = {key:"loading"};
+  setChip("loading", T().chipLoading, T().chipTitle);
+
+  // 1) kendi sitendeki data.json
+  try{
+    const j = await getJSON(SELF_SRC, 4000);
+    const list = normalize(j);
+    if (sane(list)){
+      applyData(list, T().chipSelf, Date.now());
+      try{ localStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), d:j, label:"__SELF__"})); }catch(e){}
+      return;
+    }
+  }catch(e){}
+
+  // 2) SUchedule — önce güncel dosya adını bul, bulamazsan bilinen sürümü dene
+  let url = GH_FALLBACK, label = "SUchedule";
+  try{
+    const files = await getJSON(GH_API, 4000);
+    const cand = files
+      .filter(f => /^data-v\d+\.min\.json$/.test(f.name))
+      .sort((a,b) => (+b.name.match(/\d+/)[0]) - (+a.name.match(/\d+/)[0]))[0];
+    if (cand){ url = cand.download_url; label = "SUchedule · " + cand.name.match(/v\d+/)[0]; }
+  }catch(e){}
+  try{
+    const j = await getJSON(url, 6000);
+    const list = normalize(j);
+    if (sane(list)){
+      applyData(list, label, Date.now());
+      try{ localStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), d:j, label})); }catch(e){}
+      return;
+    }
+  }catch(e){}
+
+  chipInfo = {key:"emb"};
+  setChip("embedded", embeddedLabel(), T().chipEmbTitle);
+}
+
+document.getElementById("srcChip").onclick = () => {
+  try{ localStorage.removeItem(CACHE_KEY); }catch(e){}
+  loadLive(true);
+};
+loadLive(false);
+</script>
+</body></html>
