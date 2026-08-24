@@ -13,6 +13,29 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
 
 - Sabancı kataloğundaki **472 dersin tamamı** (Fall 2026-2027) içinde arama, aday havuzu oluşturma
 - **Ön koşul** ve **kontenjan** bilgisi ders kartlarında görünür
+- **Bölüm seçimi** — 12 bölüm ve 22 giriş dönemi için müfredat yüklenir; dersler
+  `Zorunlu / Core / Area / Üniversite / Free` olarak etiketlenir
+- Bu dönem seçtiklerinin **kategori dağılımı** (kaç zorunlu / core / area / üniversite /
+  free) ve **toplam kredisi** en üstte özetlenir
+- Aramada kategoriye göre süzme (ör. "bana uygun tüm area elective'ler")
+- **Hoca kısıtı** — birden fazla hocayla açılan derslerde "bu dersi X'ten alayım"
+  dersin; çözücü yalnız o hocanın section'larını dener
+- **Kayıtlı planlar** — Plan A / Plan B diye kaydedip aralarında geçiş yaparsın;
+  havuz, seçim, sabitlenen section'lar ve tercihler plana dahildir
+- **Paylaşılabilir bağlantı** — planını tek tıkla linke çevirirsin; havuz, seçim,
+  sabitlenen section'lar ve tercihler linkte taşınır. Telefonuna at, arkadaşına gönder
+- **Duvar kâğıdı** — programını telefon duvar kâğıdı olarak indirirsin: gün gün
+  kartlar (**Ajanda**) ya da haftalık **Tablo** biçimi; ders kodu, saat aralığı ve
+  derslik; 8 yumuşak arka plan rengi, 3 telefon boyutu, saat ve bildirimler için
+  üstte boşluk
+- **Yazdır** — sitenin kendi hazırladığı temiz bir çıktı sayfası: haftalık tablo,
+  ders/CRN/saat/derslik/hoca listesi ve kopyalanabilir CRN satırı
+- **Hoca adları** ders kartlarında ve tablo ipuçlarında görünür
+- **Seviye filtresi** — 100 / 200 / 300 / 400 / 500+ ile 472 dersi hızla daraltırsın
+- **Zaman tercihleri** — "10:40'tan önce ders olmasın", "17:30'dan sonra bitmesin",
+  "Cuma boş kalsın" dersin; çözücü bunlara uyar
+- **Section değiştirme** — herhangi bir dersi A section'ından B'ye açılır menüden
+  alırsın; sabitlediğin section korunur, geri kalanı yeniden çözülür
 - Seçtiğin dersler için **bütün section kombinasyonlarını** dener; önce çakışmayı,
   sonra boş gün / ders arası boşluk / kampüste geçen süreyi optimize eder
 - Recitation, discussion ve lab'ları dersin parçası sayar — ayrı ders olarak değil,
@@ -20,7 +43,11 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
 - Hangi ders çiftlerinin **hiçbir kombinasyonda** bir arada alınamadığını gösterir
 - Ders limitine göre en iyi kombinasyonu otomatik bulur; o sayıda çakışmasız
   program yoksa ulaşılabilir en büyük sayıya iner
+- Havuzdan ders çıkarmak tek tık: satırdaki × , aramada eklenmiş dersin üstüne
+  tıklama, ya da başlıktaki **Temizle** ile hepsi birden
 - Seçilen section'ların CRN'lerini tek tıkla kopyalar
+- **Mobil için ayrı görünüm** — telefonda haftalık tablo yerine gün gün ajanda
+  listesi; havuz paneli katlanabilir
 - **Türkçe / İngilizce** dil seçeneği (üstteki TR·EN düğmesi, tarayıcı diline göre otomatik başlar)
 - Açık/koyu tema, mobil uyumlu, çevrimdışı çalışır
 
@@ -80,6 +107,20 @@ Doğru çözüm veriyi sunucu tarafında çekmek — bannerweb-fetch tam olarak 
 GitHub Actions ile her gün BannerWeb'i tarayıp JSON olarak yayınlıyor. SUits de o
 yayını kullanıyor.
 
+## Müfredat verisi
+
+Bölüm seçimi [SUrriculum](https://beficent.github.io/surriculum/) projesinin
+yayınladığı `courses/<giriş-dönemi>/<bölüm>.jsonl` dosyalarını kullanır. Bunlar
+ders programında değil müfredatta bulunan bilgiyi taşır: her dersin o bölüm için
+hangi kategoriye saydığı. Dosya ilk seçimde indirilir ve tarayıcıda 7 gün saklanır.
+
+**En güncel giriş döneminin (202601) müfredatı sayfaya gömülüdür** — 12 bölümün
+tamamı için, ~16 KB. Yani bölüm seçimi internet olmadan da, dosyayı doğrudan
+tarayıcıda açtığında da çalışır. Farklı bir giriş dönemi seçersen SUits canlı
+veriyi çeker; ulaşamazsa gömülü kopyaya döner ve bunu söyler.
+
+Desteklenen bölümler: BIO, CS, DSA, ECON, EE, IE, MAN, MAT, ME, PSIR, PSY, VACD.
+
 ## Veriyi güncelleme
 
 Gömülü kopyayı tazelemek için `index.html` içindeki `const RAW=` satırını yeni
@@ -91,8 +132,8 @@ kopyaya tercih eder, `index.html`'e hiç dokunmana gerek kalmaz.
 - Ders section'ı ile recitation grubunun aynı harfle eşleşmesi kuralı
   (A dersi → A recitation) şu an **kapalı** — her derste geçerli olmadığı için.
   `index.html` içindeki `ENFORCE_GROUP_LETTERS` değerini `true` yapmak geri açar.
-- Ön koşul (prerequisite) bilgisi bu veride yok.
-- Kontenjan/doluluk bilgisi yok — sadece saat çakışması hesaplanıyor.
+- Ön koşul listesi kaynakta "şunlardan biri" anlamında tutuluyor (EE 303 →
+  EE 202 **veya** EL 202). SUits de öyle yorumluyor; kesin durumu SUIS'ten teyit et.
 - Kayıt öncesi CRN'leri SUIS'ten teyit et.
 - Ön koşullar BannerWeb'den geldiği gibi aktarılıyor; eş koşul (corequisite) alanı
   kaynakta tutarsız olduğu için kullanılmıyor.
@@ -106,10 +147,13 @@ projesinden geliyor; o proje AGPL-3.0 lisanslı ve sahibi verinin bu koşulla
 kullanılmasını istedi. SUits de aynı lisansı benimsiyor: kaynak kodu herkese açık,
 projeyi alıp değiştiren de kaynağını açık tutmak zorunda.
 
-Yedek veri kaynağı [SUchedule](https://github.com/mustafacani/suchedule) (MIT).
+Müfredat verisi [SUrriculum](https://github.com/beficent/surriculum) (GPL-3.0),
+yedek ders verisi [SUchedule](https://github.com/mustafacani/suchedule) (MIT).
+AGPL-3.0, GPL-3.0 ile uyumludur.
 
 ## Teşekkür
 
-[omerrifat/bannerweb-fetch](https://github.com/omerrifat/bannerweb-fetch) ve
+[omerrifat/bannerweb-fetch](https://github.com/omerrifat/bannerweb-fetch),
+[beficent/surriculum](https://github.com/beficent/surriculum) ve
 [mustafacani/suchedule](https://github.com/mustafacani/suchedule) — bu araç
 onların topladığı veri olmadan çalışmazdı.
