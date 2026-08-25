@@ -1198,18 +1198,27 @@ function score(mask){
 const cmpM = (a,b) => a.days-b.days || a.gaps-b.gaps || a.span-b.span || a.early-b.early;
 
 const LEAF_CAP  = 120000;
+const NODE_CAP  = 3000000;      /* tek geçişte gezilecek düğüm sınırı */
 const MAX_CONF  = 24;   /* çakışma bütçesinde en fazla bu kadar yukarı çıkılır */
 const SOLVE_BUDGET_MS = 4000;   /* tüm bütçe turları için üst süre sınırı */
 
 /* Tek geçiş: yalnızca çakışması <= maxConf olan dizilimleri arar.
    Bütçe baştan belli olduğu için budama ilk daldan itibaren çalışır;
-   maxConf=0 geçişi herhangi bir çakışmada anında geri döner. */
-function solvePass(oc, lists, maxConf){
+   maxConf=0 geçişi herhangi bir çakışmada anında geri döner.
+
+   Sınır YAPRAK değil DÜĞÜM sayısına konur. Yalnız yaprak saymak, budamanın
+   her dalı yaprağa varmadan kestiği durumlarda hiç devreye girmiyordu: 8 ağır
+   ders + dar saat aralığında çakışmasız dizilim yok, dolayısıyla yaprak da yok,
+   sayaç artmıyor ve arama pratikte hiç bitmiyordu. Süre sınırı da geçişler
+   ARASINDA değil, aramanın içinde denetleniyor. */
+function solvePass(oc, lists, maxConf, deadline){
   const count = new Map();
-  let conf = 0, leaves = 0, capped = false;
+  let conf = 0, leaves = 0, nodes = 0, capped = false;
   const results = [];
   const walk = (i, picks) => {
     if (capped || conf > maxConf) return;
+    if (++nodes > NODE_CAP){ capped = true; return; }
+    if ((nodes & 8191) === 0 && Date.now() > deadline){ capped = true; return; }
     if (i === lists.length){
       if (++leaves > LEAF_CAP){ capped = true; return; }
       if (results.length < 300){
@@ -1220,6 +1229,13 @@ function solvePass(oc, lists, maxConf){
       return;
     }
     for (const opt of lists[i]){
+      /* çakışmasız turda (maxConf=0) çakışan seçeneği hiç açma: sayaçlara
+         dokunmadan ve düğüm harcamadan geç. Bu tur en sık çalışan tur. */
+      if (maxConf === 0){
+        let bad = false;
+        for (const k of opt.mask) if (count.has(k)){ bad = true; break; }
+        if (bad) continue;
+      }
       for (const k of opt.mask){
         const n = (count.get(k)||0) + 1;
         count.set(k, n);
@@ -1254,7 +1270,7 @@ function solve(codes){
   const deadline = Date.now() + SOLVE_BUDGET_MS;
   for (let maxConf = 0; maxConf <= MAX_CONF; maxConf++){
     if (maxConf && Date.now() > deadline){ capped = true; break; }
-    const pass = solvePass(oc, lists, maxConf);
+    const pass = solvePass(oc, lists, maxConf, deadline);
     if (pass.results.length){
       results = pass.results;
       /* bu seviyede sonuç bulundu; arama yalnız bu seviyede kısaldıysa
@@ -1267,7 +1283,8 @@ function solve(codes){
   /* hiçbir bütçe turu sonuç veremediyse (süre/yaprak sınırı) sınırsız bütçeyle
      tek tur: kullanıcı boş ekran yerine en azından bir dizilim görür */
   if (!results.length){
-    results = solvePass(oc, lists, Infinity).results;
+    /* maxConf=Infinity: budama yok, her dal yaprağa varır, hızla döner */
+    results = solvePass(oc, lists, Infinity, Date.now() + SOLVE_BUDGET_MS).results;
     capped = true;
   }
   if (!results.length) return null;
@@ -1289,6 +1306,7 @@ function solve(codes){
    için yaprak ve süre bütçesi var: bütçe dolunca o ana kadarki en iyi
    dizilim döner, arama asla kilitlenmez. */
 const CF_LEAF_CAP = 40000;
+const CF_NODE_CAP = 1500000;     // düğüm sınırı: budama yaprağa hiç varmasa da arama biter
 let CF_DEADLINE = Infinity;      // autoSuggest bunu her çağrıda kurar
 function solveCF(codes){
   const order = codes.map((c,i)=>i).sort((x,y)=>allowedOpts(codes[x]).length - allowedOpts(codes[y]).length);
@@ -1296,12 +1314,15 @@ function solveCF(codes){
   const lists = oc.map(allowedOpts);
   if (lists.some(l => !l.length)) return null;
   const mask = new Set();
-  let best = null, leaves = 0, stop = false;
+  let best = null, leaves = 0, nodes = 0, stop = false;
   const walk = (i, picks) => {
     if (stop) return;
+    /* sınır düğüm sayısında: çakışma budaması her dalı yaprağa varmadan
+       keserse yaprak sayacı hiç artmıyor ve arama bitmiyordu */
+    if (++nodes > CF_NODE_CAP){ stop = true; return; }
+    if ((nodes & 8191) === 0 && Date.now() > CF_DEADLINE){ stop = true; return; }
     if (i === lists.length){
       if (++leaves > CF_LEAF_CAP){ stop = true; return; }
-      if ((leaves & 511) === 0 && Date.now() > CF_DEADLINE){ stop = true; return; }
       const m = score(mask);
       if (!best || cmpM(m, best.m) < 0)
         best = {codes:oc.slice(), picks:picks.slice(), mask:new Set(mask), conflicts:new Set(), c:0, m};
