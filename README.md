@@ -171,12 +171,14 @@ kullanılmasını istedi. SUits de aynı lisansı benimsiyor: kaynak kodu herkes
 projeyi alıp değiştiren de kaynağını açık tutmak zorunda.
 
 Müfredat verisi [SUrriculum](https://github.com/beficent/surriculum) (GPL-3.0),
-yedek ders verisi [SUchedule](https://github.com/mustafacani/suchedule) (MIT).
-AGPL-3.0, GPL-3.0 ile uyumludur.
+yedek ders verisi SUchedule (MIT, © Adnan Burak Ayaz) —
+[özgün depo](https://github.com/aburakayaz/suchedule), verinin güncel tutulduğu
+[çatal](https://github.com/mustafacani/suchedule). AGPL-3.0, GPL-3.0 ile uyumludur.
 
 ## Teşekkür
 
 [omerrifat/bannerweb-fetch](https://github.com/omerrifat/bannerweb-fetch),
-[beficent/surriculum](https://github.com/beficent/surriculum) ve
-[mustafacani/suchedule](https://github.com/mustafacani/suchedule) — bu araç
-onların topladığı veri olmadan çalışmazdı.
+[beficent/surriculum](https://github.com/beficent/surriculum),
+[aburakayaz/suchedule](https://github.com/aburakayaz/suchedule) (SUchedule'ın
+özgün hâli) ve [mustafacani/suchedule](https://github.com/mustafacani/suchedule)
+(veriyi güncel tutan çatal) — bu araç onların topladığı veri olmadan çalışmazdı.
