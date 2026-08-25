@@ -1009,12 +1009,12 @@ const STR = {
     prefTitle:"Preferences", prefFrom:"start", prefTo:"end", prefOff:"keep free",
     prefAny:"any", prefReset:"reset",
     offFailTip:"This day cannot be kept free — reason below",
-    offFailOther:(day,list)=>`${day} cannot be kept free: with your time, instructor and pinned-section constraints, no section is left for ${list}.`,
-    offFailDay:(day,list)=>`${day} cannot be kept free: ${list} is only offered on this day.`,
+    offFailOther:(day,list)=>`${day} cannot be kept free — ${list}: no section left once your time, instructor and pinned-section constraints are applied.`,
+    offFailDay:(day,list)=>`${day} cannot be kept free — ${list}: no section on any other day.`,
     offFailCombo:(day)=>`${day} cannot be kept free: each course can avoid it on its own, but not all of them together without an overlap.`,
     offAlt:(days)=>`Days you can keep free instead: ${days}.`,
     offAltNone:"With this set of courses no other day can be kept fully free either.",
-    offFailWith:(kept,day,list)=>`${kept} and ${day} cannot both be kept free: ${list} is only offered on those days.`,
+    offFailWith:(kept,day,list)=>`${kept} and ${day} cannot both be kept free — ${list}: no section outside those days.`,
     offFailWithCombo:(kept,day)=>`${kept} and ${day} cannot both be kept free: each course can manage on its own, but not all of them together without an overlap.`,
     offKept:(kept)=>`${kept} is being kept free.`,
     winFail:(a,b,list)=>`The ${a}–${b} window cannot be applied to: ${list}. Those courses spill outside it; the rest stay inside.`,
@@ -1076,15 +1076,24 @@ const norm = s => s.toLocaleLowerCase("tr")
 
 /* ================= section kombinasyonları (tembel) ================= */
 const _opts = new Map();
+/* Katalogda saati girilmemiş (TBA) section'lar var — ör. MATH 101'in "X" ders
+   section'ı. Hiçbir saati doldurmadıkları için çözücü onları bedava sanıp tercih
+   ediyor, program da olduğundan az saatli görünüyordu (7 derste 24 yerine 21).
+   Aynı tür içinde saati belli section varsa TBA olanları eleriz; tamamı TBA ise
+   (tez, staj gibi) liste olduğu gibi kalır. */
+function usableSections(cls){
+  const timed = cls.sections.filter(s => s.mt && s.mt.length);
+  return timed.length ? timed : cls.sections;
+}
 function buildOptions(course, enforceLetters){
-  const lecGroups = course.classes[0].sections.map(s => s.group);
+  const lecGroups = usableSections(course.classes[0]).map(s => s.group);
   const lettered = ENFORCE_GROUP_LETTERS && enforceLetters && lecGroups.some(g => /^[A-Za-z]+$/.test(g));
   let opts = [{picks:[], mask:new Set()}];
   for (const cls of course.classes){
     const next = [];
     for (const base of opts){
       const lecG = base.picks.length ? base.picks[0].sec.group : null;
-      for (const sec of cls.sections){
+      for (const sec of usableSections(cls)){
         // ders section'ı harfliyse alt grup da aynı harfle başlamalı
         if (lecG !== null && lettered && /^[A-Za-z]+$/.test(lecG) &&
             !norm(sec.group).startsWith(norm(lecG))) continue;
@@ -1109,7 +1118,7 @@ function optsOf(code){
   let o = buildOptions(c, true);
   if (!o.length) o = buildOptions(c, false);        // harf kuralı her şeyi elediyse gevşet
   if (!o.length){                                    // ders kendi içinde çakışıyor: yine de göster
-    const picks = c.classes.map(cls => ({cls, sec: cls.sections[0]}));
+    const picks = c.classes.map(cls => ({cls, sec: usableSections(cls)[0]}));
     const mask = new Set();
     picks.forEach(({sec}) => sec.mt.forEach(m => { for(let k=0;k<m.du;k++) mask.add(m.d*NSLOT+m.s+k); }));
     o = [{picks, mask, selfClash:true}];
@@ -1977,7 +1986,8 @@ function renderSections(sol){
     const rows = sol.picks[i].picks.map(({cls,sec}) => {
       crns.push(sec.crn);
       const place = [...new Set(sec.mt.map(m=>m.p).filter(Boolean))].join(", ");
-      const many = cls.sections.length > 1;
+      const pickable = usableSections(cls);       // açılır menü de çözücüyle aynı listeyi göstersin
+      const many = pickable.length > 1;
       const label = s => {
         const t = s.mt.map(m => `${T().daysS[m.d]} ${rangeLabel(m.s,m.du)}`).join(" · ") || "TBA";
         const pl = [...new Set(s.mt.map(m=>m.p).filter(Boolean))].join(", ");
@@ -1985,7 +1995,7 @@ function renderSections(sol){
       };
       const picker = many
         ? `<select class="secsel" data-code="${code}" data-type="${cls.type}">` +
-            cls.sections.map(s =>
+            pickable.map(s =>
               `<option value="${s.crn}"${s.crn===sec.crn?" selected":""}>${label(s)}</option>`).join("") +
           `</select>`
         : `<span class="pl">${label(sec)}</span>`;
