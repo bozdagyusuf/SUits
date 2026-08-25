@@ -869,9 +869,9 @@ const SEL_HI = 10, CRED_HI = 40;
 const selCred = () => credSum(selected);
 const inRange = () => selected.length >= MINSEL && selected.length <= MAXSEL &&
                       selCred() >= MINCR && selCred() <= MAXCR;
-/* Ders section'ı harfliyse (A, B) recitation grubunun da aynı harfle başlaması kuralı.
-   Bu kural her derste geçerli değil — şimdilik kapalı. true yapmak yeniden açar. */
-const ENFORCE_GROUP_LETTERS = false;
+/* Harf kuralının ana anahtarı. Hangi derslerde uygulanacağı aşağıdaki
+   LETTER_SUBJECTS listesine ve verinin tutarlılığına bakılarak belirlenir. */
+const ENFORCE_GROUP_LETTERS = true;
 const BUILD_ISO = "2026-08-23";
 
 /* ================= dil ================= */
@@ -1093,9 +1093,34 @@ function usableSections(cls){
   const timed = cls.sections.filter(s => s.mt && s.mt.length);
   return timed.length ? timed : cls.sections;
 }
+/* Ders section'ı ile recitation/discussion grubunun aynı harfte olması kuralı.
+   Bu kural katalogda her derste geçerli DEĞİL: IF 100'ün 3 ders section'ı var ama
+   recitation harfleri A'dan N'ye gidiyor, NS 101'in A-H ders section'larının
+   yalnız A-D recitation'ı var. Bu yüzden kural ders bazında açılır:
+   1) dersin kodu LETTER_SUBJECTS listesinde olacak,
+   2) veri iki yönlü tutarlı olacak — her alt grup bir ders harfine ait olacak ve
+      her ders harfinin en az bir alt grubu olacak.
+   İkinci koşul, listedeki bir ders ileride farklı adlandırılırsa kuralın sessizce
+   yanlış eleme yapmasını engelliyor. */
+const LETTER_SUBJECTS = ["SPS", "ECON", "FIN"];
+const groupLetter = g => (norm(String(g||"")).match(/^[a-z]+/) || [""])[0];
+function letterRuleApplies(course){
+  if (!course || !course.classes || !ENFORCE_GROUP_LETTERS) return false;
+  if (!LETTER_SUBJECTS.includes(course.code.split(" ")[0])) return false;
+  if (course.classes.length < 2) return false;
+  const lec = usableSections(course.classes[0]).map(s => groupLetter(s.group));
+  if (!lec.length || lec.some(x => !x)) return false;
+  const L = [...new Set(lec)];
+  for (let i = 1; i < course.classes.length; i++){
+    const subs = usableSections(course.classes[i]).map(s => groupLetter(s.group));
+    if (!subs.length || subs.some(x => !x)) return false;
+    if (!subs.every(x => L.includes(x))) return false;   // her alt grup bir ders harfine ait mi
+    if (!L.every(x => subs.includes(x))) return false;   // her ders harfinin alt grubu var mı
+  }
+  return true;
+}
 function buildOptions(course, enforceLetters){
-  const lecGroups = usableSections(course.classes[0]).map(s => s.group);
-  const lettered = ENFORCE_GROUP_LETTERS && enforceLetters && lecGroups.some(g => /^[A-Za-z]+$/.test(g));
+  const lettered = enforceLetters && letterRuleApplies(course);
   let opts = [{picks:[], mask:new Set()}];
   for (const cls of course.classes){
     const next = [];
@@ -1123,6 +1148,7 @@ function buildOptions(course, enforceLetters){
 function optsOf(code){
   if (_opts.has(code)) return _opts.get(code);
   const c = BY[code];
+  if (!c) return [];                                 // veri değişiminde bilinmeyen kod gelirse patlama
   let o = buildOptions(c, true);
   if (!o.length) o = buildOptions(c, false);        // harf kuralı her şeyi elediyse gevşet
   if (!o.length){                                    // ders kendi içinde çakışıyor: yine de göster

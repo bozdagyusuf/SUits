@@ -27,22 +27,42 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
 - **Duvar kâğıdı** — programını telefon duvar kâğıdı olarak indirirsin: gün gün
   kartlar (**Ajanda**) ya da haftalık **Tablo** biçimi; ders kodu, saat aralığı ve
   derslik; 8 yumuşak arka plan rengi, 3 telefon boyutu, saat ve bildirimler için
-  üstte boşluk
+  üstte boşluk. Bölüm seçiliyse ders kategorisi (Zorunlu / Core / Area / Üniversite /
+  Free) de yazılabilir
 - **Yazdır** — sitenin kendi hazırladığı temiz bir çıktı sayfası: haftalık tablo,
   ders/CRN/saat/derslik/hoca listesi ve kopyalanabilir CRN satırı
 - **Hoca adları** ders kartlarında ve tablo ipuçlarında görünür
 - **Seviye filtresi** — 100 / 200 / 300 / 400 / 500+ ile 472 dersi hızla daraltırsın
 - **Zaman tercihleri** — "10:40'tan önce ders olmasın", "17:30'dan sonra bitmesin",
   "Cuma boş kalsın" dersin; çözücü bunlara uyar
+- İstediğin gün **boş kalamıyorsa sessizce yok sayılmaz**: gün kırmızıya döner ve
+  nedeni yazar, altına da bunun yerine hangi günlerin boş yapılabileceğini listeler.
+  Neden dört ayrı durumu ayırt eder: dersin her section'ında o gün var; sabitlediğin
+  section o güne düşüyor; seçtiğin hoca yalnız o gün ders veriyor; ya da dersler tek
+  tek olur ama birlikte yerleşmez
+- Birden çok gün istediğinde **tutulabilenler tutulur**: "Pzt + Sal" birlikte olmuyorsa
+  Pazartesi gerçekten boş kalır, yalnız Salı elenir ve ikisinin neden birlikte
+  olmadığı yazılır
+- **Saat aralığı** da aynı şekilde: aralığa hiç sığmayan dersler adıyla listelenir,
+  geri kalan dersler aralıkta tutulur ve seçtiğin ders setinin tamamının sığdığı
+  en dar aralık önerilir
 - **Section değiştirme** — herhangi bir dersi A section'ından B'ye açılır menüden
   alırsın; sabitlediğin section korunur, geri kalanı yeniden çözülür
 - Seçtiğin dersler için **bütün section kombinasyonlarını** dener; önce çakışmayı,
-  sonra boş gün / ders arası boşluk / kampüste geçen süreyi optimize eder
+  sonra boş gün / ders arası boşluk / kampüste geçen süreyi optimize eder.
+  Arama çakışma bütçesini sıfırdan başlatıp artırır, yani çakışmasız bir dizilim
+  varsa yaprak sınırına takılmadan bulunur
+- **Saati girilmemiş (TBA) section'lar** programa sokulmaz: aynı türde saati belli
+  section varsa TBA olan elenir. Yoksa çözücü hiçbir saati doldurmadıkları için
+  onları tercih ediyor, program olduğundan az saatli görünüyordu
 - Recitation, discussion ve lab'ları dersin parçası sayar — ayrı ders olarak değil,
   ama programda ve çakışma hesabında gösterir
 - Hangi ders çiftlerinin **hiçbir kombinasyonda** bir arada alınamadığını gösterir
-- Ders limitine göre en iyi kombinasyonu otomatik bulur; o sayıda çakışmasız
-  program yoksa ulaşılabilir en büyük sayıya iner
+- **Ders ve kredi aralığı** — "4 ile 6 ders, 12 ile 18 kredi" dersin. Maksimumlar
+  sert sınır (üstüne çıkacak seçim engellenir), minimumlar otomatik seçimin hedefi.
+  SU kredisi BannerWeb verisinden gelir, bölüm seçmene gerek yok
+- Otomatik seçim aralığın içinde önce en çok dersi, aynı ders sayısında en yüksek
+  krediyi hedefler; aralığa oturan çakışmasız kombinasyon yoksa bunu söyler
 - Havuzdan ders çıkarmak tek tık: satırdaki × , aramada eklenmiş dersin üstüne
   tıklama, ya da başlıktaki **Temizle** ile hepsi birden
 - Seçilen section'ların CRN'lerini tek tıkla kopyalar
@@ -129,9 +149,12 @@ kopyaya tercih eder, `index.html`'e hiç dokunmana gerek kalmaz.
 
 ## Sınırlar
 
-- Ders section'ı ile recitation grubunun aynı harfle eşleşmesi kuralı
-  (A dersi → A recitation) şu an **kapalı** — her derste geçerli olmadığı için.
-  `index.html` içindeki `ENFORCE_GROUP_LETTERS` değerini `true` yapmak geri açar.
+- Ders section'ı ile recitation/discussion grubunun **aynı harfte olması** kuralı
+  yalnız `LETTER_SUBJECTS` listesindeki derslerde uygulanır (şu an SPS, ECON, FIN).
+  Kural her derste geçerli değil: IF 100'ün 3 ders section'ı varken recitation
+  harfleri A'dan N'ye gidiyor, NS 101'in A-H section'larının yalnız A-D recitation'ı
+  var. Listeye ders eklense bile veri iki yönlü tutarlı değilse kural o derste
+  kendiliğinden devre dışı kalır.
 - Ön koşul listesi kaynakta "şunlardan biri" anlamında tutuluyor (EE 303 →
   EE 202 **veya** EL 202). SUits de öyle yorumluyor; kesin durumu SUIS'ten teyit et.
 - Kayıt öncesi CRN'leri SUIS'ten teyit et.
