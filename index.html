@@ -921,9 +921,13 @@ const STR = {
     prefTitle:"Tercihler", prefFrom:"başlangıç", prefTo:"bitiş", prefOff:"boş kalsın",
     prefAny:"fark etmez", prefReset:"sıfırla",
     offFailTip:"Bu gün boş kalamıyor — nedeni aşağıda",
-    offFailDay:(day,list)=>`${day} boş kalamıyor: ${list} yalnız bu gün açılıyor.`,
-    offFailOther:(day,list)=>`${day} boş kalamıyor: ${list} için saat, hoca ve sabitlenen section kısıtlarınla birlikte uygun section kalmıyor.`,
-    offFailCombo:(day)=>`${day} boş kalamıyor: dersler tek tek bu günü boşaltabiliyor ama hepsi birlikte çakışmasız yerleşmiyor.`,
+    offHeadOne:(day)=>`${day} boş kalamıyor`,
+    offHeadWith:(kept,day)=>`${kept} ile ${day} aynı anda boş kalamıyor`,
+    reasonDay:(list,multi)=>`${list} her section'ında ${multi?"bu günlerden biri":"bu gün"} var.`,
+    reasonPin:(list)=>`${list} için sabitlediğin section bu güne düşüyor. Ders başka gün de açılıyor — sabitlemeyi kaldırırsan gün boşalabilir.`,
+    reasonInst:(list,multi)=>`${list} için seçtiğin hoca ${multi?"yalnız bu günlerde":"yalnız bu gün"} ders veriyor. Ders başka gün de açılıyor — hoca kısıtını kaldırırsan gün boşalabilir.`,
+    reasonOther:(list)=>`${list} için saat, hoca ve sabitlenen section kısıtlarınla birlikte uygun section kalmıyor.`,
+    reasonCombo:"dersler tek tek bu günü boşaltabiliyor ama hepsi birlikte çakışmasız yerleşmiyor.",
     offAlt:(days)=>`Bunun yerine boş yapılabilecek günler: ${days}.`,
     offAltNone:"Bu ders setiyle başka hiçbir gün de tamamen boş kalamıyor.",
     offFailWith:(kept,day,list)=>`${kept} ile ${day} aynı anda boş kalamıyor: ${list} yalnız bu günlerde açılıyor.`,
@@ -1009,9 +1013,13 @@ const STR = {
     prefTitle:"Preferences", prefFrom:"start", prefTo:"end", prefOff:"keep free",
     prefAny:"any", prefReset:"reset",
     offFailTip:"This day cannot be kept free — reason below",
-    offFailOther:(day,list)=>`${day} cannot be kept free — ${list}: no section left once your time, instructor and pinned-section constraints are applied.`,
-    offFailDay:(day,list)=>`${day} cannot be kept free — ${list}: no section on any other day.`,
-    offFailCombo:(day)=>`${day} cannot be kept free: each course can avoid it on its own, but not all of them together without an overlap.`,
+    offHeadOne:(day)=>`${day} cannot be kept free`,
+    offHeadWith:(kept,day)=>`${kept} and ${day} cannot both be kept free`,
+    reasonDay:(list,multi)=>` — ${list}: every section falls on ${multi?"one of those days":"that day"}.`,
+    reasonPin:(list)=>` — ${list}: the section you pinned falls on that day. The course is offered on other days too, so unpinning it can free the day.`,
+    reasonInst:(list,multi)=>` — ${list}: the instructor you picked only teaches on ${multi?"those days":"that day"}. The course runs on other days too, so dropping the instructor constraint can free the day.`,
+    reasonOther:(list)=>` — ${list}: no section left once your time, instructor and pinned-section constraints are applied.`,
+    reasonCombo:": each course can avoid it on its own, but not all of them together without an overlap.",
     offAlt:(days)=>`Days you can keep free instead: ${days}.`,
     offAltNone:"With this set of courses no other day can be kept fully free either.",
     offFailWith:(kept,day,list)=>`${kept} and ${day} cannot both be kept free — ${list}: no section outside those days.`,
@@ -1413,20 +1421,39 @@ function existsCF(lists, budget){
   return found ? true : (spent ? null : false);
 }
 
+/* Bir ders o günü neden boşaltamıyor?
+   "day"  → dersin o günün dışında hiç section'ı yok
+   "pin"  → sabitlediğin section o güne düşüyor, ders başka gün de açılıyor
+   "inst" → seçtiğin hoca yalnız o gün ders veriyor
+   "other"→ kısıtlar birlikte hiçbir section bırakmıyor
+   Bu ayrım olmadan "NS 101 yalnız bu gün açılıyor" gibi yanlış bir cümle
+   kuruluyordu: ders Salı da açılıyor, onu Pazartesi'ye çiviley hoca kısıtıydı. */
+function stuckReason(code, offDays, cand){
+  const opts = optsOf(code);
+  const pins = pinsOf(code), want = INSTREQ[code];
+  const avoids = o => !optOffDay(o, offDays);
+  const instOk = want ? (o => (o.picks[0].sec.inst || "").includes(want)) : () => true;
+  const pinOk  = pins ? (o => o.picks.every(({cls,sec}) => !pins[cls.type] || pins[cls.type] === sec.crn)) : () => true;
+  let why;
+  if (!opts.some(o => instOk(o) && pinOk(o)))            why = "other";
+  else if (!opts.some(avoids))                            why = "day";
+  else if (pins && !opts.some(o => avoids(o) && pinOk(o))) why = "pin";
+  else if (want && !opts.some(o => avoids(o) && instOk(o))) why = "inst";
+  else                                                    why = "other";
+  /* günün suçlu olduğu durumda hangi bileşen çiviliyor: ders mi, recitation mı */
+  const parts = (why === "day" && BY[code])
+    ? BY[code].classes.filter(cl => usableSections(cl).every(s => s.mt.some(m => m.d === cand))).map(cl => cl.type)
+    : [];
+  return {code, why, dayOnly: why === "day", parts};
+}
+
 /* Verilen günler boşken seçili dersler yerleşiyor mu, yerleşmiyorsa hangi ders yüzünden? */
 function offCheck(offDays, cand, budget){
   const stuck = [], lists = [];
-  const without = offDays.filter(d => d !== cand);
   for (const c of selected){
     const r = strictOpts(c, offDays);
     if (!r.length){
-      /* bu gün olmasa açılabiliyor muydu? cevabı uyarının dilini belirliyor */
-      const dayOnly = strictOpts(c, without).length > 0;
-      /* hangi bileşen o güne çiviliyor: ders mi, recitation mı, lab mı */
-      const parts = dayOnly
-        ? (BY[c] ? BY[c].classes.filter(cl => cl.sections.every(s => s.mt.some(m => m.d === cand))).map(cl => cl.type) : [])
-        : [];
-      stuck.push({code:c, dayOnly, parts});
+      stuck.push(stuckReason(c, offDays, cand));
     } else lists.push(r);
   }
   if (stuck.length) return {ok:false, stuck};
@@ -1513,6 +1540,8 @@ function windowReport(){
   return rep;
 }
 
+/* neden cümlesi dile göre kendi bağlayıcısıyla gelebilir (TR ": ", EN " — ") */
+const joinReason = (head, reason) => head + (/^[\s—:]/.test(reason) ? reason : ": " + reason);
 function renderPrefs(){
   const bar = document.getElementById("prefBar");
   const S = T();
@@ -1535,15 +1564,18 @@ function renderPrefs(){
       ? `${x.code} (${x.parts.map(t => S.types[t] || t).join(", ")})` : x.code;
     rep.fails.forEach(f => {
       const day = S.days[f.day];
-      const kept = f.kept.map(d => S.days[d]).join(", ");     // bu günle çakışan, tutulan günler
-      const only  = f.stuck.filter(x => x.dayOnly).map(label);
-      const other = f.stuck.filter(x => !x.dayOnly).map(x => x.code);
+      const kept = f.kept.map(d => S.days[d]).join(", ");     // bu günle birlikte tutulamayan günler
+      const multi = !!kept;
+      const head = multi ? S.offHeadWith(kept, day) : S.offHeadOne(day);
+      const by = w => f.stuck.filter(x => x.why === w);
       if (!f.stuck.length){
-        lines.push(kept ? S.offFailWithCombo(kept, day) : S.offFailCombo(day));
+        lines.push(joinReason(head, S.reasonCombo));
       } else {
-        if (only.length)  lines.push(kept ? S.offFailWith(kept, day, only.join(", "))
-                                          : S.offFailDay(day, only.join(", ")));
-        if (other.length) lines.push(S.offFailOther(day, other.join(", ")));
+        const day1 = by("day"), pin1 = by("pin"), inst1 = by("inst"), oth1 = by("other");
+        if (day1.length)  lines.push(joinReason(head, S.reasonDay(day1.map(label).join(", "), multi)));
+        if (pin1.length)  lines.push(joinReason(head, S.reasonPin(pin1.map(x=>x.code).join(", "))));
+        if (inst1.length) lines.push(joinReason(head, S.reasonInst(inst1.map(x=>x.code).join(", "), multi)));
+        if (oth1.length)  lines.push(joinReason(head, S.reasonOther(oth1.map(x=>x.code).join(", "))));
       }
     });
     /* "şu günler boş tutuluyor" cümlesi bir kez, en sonda */
