@@ -742,6 +742,7 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
           <div class="wprow">
             <label><input type="checkbox" id="wpRoom"> <span id="wpLblRoom"></span></label>
             <label><input type="checkbox" id="wpAccent"> <span id="wpLblAccent"></span></label>
+            <label><input type="checkbox" id="wpCat"> <span id="wpLblCat"></span></label>
           </div>
         </div>
         <div class="wprow"><button class="btn primary" id="wpSave"></button></div>
@@ -938,7 +939,7 @@ const STR = {
     wallpaper:"Duvar kâğıdı", wpTitle:"Duvar kâğıdı yap", wpColor:"Arka plan",
     clearPool:"Temizle",
     wpFormat:"Biçim", wpCards:"Ajanda", wpGrid:"Tablo",
-    wpSize:"Boyut", wpShow:"Göster", wpRoom:"Derslik", wpAccent:"Renk noktası",
+    wpSize:"Boyut", wpShow:"Göster", wpRoom:"Derslik", wpAccent:"Renk noktası", wpCat:"Kategori",
     wpSave:"PNG indir", wpEmpty:"Önce bir program oluştur",
     wpHint:"Üst kısım saat ve bildirimler için boş bırakıldı. İndirdikten sonra telefonunda arka plan olarak ayarla.",
     psTitle:"Ders Programı", psCourses:"ders", psHours:"saat/hafta",
@@ -952,6 +953,7 @@ const STR = {
     curBuilt:(m,t)=>`${m} müfredatı sayfaya gömülü ${t} sürümünden yüklendi.`,
     curHint:"Bölümünü seçersen dersler zorunlu / core / area / free olarak etiketlenir.",
     cats:{university:"Üniversite", required:"Zorunlu", core:"Core", area:"Area", free:"Free"},
+    catsShort:{university:"Üniv.", required:"Zorunlu", core:"Core", area:"Area", free:"Free"},
     catAll:"Tüm kategoriler", quota:"Otomatik seçimde en az",
     quotaHint:"Bu sayılar yalnızca üstteki \u201cEn iyi kombinasyonu bul\u201d düğmesini etkiler.",
     breakdown:"Se\u00e7tiklerin", notInCur:"m\u00fcfredat d\u0131\u015f\u0131", credits:n=>`${n} kredi`, creditWord:"kredi",
@@ -1025,7 +1027,7 @@ const STR = {
     wallpaper:"Wallpaper", wpTitle:"Make a wallpaper", wpColor:"Background",
     clearPool:"Clear",
     wpFormat:"Layout", wpCards:"Agenda", wpGrid:"Grid",
-    wpSize:"Size", wpShow:"Show", wpRoom:"Room", wpAccent:"Colour dot",
+    wpSize:"Size", wpShow:"Show", wpRoom:"Room", wpAccent:"Colour dot", wpCat:"Category",
     wpSave:"Download PNG", wpEmpty:"Build a schedule first",
     wpHint:"The top is left clear for the clock and notifications. Set the downloaded image as your wallpaper.",
     psTitle:"Class Schedule", psCourses:"courses", psHours:"h/week",
@@ -1039,6 +1041,7 @@ const STR = {
     curBuilt:(m,t)=>`${m} curriculum loaded from the built-in ${t} copy.`,
     curHint:"Pick your major and courses get tagged as required / core / area / free.",
     cats:{university:"University", required:"Required", core:"Core", area:"Area", free:"Free"},
+    catsShort:{university:"Univ.", required:"Req.", core:"Core", area:"Area", free:"Free"},
     catAll:"All categories", quota:"Auto-pick at least",
     quotaHint:"These only affect the \u201cFind the best combination\u201d button above.",
     breakdown:"Your picks", notInCur:"outside curriculum", credits:n=>`${n} credits`, creditWord:"credits",
@@ -2219,7 +2222,15 @@ const WP_SIZES = [
   {id:"1290x2796", w:1290, h:2796},
   {id:"1080x2340", w:1080, h:2340}
 ];
-let WP = {theme:"snow", size:"1170x2532", room:true, accent:true, format:"cards"};
+let WP = {theme:"snow", size:"1170x2532", room:true, accent:true, cat:true, format:"cards"};
+/* duvar kâğıdında ders kategorisi (Zorunlu / Core / Area / Üniversite / Free).
+   Yalnız bir bölüm müfredatı yüklüyse yazılır. */
+const wpCatOf = (code, short) => {
+  const c = catOf(code);
+  if (!c) return "";
+  const S = T();
+  return (short ? (S.catsShort && S.catsShort[c]) : null) || S.cats[c] || "";
+};
 
 function wpDays(sol){
   const out = [];
@@ -2317,7 +2328,16 @@ function drawWallpaper(){
 
       g.fillStyle = th.sub;
       g.font = `500 ${fTime}px ${MONO}`;
-      g.fillText(slotStart(it.s) + "–" + slotEnd(it.s + it.du - 1), x, cy + Math.round(33*scale));
+      const tline = slotStart(it.s) + "–" + slotEnd(it.s + it.du - 1);
+      g.fillText(tline, x, cy + Math.round(33*scale));
+      const kat = WP.cat ? wpCatOf(it.code) : "";
+      if (kat){
+        const tw = g.measureText(tline).width;
+        g.font = `600 ${Math.round(fTime*0.92)}px ${SANS}`;
+        g.globalAlpha = .8;
+        g.fillText(" · " + kat, x + tw, cy + Math.round(33*scale));
+        g.globalAlpha = 1;
+      }
 
       if (WP.room && it.p){
         g.textAlign = "right";
@@ -2419,10 +2439,13 @@ function drawWallpaperGrid(g, W, H, th, S){
       g.fillStyle = th.ink;
       g.font = `680 ${Math.round(23)}px ${SANS}`;
       g.fillText(it.code + (it.type ? " " + it.type : ""), x + 16, y + Math.round(30));
-      if (WP.room && it.p && h > 58){
+      const kat = WP.cat ? wpCatOf(it.code, true) : "";   // tablo sütunu dar: kısa etiket
+      const sub = [WP.room && it.p ? it.p : "", kat].filter(Boolean).join(" · ");
+      if (sub && h > 58){
         g.fillStyle = th.sub;
         g.font = `500 ${Math.round(18)}px ${SANS}`;
-        g.fillText(it.p, x + 16, y + Math.round(56));
+        /* sütunlar dar: sığmayan alt satırı kısalt, komşu güne taşmasın */
+        g.fillText(fitText(g, sub, w - 26), x + 16, y + Math.round(56));
       }
     }
   }
@@ -2435,6 +2458,13 @@ function drawWallpaperGrid(g, W, H, th, S){
   g.globalAlpha = 1;
 }
 function spaced(s){ return s.split("").join(" "); }
+/* verilen genişliğe sığmayan metni kısaltır */
+function fitText(g, text, maxW){
+  if (g.measureText(text).width <= maxW) return text;
+  let t = text;
+  while (t.length > 1 && g.measureText(t + "…").width > maxW) t = t.slice(0, -1);
+  return t + "…";
+}
 function cssVar(name){
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#888";
 }
@@ -2458,6 +2488,9 @@ function buildWpOptions(){
     `<option value="${s.id}"${s.id===WP.size?" selected":""}>${s.w} × ${s.h}</option>`).join("");
   document.getElementById("wpRoom").checked = WP.room;
   document.getElementById("wpAccent").checked = WP.accent;
+  const catBox = document.getElementById("wpCat");
+  catBox.checked = WP.cat;
+  catBox.closest("label").hidden = !CURMAP;   // müfredat yoksa yazacak kategori de yok
 }
 function downloadWallpaper(){
   const cv = document.getElementById("wpCanvas");
@@ -2688,6 +2721,7 @@ document.getElementById("wpFormat").addEventListener("click", e => {
 document.getElementById("wpSize").onchange = e => { WP.size = e.target.value; drawWallpaper(); };
 document.getElementById("wpRoom").onchange = e => { WP.room = e.target.checked; drawWallpaper(); };
 document.getElementById("wpAccent").onchange = e => { WP.accent = e.target.checked; drawWallpaper(); };
+document.getElementById("wpCat").onchange = e => { WP.cat = e.target.checked; drawWallpaper(); };
 document.getElementById("wpSave").onclick = downloadWallpaper;
 document.getElementById("btnClearPool").onclick = () => {
   if (!pool.length) return;
@@ -2797,7 +2831,7 @@ function applyStatic(){
   set("lgOk", S.lgOk); set("lgBad", S.lgBad);
   document.getElementById("srcChip").title = S.chipTitle;
   set("wpTitle", S.wpTitle); set("wpLblFormat", S.wpFormat); set("wpLblColor", S.wpColor); set("wpLblSize", S.wpSize);
-  set("wpLblShow", S.wpShow); set("wpLblRoom", S.wpRoom); set("wpLblAccent", S.wpAccent);
+  set("wpLblShow", S.wpShow); set("wpLblRoom", S.wpRoom); set("wpLblAccent", S.wpAccent); set("wpLblCat", S.wpCat);
   set("wpSave", S.wpSave); set("wpHint", S.wpHint);
   set("btnUnpinAll", S.unpinAll); set("btnClearPool", S.clearPool);
   document.getElementById("q").placeholder = S.searchPh;
