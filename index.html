@@ -68,17 +68,20 @@ header.top{
   -webkit-backdrop-filter:saturate(180%) blur(20px);
   border-bottom:1px solid var(--line);
 }
-.top-in{max-width:1300px; margin:0 auto; padding:11px 20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.top-in{max-width:1300px; margin:0 auto; padding:11px 18px; display:flex; align-items:center; gap:10px; flex-wrap:wrap}
 .brand{display:flex; align-items:baseline; gap:9px; margin-right:auto; min-width:0}
 .brand h1{font-size:20px; font-weight:700; letter-spacing:-.03em}
 .brand .sub{font-size:12px; color:var(--faint); font-weight:450; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .counter{
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; font-weight:600;
-  padding:5px 10px; border-radius:999px; background:var(--sunken); color:var(--muted);
-  font-variant-numeric:tabular-nums;
+  font-size:12.5px; font-weight:600;
+  padding:5px 9px; border-radius:999px; background:var(--sunken); color:var(--muted);
+  font-variant-numeric:tabular-nums; white-space:nowrap;
 }
 .counter.full{background:var(--accent-soft); color:var(--accent)}
 .counter.over{background:var(--bad-soft); color:var(--bad)}
+/* üst barda dört seçim daha var: buradaki düğmeler biraz daha dar dursun ki
+   başlık 1300px'lik yerleşimde tek satırda kalsın */
+.top-in .btn{padding:7px 12px}
 
 .btn{
   border:0; background:var(--sunken); color:var(--ink);
@@ -103,7 +106,14 @@ header.top{
 .srcchip .dot{width:7px; height:7px; border-radius:50%; background:var(--faint); flex:none}
 .srcchip.live .dot{background:var(--ok)}
 .srcchip.loading .dot{background:var(--warn)}
-.limitbox{display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted)}
+.limitbox{display:flex; align-items:center; gap:4px; font-size:13px; color:var(--muted)}
+.limitbox .rng{color:var(--faint); font-size:12px; margin:0 -1px}
+.limitbox .sep{width:1px; height:15px; background:var(--line); margin:0 3px}
+/* üst barda dört seçim var, dar tutulmazsa başlık ikinci satıra kaçıyor */
+.limitbox select{
+  padding:6px 5px; padding-right:18px;
+  background-position:calc(100% - 10px) 52%, calc(100% - 6px) 52%;
+}
 .limitbox select, .ctrow select, .currow select, #subj, #lvl, #cat, .instsel, .secsel{
   border:0; background:var(--sunken); color:var(--ink);
   border-radius:9px; padding:6px 9px; font-size:13px; cursor:pointer;
@@ -170,6 +180,12 @@ header.top{
 .daych{border:0; background:var(--sunken); color:var(--muted); font-size:12px; font-weight:550; padding:5px 10px; border-radius:999px}
 .daych:hover{background:var(--line2); color:var(--ink)}
 .daych.on{background:var(--accent); color:var(--accent-ink)}
+/* istenen ama tutturulamayan boş gün: mavi yerine kırmızı, nedeni altta yazar */
+.daych.bad{background:var(--bad-soft); color:var(--bad)}
+.prefwarn{
+  flex-basis:100%; margin-top:-2px; font-size:12.5px; line-height:1.55;
+  color:var(--bad); background:var(--bad-soft); border-radius:10px; padding:8px 11px;
+}
 
 /* ---------- layout ---------- */
 .cols{display:grid; grid-template-columns:330px minmax(0,1fr); gap:18px; margin-top:18px; align-items:start}
@@ -215,7 +231,8 @@ header.top{
 .currow{display:flex; gap:8px}
 .currow select{flex:1; min-width:0; font-size:13px}
 .curnote{font-size:12px; color:var(--faint); line-height:1.4; margin-top:8px}
-.poolhead{padding:12px 18px 2px; font-size:12px; color:var(--faint); font-weight:600}
+.poolhead{padding:12px 18px 2px; font-size:12px; color:var(--faint); font-weight:600;
+  display:flex; align-items:center; gap:8px; justify-content:space-between}
 .clist{max-height:min(46vh,440px); overflow-y:auto; display:flex; flex-direction:column}
 .crow{display:flex; gap:11px; padding:12px 16px; border-bottom:1px solid var(--line); cursor:pointer; align-items:flex-start}
 .crow:last-child{border-bottom:0}
@@ -610,13 +627,11 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
     <button class="srcchip embedded" id="srcChip">
       <span class="dot"></span><span id="srcTxt"></span>
     </button>
-    <span class="limitbox"><span id="lblLimit"></span>
-      <select id="limit">
-        <option>3</option><option>4</option><option>5</option><option selected>6</option>
-        <option>7</option><option>8</option><option>9</option><option>10</option>
-      </select>
+    <span class="limitbox">
+      <span id="lblLimit"></span><select id="selMin"></select><span class="rng">–</span><select id="selMax"></select>
+      <span class="sep"></span>
+      <span id="lblCred"></span><select id="crMin"></select><span class="rng">–</span><select id="crMax"></select>
     </span>
-    <span class="counter" id="counter">0 / 6</span>
     <button class="btn" id="btnClear"></button>
     <button class="btn primary" id="btnAuto"></button>
   </div>
@@ -662,7 +677,7 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
           <div class="curnote" id="curNote"></div>
         </div>
 
-        <div class="poolhead" id="poolHead" hidden></div>
+        <div class="poolhead" id="poolHead" hidden><span id="poolHeadLbl"></span><span class="counter" id="counter">0</span></div>
         <div class="clist" id="clist"></div>
       </div>
     </div>
@@ -781,8 +796,10 @@ function normalize(json){
       const code = r.subject + " " + r.code;
       if (!TERM && r.term) TERM = r.term;
       let c = map.get(code);
-      if (!c){ c = {code, name:"", pre:new Set(), cls:new Map()}; map.set(code, c); }
+      if (!c){ c = {code, name:"", pre:new Set(), cls:new Map(), cr:0}; map.set(code, c); }
       if (r.scheduleType === "Lecture" || !c.name) c.name = (r.name || "").trim();
+      /* SU kredisi: recitation satırlarında 0 görünebiliyor, dersin en büyüğünü al */
+      c.cr = Math.max(c.cr, +r.credits || 0);
       (r.prerequisites || []).forEach(p => c.pre.add(p));
       const mt = [];
       let inst = "";
@@ -804,7 +821,7 @@ function normalize(json){
       c.cls.get(ty).push({crn:String(r.crn), group: r.section || "0", inst, seats, mt});
     }
     return [...map.values()].map(c => ({
-      code: c.code, name: c.name || c.code, pre: [...c.pre].sort(),
+      code: c.code, name: c.name || c.code, pre: [...c.pre].sort(), cr: c.cr || 0,
       classes: [...c.cls.entries()]
         .sort((a,b) => (a[0]==="" ? -1 : b[0]==="" ? 1 : a[0].localeCompare(b[0])))
         .map(([type,sections]) => ({type, sections}))
@@ -842,7 +859,15 @@ let BY = Object.fromEntries(DATA.map(c => [c.code, c]));
 const NSLOT = 14;                 // 0 => 08:40 … 13 => 21:40
 
 const PALETTE = ["--c1","--c2","--c3","--c4","--c5","--c6","--c7","--c8","--c9","--c10"];
-let MAXSEL = 6;
+/* Programın hedefi: ders sayısı ve SU kredisi için alt-üst sınır.
+   Maksimumlar seçimi kısıtlar (üstüne çıkılamaz), minimumlar
+   "En iyi kombinasyonu bul" için hedeftir. */
+let MINSEL = 3,  MAXSEL = 6;
+let MINCR  = 0,  MAXCR  = 30;
+const SEL_HI = 10, CRED_HI = 40;
+const selCred = () => credSum(selected);
+const inRange = () => selected.length >= MINSEL && selected.length <= MAXSEL &&
+                      selCred() >= MINCR && selCred() <= MAXCR;
 /* Ders section'ı harfliyse (A, B) recitation grubunun da aynı harfle başlaması kuralı.
    Bu kural her derste geçerli değil — şimdilik kapalı. true yapmak yeniden açar. */
 const ENFORCE_GROUP_LETTERS = false;
@@ -852,7 +877,12 @@ const BUILD_ISO = "2026-08-23";
 const STR = {
   tr: {
     tagline:n=>`programına oturan dersler · ${n} ders`,
-    limit:"Ders limiti", clear:"Seçimi temizle", auto:"En iyi kombinasyonu bul", calc:"Hesaplanıyor…",
+    limit:"Ders", limitCred:"Kredi", courseWord:"ders",
+    clear:"Seçimi temizle", auto:"En iyi kombinasyonu bul", calc:"Hesaplanıyor…",
+    overCount:m=>`En fazla ${m} ders seçebilirsin. Üstteki aralığı büyüt.`,
+    overCred:m=>`Kredi üst sınırın ${m}. Üstteki aralığı büyüt.`,
+    rangeHint:(a,b,c,d)=>`Hedef: ${a}-${b} ders, ${c}-${d} kredi`,
+    autoNoRange:(a,b,c,d)=>`${a}-${b} ders ve ${c}-${d} kredi aralığına oturan çakışmasız bir kombinasyon yok. Aralığı genişlet ya da havuza ders ekle.`,
     poolTitle:"1 · Aday havuzu", poolEmpty:"boş", poolCount:n=>`${n} ders`,
     poolHead:"2 · Programa katılacaklar", searchPh:"Ders kodu veya adı ara…", all:"Tümü",
     noMatch:"Eşleşen ders yok.", tooMany:(a,b)=>`${a} sonuç — ilk ${b} gösteriliyor, aramayı daralt.`,
@@ -869,7 +899,7 @@ const STR = {
     okS:"Aşağıdaki section'ları seçersen hiçbir dersin saati üst üste gelmiyor.",
     badT:c=>`En iyi ihtimalle ${c} saat çakışma`,
     hardPairs:"Kaçınılmaz çakışan çift: ", noPairClash:"Tek tek uyumlu olsalar da bu dersler aynı anda çakışmasız yerleşmiyor.",
-    stats:["Ders","Saat / hafta","Boş gün","Boşluk saati","Çakışma"],
+    stats:["Ders","Kredi","Saat / hafta","Boş gün","Boşluk saati","Çakışma"],
     gridOk:"çakışmasız", gridBad:c=>`${c} saat çakışıyor (taralı hücreler)`,
     capped:"Bu ders setinde kombinasyon sayısı çok yüksek olduğu için arama kısaltıldı — daha iyi bir dizilim olabilir.",
     recommended:"Önerilen", recLower:"önerilen", option:i=>`Seçenek ${i}`,
@@ -889,6 +919,18 @@ const STR = {
     agEmpty:"Program boş.",
     prefTitle:"Tercihler", prefFrom:"başlangıç", prefTo:"bitiş", prefOff:"boş kalsın",
     prefAny:"fark etmez", prefReset:"sıfırla",
+    offFailTip:"Bu gün boş kalamıyor — nedeni aşağıda",
+    offFailDay:(day,list)=>`${day} boş kalamıyor: ${list} yalnız bu gün açılıyor.`,
+    offFailOther:(day,list)=>`${day} boş kalamıyor: ${list} için saat, hoca ve sabitlenen section kısıtlarınla birlikte uygun section kalmıyor.`,
+    offFailCombo:(day)=>`${day} boş kalamıyor: dersler tek tek bu günü boşaltabiliyor ama hepsi birlikte çakışmasız yerleşmiyor.`,
+    offAlt:(days)=>`Bunun yerine boş yapılabilecek günler: ${days}.`,
+    offAltNone:"Bu ders setiyle başka hiçbir gün de tamamen boş kalamıyor.",
+    offFailWith:(kept,day,list)=>`${kept} ile ${day} aynı anda boş kalamıyor: ${list} yalnız bu günlerde açılıyor.`,
+    offFailWithCombo:(kept,day)=>`${kept} ile ${day} aynı anda boş kalamıyor: dersler tek tek olabiliyor ama hepsi birlikte çakışmasız yerleşmiyor.`,
+    offKept:(kept)=>`${kept} boş tutuluyor.`,
+    winFail:(a,b,list)=>`${a}–${b} aralığı şu dersler için uygulanamıyor: ${list}. Bu dersler aralığın dışına taşıyor, geri kalanı aralıkta kalıyor.`,
+    winBest:(a,b)=>`Bu ders setinin tamamının sığdığı en dar aralık: ${a}–${b}.`,
+    winBestNone:"Bu ders setinin tamamının sığdığı bir aralık yok.",
     prefBlockT:"Tercihlerin bu programı imkânsız kılıyor",
     prefBlockS:"Şu dersin hiçbir section'ı koyduğun kısıtlara uymuyor:",
     instWant:"hoca", instAny:"fark etmez",
@@ -922,7 +964,12 @@ const STR = {
   },
   en: {
     tagline:n=>`courses that fit your schedule · ${n} courses`,
-    limit:"Course limit", clear:"Clear selection", auto:"Find the best combination", calc:"Working…",
+    limit:"Courses", limitCred:"Credits", courseWord:"courses",
+    clear:"Clear selection", auto:"Find the best combination", calc:"Working…",
+    overCount:m=>`You can pick at most ${m} courses. Widen the range up top.`,
+    overCred:m=>`Your credit ceiling is ${m}. Widen the range up top.`,
+    rangeHint:(a,b,c,d)=>`Target: ${a}-${b} courses, ${c}-${d} credits`,
+    autoNoRange:(a,b,c,d)=>`No conflict-free combination fits ${a}-${b} courses and ${c}-${d} credits. Widen the range or add more courses to the pool.`,
     poolTitle:"1 · Candidate pool", poolEmpty:"empty", poolCount:n=>`${n} course${n===1?"":"s"}`,
     poolHead:"2 · In your schedule", searchPh:"Search course code or name…", all:"All",
     noMatch:"No matching course.", tooMany:(a,b)=>`${a} results — showing the first ${b}, narrow your search.`,
@@ -939,7 +986,7 @@ const STR = {
     okS:"Pick the sections below and no two classes overlap.",
     badT:c=>`${c} hour${c>1?"s":""} of overlap at best`,
     hardPairs:"Unavoidable clash: ", noPairClash:"Compatible one by one, but these courses cannot all fit together.",
-    stats:["Courses","Hours / week","Free days","Gap hours","Overlap"],
+    stats:["Courses","Credits","Hours / week","Free days","Gap hours","Overlap"],
     gridOk:"no conflicts", gridBad:c=>`${c} hour${c>1?"s":""} overlap (hatched cells)`,
     capped:"This set has too many combinations, so the search was cut short — a better arrangement may exist.",
     recommended:"Recommended", recLower:"recommended", option:i=>`Option ${i}`,
@@ -959,6 +1006,18 @@ const STR = {
     agEmpty:"Nothing scheduled yet.",
     prefTitle:"Preferences", prefFrom:"start", prefTo:"end", prefOff:"keep free",
     prefAny:"any", prefReset:"reset",
+    offFailTip:"This day cannot be kept free — reason below",
+    offFailOther:(day,list)=>`${day} cannot be kept free: with your time, instructor and pinned-section constraints, no section is left for ${list}.`,
+    offFailDay:(day,list)=>`${day} cannot be kept free: ${list} is only offered on this day.`,
+    offFailCombo:(day)=>`${day} cannot be kept free: each course can avoid it on its own, but not all of them together without an overlap.`,
+    offAlt:(days)=>`Days you can keep free instead: ${days}.`,
+    offAltNone:"With this set of courses no other day can be kept fully free either.",
+    offFailWith:(kept,day,list)=>`${kept} and ${day} cannot both be kept free: ${list} is only offered on those days.`,
+    offFailWithCombo:(kept,day)=>`${kept} and ${day} cannot both be kept free: each course can manage on its own, but not all of them together without an overlap.`,
+    offKept:(kept)=>`${kept} is being kept free.`,
+    winFail:(a,b,list)=>`The ${a}–${b} window cannot be applied to: ${list}. Those courses spill outside it; the rest stay inside.`,
+    winBest:(a,b)=>`The narrowest window that fits every selected course: ${a}–${b}.`,
+    winBestNone:"No single window fits every selected course.",
     prefBlockT:"Your preferences make this schedule impossible",
     prefBlockS:"No section of this course satisfies your constraints:",
     instWant:"instructor", instAny:"any",
@@ -1092,23 +1151,22 @@ function score(mask){
 }
 const cmpM = (a,b) => a.days-b.days || a.gaps-b.gaps || a.span-b.span || a.early-b.early;
 
-const LEAF_CAP = 120000;
-function solve(codes){
-  if (!codes.length) return null;
-  // az seçenekli dersi öne al: budama daha erken devreye girer
-  const order = codes.map((c,i)=>i).sort((x,y)=>allowedOpts(codes[x]).length - allowedOpts(codes[y]).length);
-  const oc = order.map(i => codes[i]);
-  const lists = oc.map(allowedOpts);
-  if (lists.some(l => !l.length)) return null;
+const LEAF_CAP  = 120000;
+const MAX_CONF  = 24;   /* çakışma bütçesinde en fazla bu kadar yukarı çıkılır */
+const SOLVE_BUDGET_MS = 4000;   /* tüm bütçe turları için üst süre sınırı */
+
+/* Tek geçiş: yalnızca çakışması <= maxConf olan dizilimleri arar.
+   Bütçe baştan belli olduğu için budama ilk daldan itibaren çalışır;
+   maxConf=0 geçişi herhangi bir çakışmada anında geri döner. */
+function solvePass(oc, lists, maxConf){
   const count = new Map();
-  let conf = 0, bestC = Infinity, leaves = 0, capped = false;
-  let results = [];
+  let conf = 0, leaves = 0, capped = false;
+  const results = [];
   const walk = (i, picks) => {
-    if (capped || conf > bestC) return;
+    if (capped || conf > maxConf) return;
     if (i === lists.length){
       if (++leaves > LEAF_CAP){ capped = true; return; }
-      if (conf < bestC){ bestC = conf; results = []; }
-      if (conf === bestC && results.length < 300){
+      if (results.length < 300){
         const mask = new Set(), conflicts = new Set();
         for (const [k,n] of count){ mask.add(k); if (n>1) conflicts.add(k); }
         results.push({codes:oc.slice(), picks:picks.slice(), mask, conflicts, c:conf, m:score(mask)});
@@ -1116,12 +1174,10 @@ function solve(codes){
       return;
     }
     for (const opt of lists[i]){
-      let added = 0;
       for (const k of opt.mask){
         const n = (count.get(k)||0) + 1;
         count.set(k, n);
         if (n === 2) conf++;
-        added++;
       }
       picks.push(opt);
       walk(i+1, picks);
@@ -1135,7 +1191,41 @@ function solve(codes){
     }
   };
   walk(0, []);
+  return {results, capped};
+}
+
+function solve(codes){
+  if (!codes.length) return null;
+  // az seçenekli dersi öne al: budama daha erken devreye girer
+  const order = codes.map((c,i)=>i).sort((x,y)=>allowedOpts(codes[x]).length - allowedOpts(codes[y]).length);
+  const oc = order.map(i => codes[i]);
+  const lists = oc.map(allowedOpts);
+  if (lists.some(l => !l.length)) return null;
+
+  /* çakışma bütçesini 0'dan başlatıp artır: çakışmasız bir dizilim varsa
+     yaprak sınırına takılmadan önce mutlaka bulunur */
+  let results = [], capped = false;
+  const deadline = Date.now() + SOLVE_BUDGET_MS;
+  for (let maxConf = 0; maxConf <= MAX_CONF; maxConf++){
+    if (maxConf && Date.now() > deadline){ capped = true; break; }
+    const pass = solvePass(oc, lists, maxConf);
+    if (pass.results.length){
+      results = pass.results;
+      /* bu seviyede sonuç bulundu; arama yalnız bu seviyede kısaldıysa
+         "daha iyisi olabilir" uyarısı gerekmez, daha azı zaten elenmişti */
+      capped = capped && maxConf > 0;
+      break;
+    }
+    if (pass.capped) capped = true;   // bu seviye taranamadı, atlanmış olabilir
+  }
+  /* hiçbir bütçe turu sonuç veremediyse (süre/yaprak sınırı) sınırsız bütçeyle
+     tek tur: kullanıcı boş ekran yerine en azından bir dizilim görür */
+  if (!results.length){
+    results = solvePass(oc, lists, Infinity).results;
+    capped = true;
+  }
   if (!results.length) return null;
+
   results.sort((a,b) => a.c - b.c || cmpM(a.m, b.m));
   const out = [], seen = new Set();
   for (const r of results){
@@ -1148,16 +1238,24 @@ function solve(codes){
   return out;
 }
 
-/* sadece tam çakışmasız atamalar — hızlı, otomatik öneri için */
+/* sadece tam çakışmasız atamalar — hızlı, otomatik öneri için.
+   Çok section'lı derslerde çakışmasız dizilim sayısı milyonlara çıkabildiği
+   için yaprak ve süre bütçesi var: bütçe dolunca o ana kadarki en iyi
+   dizilim döner, arama asla kilitlenmez. */
+const CF_LEAF_CAP = 40000;
+let CF_DEADLINE = Infinity;      // autoSuggest bunu her çağrıda kurar
 function solveCF(codes){
   const order = codes.map((c,i)=>i).sort((x,y)=>allowedOpts(codes[x]).length - allowedOpts(codes[y]).length);
   const oc = order.map(i => codes[i]);
   const lists = oc.map(allowedOpts);
   if (lists.some(l => !l.length)) return null;
   const mask = new Set();
-  let best = null;
+  let best = null, leaves = 0, stop = false;
   const walk = (i, picks) => {
+    if (stop) return;
     if (i === lists.length){
+      if (++leaves > CF_LEAF_CAP){ stop = true; return; }
+      if ((leaves & 511) === 0 && Date.now() > CF_DEADLINE){ stop = true; return; }
       const m = score(mask);
       if (!best || cmpM(m, best.m) < 0)
         best = {codes:oc.slice(), picks:picks.slice(), mask:new Set(mask), conflicts:new Set(), c:0, m};
@@ -1170,6 +1268,7 @@ function solveCF(codes){
       for (const k of opt.mask) mask.add(k);
       picks.push(opt); walk(i+1, picks); picks.pop();
       for (const k of opt.mask) mask.delete(k);
+      if (stop) return;
     }
   };
   walk(0, []);
@@ -1212,31 +1311,195 @@ function clearPins(code){
 }
 
 const PREFS = {early:0, late:NSLOT-1, off:[]};   // en erken dilim, en geç dilim, boş kalacak günler
-function prefAllows(opt){
-  for (const k of opt.mask){
-    const d = Math.floor(k/NSLOT), s = k % NSLOT;
-    if (PREFS.off.includes(d)) return false;
-    if (s < PREFS.early || s > PREFS.late) return false;
-  }
+/* Kullanıcının istediği boş günlerin gerçekten uygulanabilen alt kümesi.
+   PREFS.off istek, OFF_EFF ise çözücünün uyduğu liste. İkisi ayrı olmazsa
+   "Pzt + Sal boş" gibi birlikte tutmayan bir istekte, tutabileceğimiz Pazartesi
+   de elden gidiyordu. render() her turda syncOffEff() ile bunu tazeler. */
+let OFF_EFF = [];
+const optInWindow = opt => {
+  for (const k of opt.mask){ const s = k % NSLOT; if (s < PREFS.early || s > PREFS.late) return false; }
   return true;
-}
+};
+const optOffDay = (opt, days) => {
+  for (const k of opt.mask) if (days.includes(Math.floor(k/NSLOT))) return true;
+  return false;
+};
+function prefAllows(opt){ return !optOffDay(opt, OFF_EFF) && optInWindow(opt); }
 const prefsActive = () => PREFS.early > 0 || PREFS.late < NSLOT-1 || PREFS.off.length > 0;
 const _allow = new Map();
 function allowedOpts(code){
-  const key = code + "|" + PREFS.early + "|" + PREFS.late + "|" + PREFS.off.join("") + "|" + pinKey()
+  const key = code + "|" + PREFS.early + "|" + PREFS.late + "|" + OFF_EFF.join("") + "|" + pinKey()
             + "|" + (INSTREQ[code] || "");
   if (_allow.has(key)) return _allow.get(key);
   const pins = pinsOf(code);
   const want = INSTREQ[code];
-  // elle sabitlenen section her şeyin üstünde: zaman tercihine uymasa da uygulanır
-  let r = pins ? optsOf(code).slice() : optsOf(code).filter(prefAllows);
-  if (want) r = r.filter(o => (o.picks[0].sec.inst || "").includes(want));
-  if (pins) r = r.filter(o => o.picks.every(({cls,sec}) => !pins[cls.type] || pins[cls.type] === sec.crn));
+  const base = o => (!want || (o.picks[0].sec.inst || "").includes(want)) &&
+                    (!pins || o.picks.every(({cls,sec}) => !pins[cls.type] || pins[cls.type] === sec.crn));
+  /* Kademeli geri düşüş. Boş gün listesi uygulanabilir olduğu doğrulanmış
+     olduğu için saat aralığından önce gelir: saat yüzünden boşa düşen bir ders
+     boş günü de deldirmesin. Elle sabitlenen section her şeyin üstünde. */
+  let r = optsOf(code).filter(o => base(o) && !optOffDay(o, OFF_EFF) && (pins || optInWindow(o)));
+  if (!r.length) r = optsOf(code).filter(o => base(o) && !optOffDay(o, OFF_EFF));  // saat aralığından vazgeç
+  if (!r.length) r = optsOf(code).filter(base);                                    // boş günden de vazgeç
   if (!r.length) r = optsOf(code).slice();
   _allow.set(key, r);
   return r;
 }
 const prefBlocked = code => allowedOpts(code).length === 0;
+
+/* ================= "boş kalsın" tanısı =================
+   allowedOpts, bir tercih o ders için hiçbir section bırakmazsa tercihi sessizce
+   yok sayıyor (geri düşüş). Kullanıcı açısından bu, "Cuma boş kalsın" dedikten
+   sonra Cuma'da ders görmek demek. Aşağısı o durumu yakalayıp nedenini ve
+   bunun yerine hangi günlerin boşaltılabileceğini söyler. */
+
+const baseOk = code => {
+  const pins = pinsOf(code), want = INSTREQ[code];
+  return o => (!want || (o.picks[0].sec.inst || "").includes(want)) &&
+              (!pins || o.picks.every(({cls,sec}) => !pins[cls.type] || pins[cls.type] === sec.crn));
+};
+/* Boş gün tanısı için seçenek listesi. Saat aralığı allowedOpts'ta ders bazında
+   geri düşebildiği için burada da öyle davranır: aralığa hiç sığmayan bir ders
+   yüzünden gün suçlanmasın. Boş gün kısıtında geri düşüş YOK — boşsa gerçekten
+   o gün boşaltılamıyor demektir. */
+function strictOpts(code, offDays){
+  const ok = baseOk(code), pins = pinsOf(code);
+  const inDays = o => !optOffDay(o, offDays);
+  let r = optsOf(code).filter(o => ok(o) && inDays(o) && (pins || optInWindow(o)));
+  if (!r.length) r = optsOf(code).filter(o => ok(o) && inDays(o));
+  return r;
+}
+/* Saat aralığı bu ders için hiç uygulanabiliyor mu (boş günler geçerliyken)? */
+function windowFits(code, offDays){
+  const ok = baseOk(code);
+  return optsOf(code).some(o => ok(o) && !optOffDay(o, offDays) && optInWindow(o));
+}
+
+const CF_FAIL_BUDGET = 300000, CF_ALT_BUDGET = 40000;
+/* İlk çakışmasız atamayı bulunca durur — tam çözümden çok daha ucuz.
+   true = yerleşir, false = yerleşmez, null = bütçe doldu, bilinmiyor.
+   "Bilinmiyor"u yanlış uyarı basmaktansa sessiz kalmak için ayırıyoruz. */
+function existsCF(lists, budget){
+  const order = lists.map((l,i)=>i).sort((a,b)=>lists[a].length-lists[b].length).map(i=>lists[i]);
+  const mask = new Set();
+  let found = false, steps = 0, spent = false;
+  const walk = i => {
+    if (found || spent) return;
+    if (++steps > budget){ spent = true; return; }
+    if (i === order.length){ found = true; return; }
+    for (const opt of order[i]){
+      let ok = true;
+      for (const k of opt.mask) if (mask.has(k)){ ok = false; break; }
+      if (!ok) continue;
+      for (const k of opt.mask) mask.add(k);
+      walk(i+1);
+      for (const k of opt.mask) mask.delete(k);
+      if (found || spent) return;
+    }
+  };
+  walk(0);
+  return found ? true : (spent ? null : false);
+}
+
+/* Verilen günler boşken seçili dersler yerleşiyor mu, yerleşmiyorsa hangi ders yüzünden? */
+function offCheck(offDays, cand, budget){
+  const stuck = [], lists = [];
+  const without = offDays.filter(d => d !== cand);
+  for (const c of selected){
+    const r = strictOpts(c, offDays);
+    if (!r.length){
+      /* bu gün olmasa açılabiliyor muydu? cevabı uyarının dilini belirliyor */
+      const dayOnly = strictOpts(c, without).length > 0;
+      /* hangi bileşen o güne çiviliyor: ders mi, recitation mı, lab mı */
+      const parts = dayOnly
+        ? (BY[c] ? BY[c].classes.filter(cl => cl.sections.every(s => s.mt.some(m => m.d === cand))).map(cl => cl.type) : [])
+        : [];
+      stuck.push({code:c, dayOnly, parts});
+    } else lists.push(r);
+  }
+  if (stuck.length) return {ok:false, stuck};
+  if (!lists.length) return {ok:true, stuck:[]};
+  const r = existsCF(lists, budget);
+  return {ok: r !== false, unknown: r === null, stuck:[]};   // bilinmiyorsa uyarı basma
+}
+
+const _offRep = new Map();
+function offDayReport(){
+  if (!selected.length || !PREFS.off.length) return {kept:PREFS.off.slice(), fails:[], alts:[]};
+  const key = selected.join(",") + "|" + PREFS.off.join(",") + "|" + PREFS.early + "|" + PREFS.late
+            + "|" + pinKey() + "|" + selected.map(c => INSTREQ[c] || "").join(",");
+  if (_offRep.has(key)) return _offRep.get(key);
+
+  /* tıklama sırasına saygı: önce seçilen gün, tutmayan sonrakiler elenir */
+  const wanted = PREFS.off.slice();
+  const okDays = [], fails = [];
+  for (const d of wanted){
+    /* istenen gün: doğruluk önemli, geniş bütçe */
+    const r = offCheck([...okDays, d], d, CF_FAIL_BUDGET);
+    if (r.ok) okDays.push(d);
+    else fails.push({day:d, stuck:r.stuck, kept:okDays.slice()});
+  }
+  const alts = [];
+  if (fails.length){
+    for (let d = 0; d <= 5; d++){
+      if (wanted.includes(d)) continue;
+      /* öneri listesi: dar bütçe, emin olamadığımız günü hiç yazmayız */
+      const r = offCheck([...okDays, d], d, CF_ALT_BUDGET);
+      if (r.ok && !r.unknown) alts.push(d);
+    }
+  }
+  const rep = {kept:okDays, fails, alts};
+  if (_offRep.size > 40) _offRep.clear(); _winRep.clear();
+  _offRep.set(key, rep);
+  return rep;
+}
+
+/* Çözücüye girmeden önce uygulanabilir boş gün listesini tazele. */
+function syncOffEff(){
+  const next = offDayReport().kept;
+  if (next.join(",") !== OFF_EFF.join(",")) OFF_EFF = next.slice();
+}
+
+/* ---- saat aralığı tanısı ----
+   Aralık ders bazında geri düşüyor: sığmayan ders aralığın dışına taşıyor.
+   Sessiz kalmak yerine hangi derslerin taşıdığını ve bu ders setinin sığdığı
+   en dar aralığı söyler. */
+const _winRep = new Map();
+function windowReport(){
+  if (!selected.length) return null;
+  if (PREFS.early === 0 && PREFS.late === NSLOT-1) return null;
+  const key = selected.join(",") + "|" + PREFS.early + "|" + PREFS.late + "|" + OFF_EFF.join(",")
+            + "|" + pinKey() + "|" + selected.map(c => INSTREQ[c] || "").join(",");
+  if (_winRep.has(key)) return _winRep.get(key);
+
+  const stuck = selected.filter(c => !windowFits(c, OFF_EFF));
+  let best = null;
+  if (stuck.length){
+    /* her ders için seçeneklerin (en erken dilim, en geç dilim) çiftleri;
+       hepsinin sığdığı en dar [a,b] aralığını ara — 14 dilim, kaba kuvvet yeter */
+    const spans = selected.map(c => {
+      const ok = baseOk(c);
+      const out = [];
+      for (const o of optsOf(c)){
+        if (!ok(o) || optOffDay(o, OFF_EFF)) continue;
+        let lo = NSLOT, hi = -1;
+        for (const k of o.mask){ const s = k % NSLOT; if (s < lo) lo = s; if (s > hi) hi = s; }
+        if (hi >= 0) out.push([lo, hi]);
+      }
+      return out;
+    });
+    if (spans.every(s => s.length)){
+      for (let a = 0; a < NSLOT; a++) for (let b = a; b < NSLOT; b++){
+        if (best && (b - a) >= best.b - best.a) continue;
+        if (spans.every(s => s.some(([lo,hi]) => lo >= a && hi <= b))) best = {a, b};
+      }
+    }
+  }
+  const rep = stuck.length ? {stuck, best} : null;
+  if (_winRep.size > 40) _winRep.clear();
+  _winRep.set(key, rep);
+  return rep;
+}
 
 function renderPrefs(){
   const bar = document.getElementById("prefBar");
@@ -1245,24 +1508,60 @@ function renderPrefs(){
     `<option value="${i}"${PREFS.early===i?" selected":""}>${i===0?S.prefAny:slotStart(i)}</option>`).join("");
   const lateOpts = [NSLOT-1,10,9,8,7,6].map(i =>
     `<option value="${i}"${PREFS.late===i?" selected":""}>${i===NSLOT-1?S.prefAny:slotEnd(i)}</option>`).join("");
-  const dayChips = [0,1,2,3,4,5].map(d =>
-    `<button class="daych${PREFS.off.includes(d)?" on":""}" data-day="${d}">${S.daysS[d]}</button>`).join("");
+  const rep = offDayReport();
+  const badDays = rep.fails.map(f => f.day);
+  const dayChips = [0,1,2,3,4,5].map(d => {
+    const on = PREFS.off.includes(d);
+    const cls = "daych" + (on ? (badDays.includes(d) ? " bad" : " on") : "");
+    const tip = badDays.includes(d) ? ` title="${S.offFailTip}"` : "";
+    return `<button class="${cls}" data-day="${d}"${tip}>${S.daysS[d]}</button>`;
+  }).join("");
+  const lines = [];
+  if (rep.fails.length){
+    /* "MATH 101 (Recitation)" — günü zorlayan bileşen belliyse onu da yaz */
+    const label = x => x.parts && x.parts.length
+      ? `${x.code} (${x.parts.map(t => S.types[t] || t).join(", ")})` : x.code;
+    rep.fails.forEach(f => {
+      const day = S.days[f.day];
+      const kept = f.kept.map(d => S.days[d]).join(", ");     // bu günle çakışan, tutulan günler
+      const only  = f.stuck.filter(x => x.dayOnly).map(label);
+      const other = f.stuck.filter(x => !x.dayOnly).map(x => x.code);
+      if (!f.stuck.length){
+        lines.push(kept ? S.offFailWithCombo(kept, day) : S.offFailCombo(day));
+      } else {
+        if (only.length)  lines.push(kept ? S.offFailWith(kept, day, only.join(", "))
+                                          : S.offFailDay(day, only.join(", ")));
+        if (other.length) lines.push(S.offFailOther(day, other.join(", ")));
+      }
+    });
+    /* "şu günler boş tutuluyor" cümlesi bir kez, en sonda */
+    if (rep.kept.length) lines.push(S.offKept(rep.kept.map(d => S.days[d]).join(", ")));
+    lines.push(rep.alts.length ? S.offAlt(rep.alts.map(d => S.days[d]).join(", ")) : S.offAltNone);
+  }
+  const wrep = windowReport();
+  if (wrep){
+    lines.push(S.winFail(slotStart(PREFS.early), slotEnd(PREFS.late), wrep.stuck.join(", ")));
+    if (wrep.best) lines.push(S.winBest(slotStart(wrep.best.a), slotEnd(wrep.best.b)));
+    else lines.push(S.winBestNone);
+  }
+  const warn = lines.length ? `<div class="prefwarn">${lines.join(" ")}</div>` : "";
   bar.innerHTML =
     `<span class="qlbl">${S.prefTitle}</span>
      <label class="q">${S.prefFrom} <select id="pEarly">${earlyOpts}</select></label>
      <label class="q">${S.prefTo} <select id="pLate">${lateOpts}</select></label>
      <span class="q">${S.prefOff} <span class="dayrow">${dayChips}</span></span>
-     ${prefsActive()?`<button class="btn tiny" id="pReset">${S.prefReset}</button>`:""}`;
+     ${prefsActive()?`<button class="btn tiny" id="pReset">${S.prefReset}</button>`:""}
+     ${warn}`;
   const save = () => { try{ localStorage.setItem("dk-prefs", JSON.stringify(PREFS)); }catch(e){} };
-  bar.querySelector("#pEarly").onchange = e => { PREFS.early = +e.target.value; _allow.clear(); save(); altIndex=0; render(); };
-  bar.querySelector("#pLate").onchange  = e => { PREFS.late  = +e.target.value; _allow.clear(); save(); altIndex=0; render(); };
+  bar.querySelector("#pEarly").onchange = e => { PREFS.early = +e.target.value; _allow.clear(); _offRep.clear(); _winRep.clear(); save(); altIndex=0; render(); };
+  bar.querySelector("#pLate").onchange  = e => { PREFS.late  = +e.target.value; _allow.clear(); _offRep.clear(); _winRep.clear(); save(); altIndex=0; render(); };
   bar.querySelectorAll(".daych").forEach(btn => btn.onclick = () => {
     const d = +btn.dataset.day;
     PREFS.off = PREFS.off.includes(d) ? PREFS.off.filter(x=>x!==d) : [...PREFS.off, d];
-    _allow.clear(); save(); altIndex=0; render();
+    _allow.clear(); _offRep.clear(); _winRep.clear(); save(); altIndex=0; render();
   });
   const rs = bar.querySelector("#pReset");
-  if (rs) rs.onclick = () => { PREFS.early=0; PREFS.late=NSLOT-1; PREFS.off=[]; _allow.clear(); save(); altIndex=0; render(); };
+  if (rs) rs.onclick = () => { PREFS.early=0; PREFS.late=NSLOT-1; PREFS.off=[]; _allow.clear(); _offRep.clear(); _winRep.clear(); save(); altIndex=0; render(); };
 }
 
 /* ================= durum ================= */
@@ -1273,7 +1572,7 @@ let solutions = null, altIndex = 0;
 const save = () => { try{
   localStorage.setItem("dk-pool", JSON.stringify(pool));
   localStorage.setItem("dk-sel", JSON.stringify(selected));
-  localStorage.setItem("dk-limit", String(MAXSEL));
+  localStorage.setItem("dk-range", JSON.stringify({a:MINSEL, b:MAXSEL, c:MINCR, d:MAXCR}));
 }catch(e){} };
 
 function addToPool(code){
@@ -1291,9 +1590,13 @@ function toggle(code){
   const i = selected.indexOf(code);
   if (i >= 0) selected.splice(i,1);
   else {
-    if (selected.length >= MAXSEL){
+    /* maksimumlar sert sınır: ne ders sayısı ne kredi üstüne çıkabilir */
+    const overCount = selected.length >= MAXSEL;
+    const overCred  = MAXCR < CRED_HI && selCred() + credOf(code) > MAXCR;
+    if (overCount || overCred){
       const el = document.getElementById("counter");
-      el.classList.add("over"); setTimeout(()=>el.classList.remove("over"), 700);
+      el.classList.add("over"); setTimeout(()=>el.classList.remove("over"), 900);
+      el.title = overCount ? T().overCount(MAXSEL) : T().overCred(MAXCR);
       return;
     }
     selected.push(code);
@@ -1317,12 +1620,20 @@ let REQ = null;                 // {university:41, required:33, core:25, area:9,
 const catOf = code => {
   const v = CURMAP && CURMAP[code];
   if (!v) return null;
-  return typeof v === "string" ? v : (v.t || null);
+  const t = typeof v === "string" ? v : (v.t || null);
+  /* müfredat dosyasında "unknown" gibi tanımadığımız etiketler olabiliyor;
+     bilinmeyen etiket = kategorisiz say, yoksa rozet "undefined" yazıyor */
+  return CAT_ORDER.includes(t) ? t : null;
 };
+/* SU kredisi: önce ders verisinden (BannerWeb her ders için veriyor),
+   yoksa yüklü müfredattan. İkisi de yoksa 0. */
 const credOf = code => {
+  const c = BY[code];
+  if (c && +c.cr > 0) return +c.cr;
   const v = CURMAP && CURMAP[code];
   return (!v || typeof v === "string") ? 0 : (v.c || 0);
 };
+const credSum = list => list.reduce((s,c) => s + credOf(c), 0);
 
 
 
@@ -1449,7 +1760,8 @@ function buildLvl(){
 lvlSel.addEventListener("change", renderResults);
 function catChip(code){
   const c = catOf(code);
-  return c ? `<span class="cat ${c}">${T().cats[c]}</span>` : "";
+  const label = c && T().cats[c];
+  return label ? `<span class="cat ${c}">${label}</span>` : "";
 }
 
 /* ================= arama ================= */
@@ -1557,8 +1869,10 @@ function renderPool(){
   });
   document.getElementById("poolHint").textContent = pool.length ? T().poolCount(pool.length) : T().poolEmpty;
   const cn = document.getElementById("counter");
-  cn.textContent = selected.length + " / " + MAXSEL;
-  cn.classList.toggle("full", selected.length === MAXSEL && MAXSEL > 0);
+  const cr = selCred();
+  cn.textContent = `${selected.length} ${T().courseWord} · ${cr} ${T().creditWord}`;
+  cn.classList.toggle("full", selected.length > 0 && inRange());
+  cn.title = T().rangeHint(MINSEL, MAXSEL, MINCR, MAXCR);
 }
 
 /* ================= program tablosu ================= */
@@ -1767,19 +2081,20 @@ function renderVerdict(sol){
       ? TX().hardPairs + hard.map(([a,b])=>`<b class="mono">${a} ↔ ${b}</b>`).join(", ") + "."
       : TX().noPairClash;
   }
+  const cred = credSum(selected);
+  const parts = [];
   if (CURMAP){
-    const cnt = {}; let none = 0, cred = 0;
-    selected.forEach(c => {
-      const k = catOf(c);
-      if (k){ cnt[k] = (cnt[k]||0)+1; cred += credOf(c); } else none++;
-    });
-    const parts = CAT_ORDER.filter(k => cnt[k]).map(k =>
-      `<span class="mix ${k}"><b>${cnt[k]}</b>${TX().cats[k]}</span>`);
+    const cnt = {}; let none = 0;
+    selected.forEach(c => { const k = catOf(c); if (k) cnt[k] = (cnt[k]||0)+1; else none++; });
+    CAT_ORDER.filter(k => cnt[k]).forEach(k =>
+      parts.push(`<span class="mix ${k}"><b>${cnt[k]}</b>${TX().cats[k]}</span>`));
     if (none) parts.push(`<span class="mix out"><b>${none}</b>${TX().notInCur}</span>`);
-    if (cred) parts.push(`<span class="mix cred"><b>${cred}</b>${TX().creditWord}</span>`);
-    if (parts.length) S.innerHTML += `<div class="bd">${parts.join("")}</div>`;
   }
-  St.innerHTML = [selected.length, sol.mask.size, sol.m.free, sol.m.gaps, sol.c]
+  /* kredi toplamı üstteki istatistiklerde duruyor; burada yalnız hedefin dışındaysa uyar */
+  if (selected.length && !inRange())
+    parts.push(`<span class="mix out">${TX().rangeHint(MINSEL, MAXSEL, MINCR, MAXCR)}</span>`);
+  if (parts.length) S.innerHTML += `<div class="bd">${parts.join("")}</div>`;
+  St.innerHTML = [selected.length, cred, sol.mask.size, sol.m.free, sol.m.gaps, sol.c]
     .map((n,i) => `<div class="stat"><div class="n">${n}</div><div class="l">${TX().stats[i]}</div></div>`).join("");
   document.getElementById("gridHint").textContent =
     sol.c === 0 ? TX().gridOk : TX().gridBad(sol.c);
@@ -1824,6 +2139,7 @@ function renderMatrix(){
 
 /* ================= render ================= */
 function render(){
+  syncOffEff();          // çözücüye girmeden önce: hangi boş günler gerçekten tutulabiliyor
   renderPlans();
   renderPrefs();
   renderPool();
@@ -1842,7 +2158,8 @@ function render(){
 
 /* ================= paylaşılabilir bağlantı ================= */
 function encodeState(){
-  const s = {p:pool, s:selected, n:MAXSEL, k:PINNED, i:INSTREQ,
+  const s = {p:pool, s:selected, n:MAXSEL, nlo:MINSEL, clo:MINCR, chi:MAXCR,
+             k:PINNED, i:INSTREQ,
              e:PREFS.early, l:PREFS.late, o:PREFS.off,
              m:MAJOR, a:ADMIT};
   try{
@@ -1860,7 +2177,14 @@ function applyState(s){
   if (!s) return false;
   if (Array.isArray(s.p)) pool = s.p.filter(c => BY[c]);
   if (Array.isArray(s.s)) selected = s.s.filter(c => pool.includes(c));
-  if (Number.isInteger(s.n) && s.n >= 3 && s.n <= 10){ MAXSEL = s.n; limitSel.value = String(MAXSEL); }
+  /* eski bağlantılarda yalnız s.n (tek limit) var, onlar da açılabilsin */
+  if (Number.isInteger(s.n)   && s.n   >= 1 && s.n   <= SEL_HI)  MAXSEL = s.n;
+  if (Number.isInteger(s.nlo) && s.nlo >= 1 && s.nlo <= SEL_HI)  MINSEL = s.nlo;
+  if (Number.isInteger(s.clo) && s.clo >= 0 && s.clo <= CRED_HI) MINCR  = s.clo;
+  if (Number.isInteger(s.chi) && s.chi >= 0 && s.chi <= CRED_HI) MAXCR  = s.chi;
+  if (MINSEL > MAXSEL) MINSEL = MAXSEL;
+  if (MINCR  > MAXCR)  MINCR  = MAXCR;
+  syncRangeUI();
   if (s.k && typeof s.k === "object"){ Object.keys(PINNED).forEach(k => delete PINNED[k]); Object.assign(PINNED, s.k); }
   if (s.i && typeof s.i === "object"){ Object.keys(INSTREQ).forEach(k => delete INSTREQ[k]); Object.assign(INSTREQ, s.i); }
   if (Number.isInteger(s.e)) PREFS.early = s.e;
@@ -2280,35 +2604,53 @@ function renderPlans(){
 
 /* ================= otomatik öneri ================= */
 const SUBSET_CAP = 40000;
+const AUTO_LEVEL_MS = 2500;   // her ders sayısı denemesine ayrılan süre
 const QUOTA = {};
+/* Hedef sırası: önce ders sayısı (maksimumdan minimuma inerek ilk olan kazanır),
+   aynı ders sayısında toplam kredisi yüksek olan, kredi de eşitse programı
+   daha derli toplu olan. Kredi aralığının dışında kalan alt kümeler elenir. */
 function autoSuggest(){
   if (pool.length < 2) return {n:0};
-  for (let n = Math.min(MAXSEL, pool.length); n >= 2; n--){
-    let best = null, bestSol = null, tried = 0, capped = false;
-    const rec = (start, acc) => {
+  const hiN = Math.min(MAXSEL, pool.length);
+  const loN = Math.max(1, Math.min(MINSEL, hiN));
+  let sawCredMiss = false;              // ders sayısı tuttu ama kredi aralığı tutmadı
+  for (let n = hiN; n >= loN; n--){
+    let best = null, bestSol = null, bestCr = -1, tried = 0, capped = false;
+    /* her seviye kendi süre bütçesiyle başlar: üst seviye bütçeyi tüketse de
+       alt seviyeler taze bütçeyle denenir, öneri hiç dönmemezlik etmez */
+    const levelEnd = Date.now() + AUTO_LEVEL_MS;
+    CF_DEADLINE = levelEnd;
+    const rec = (start, acc, cr) => {
       if (capped) return;
       if (acc.length === n){
+        if (cr < MINCR || cr > MAXCR){ sawCredMiss = true; return; }
         if (++tried > SUBSET_CAP){ capped = true; return; }
+        if (Date.now() > levelEnd){ capped = true; return; }
         const sol = solveCF(acc);
-        if (sol && (!bestSol || cmpM(sol.m, bestSol.m) < 0)){ best = acc.slice(); bestSol = sol; }
+        if (sol && (cr > bestCr || (cr === bestCr && bestSol && cmpM(sol.m, bestSol.m) < 0))){
+          best = acc.slice(); bestSol = sol; bestCr = cr;
+        }
         return;
       }
       if (pool.length - start < n - acc.length) return;
       for (let i=start;i<pool.length;i++){
         if (prefBlocked(pool[i])) continue;
         if (acc.some(a => pairOf(a, pool[i]).n > 0)) continue;
-        acc.push(pool[i]); rec(i+1, acc); acc.pop();
+        const cr2 = cr + credOf(pool[i]);
+        if (cr2 > MAXCR){ sawCredMiss = true; continue; }   // kredi yalnız artar, bu dal elenir
+        acc.push(pool[i]); rec(i+1, acc, cr2); acc.pop();
         if (capped) return;
       }
     };
-    rec(0, []);
+    rec(0, [], 0);
+    CF_DEADLINE = Infinity;
     if (best){
       selected = best.slice().sort((a,b)=>pool.indexOf(a)-pool.indexOf(b));
       altIndex = 0; render();
-      return {n, capped, short: n < Math.min(MAXSEL, pool.length)};
+      return {n, cred:bestCr, capped, short: n < hiN};
     }
   }
-  return {n:0};
+  return {n:0, credMiss: sawCredMiss};
 }
 
 /* ================= olaylar ================= */
@@ -2320,7 +2662,7 @@ document.getElementById("btnAuto").onclick = e => {
     e.target.textContent = label;
     const S = document.getElementById("vSub");
     if (!r.n){
-      S.textContent = T().autoNone;
+      S.textContent = r.credMiss ? T().autoNoRange(MINSEL, MAXSEL, MINCR, MAXCR) : T().autoNone;
     } else if (r.short){
       S.textContent = T().autoShort(MAXSEL, r.n);
     }
@@ -2352,17 +2694,57 @@ document.getElementById("btnClearPool").onclick = () => {
   pool = []; selected = []; altIndex = 0; render();
 };
 
-const limitSel = document.getElementById("limit");
-limitSel.onchange = () => {
-  MAXSEL = +limitSel.value;
-  if (selected.length > MAXSEL) selected = selected.slice(0, MAXSEL);
-  altIndex = 0; render();
+const selMinSel = document.getElementById("selMin");
+const selMaxSel = document.getElementById("selMax");
+const crMinSel  = document.getElementById("crMin");
+const crMaxSel  = document.getElementById("crMax");
+
+const fillRange = (el, lo, hi, val) => {
+  el.innerHTML = "";
+  for (let i = lo; i <= hi; i++) el.insertAdjacentHTML("beforeend", `<option value="${i}">${i}</option>`);
+  el.value = String(Math.min(Math.max(val, lo), hi));
 };
+function syncRangeUI(){
+  fillRange(selMinSel, 1, SEL_HI, MINSEL);
+  fillRange(selMaxSel, 1, SEL_HI, MAXSEL);
+  fillRange(crMinSel, 0, CRED_HI, MINCR);
+  fillRange(crMaxSel, 0, CRED_HI, MAXCR);
+}
+function saveRanges(){
+  try{
+    localStorage.setItem("dk-range", JSON.stringify({a:MINSEL, b:MAXSEL, c:MINCR, d:MAXCR}));
+  }catch(e){}
+}
+/* bir uç değişince diğerini geçmesin: min büyürse max onu takip eder, tersi de */
+function onRangeChange(which){
+  const a = +selMinSel.value, b = +selMaxSel.value, c = +crMinSel.value, d = +crMaxSel.value;
+  MINSEL = a; MAXSEL = b; MINCR = c; MAXCR = d;
+  if (which === "selMin" && MAXSEL < MINSEL) MAXSEL = MINSEL;
+  if (which === "selMax" && MINSEL > MAXSEL) MINSEL = MAXSEL;
+  if (which === "crMin"  && MAXCR  < MINCR)  MAXCR  = MINCR;
+  if (which === "crMax"  && MINCR  > MAXCR)  MINCR  = MAXCR;
+  if (selected.length > MAXSEL) selected = selected.slice(0, MAXSEL);
+  syncRangeUI(); saveRanges();
+  altIndex = 0; render();
+}
+selMinSel.onchange = () => onRangeChange("selMin");
+selMaxSel.onchange = () => onRangeChange("selMax");
+crMinSel.onchange  = () => onRangeChange("crMin");
+crMaxSel.onchange  = () => onRangeChange("crMax");
 
 /* ================= başlangıç ================= */
 try{
-  const L = +localStorage.getItem("dk-limit");
-  if (L >= 3 && L <= 10){ MAXSEL = L; limitSel.value = String(L); }
+  const L = +localStorage.getItem("dk-limit");          // eski sürüm: tek limit
+  if (L >= 1 && L <= SEL_HI) MAXSEL = L;
+  const R = JSON.parse(localStorage.getItem("dk-range") || "null");
+  if (R && typeof R === "object"){
+    if (R.a >= 1 && R.a <= SEL_HI)  MINSEL = R.a;
+    if (R.b >= 1 && R.b <= SEL_HI)  MAXSEL = R.b;
+    if (R.c >= 0 && R.c <= CRED_HI) MINCR  = R.c;
+    if (R.d >= 0 && R.d <= CRED_HI) MAXCR  = R.d;
+  }
+  if (MINSEL > MAXSEL) MINSEL = MAXSEL;
+  if (MINCR  > MAXCR)  MINCR  = MAXCR;
   const P = JSON.parse(localStorage.getItem("dk-pool") || "[]");
   if (Array.isArray(P)) pool = P.filter(c => BY[c]);
   const S = JSON.parse(localStorage.getItem("dk-sel") || "[]");
@@ -2405,8 +2787,9 @@ function embeddedLabel(){ return T().chipEmb(buildDateLabel()); }
 function applyStatic(){
   const S = T(), set = (id,v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
   document.documentElement.lang = LANG;
-  set("lblLimit", S.limit); set("btnClear", S.clear); set("btnAuto", S.auto);
-  set("lblPool", S.poolTitle); set("poolHead", S.poolHead);
+  set("lblLimit", S.limit); set("lblCred", S.limitCred);
+  set("btnClear", S.clear); set("btnAuto", S.auto);
+  set("lblPool", S.poolTitle); set("poolHeadLbl", S.poolHead);
   set("lblGrid", S.gridTitle);
   set("lblAlt", S.altTitle); set("hintAlt", S.altHint);
   set("lblSec", S.secTitle); set("btnCrn", S.copyCrn);
@@ -2439,6 +2822,7 @@ function refreshBrand(){
 }
 applyStatic();
 refreshBrand();
+syncRangeUI();
 render();
 buildLvl();
 buildCurSelectors();
@@ -2488,7 +2872,7 @@ async function getJSON(url, ms=8000){
 function applyData(list, label, stamp){
   DATA = list;
   BY = Object.fromEntries(DATA.map(c => [c.code, c]));
-  _opts.clear(); _pair.clear();
+  _opts.clear(); _pair.clear(); _allow.clear(); _offRep.clear(); _winRep.clear();
   pool = pool.filter(c => BY[c]);
   selected = selected.filter(c => pool.includes(c));
   altIndex = 0;
