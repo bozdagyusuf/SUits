@@ -2,16 +2,16 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
 
-Sabancı Üniversitesi ders programı planlayıcısı. Aday derslerini seçersin,
-SUits tüm ders–recitation kombinasyonlarını tarayıp çakışmasız ve en derli toplu
-programı bulur.
+Sabancı Üniversitesi ders programı planlayıcısı. Kesin alacağın ve belki alacağın
+dersleri söylersin, SUits tüm ders–recitation kombinasyonlarını tarayıp çakışmasız
+ve en derli toplu programı bulur.
 
 Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
 `index.html` her şeyi içeriyor.
 
 ## Ne yapar
 
-- Sabancı kataloğundaki **472 dersin tamamı** (Fall 2026-2027) içinde arama, aday havuzu oluşturma
+- Sabancı kataloğundaki **472 dersin tamamı** (Fall 2026-2027) içinde arama, ders havuzu oluşturma
 - **Ön koşul** ve **kontenjan** bilgisi ders kartlarında görünür
 - **Bölüm seçimi** — 12 bölüm ve 22 giriş dönemi için müfredat yüklenir; dersler
   `Zorunlu / Core / Area / Üniversite / Free` olarak etiketlenir
@@ -23,7 +23,9 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
 - **Kayıtlı planlar** — Plan A / Plan B diye kaydedip aralarında geçiş yaparsın;
   havuz, seçim, sabitlenen section'lar ve tercihler plana dahildir
 - **Paylaşılabilir bağlantı** — planını tek tıkla linke çevirirsin; havuz, seçim,
-  sabitlenen section'lar ve tercihler linkte taşınır. Telefonuna at, arkadaşına gönder
+  sabitlenen section'lar ve tercihler linkte taşınır. Telefonuna at, arkadaşına gönder.
+  Site zaten açıkken gelen bir link tıklandığında tarayıcı sayfayı yeniden yüklemez,
+  yalnız adresin `#` kısmı değişir; SUits bunu da dinler ve programı yükler
 - **Duvar kâğıdı** — programını telefon duvar kâğıdı olarak indirirsin: gün gün
   kartlar (**Ajanda**) ya da haftalık **Tablo** biçimi; ders kodu, saat aralığı ve
   derslik; 8 yumuşak arka plan rengi, 3 telefon boyutu, saat ve bildirimler için
@@ -58,18 +60,63 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
 - Recitation, discussion ve lab'ları dersin parçası sayar — ayrı ders olarak değil,
   ama programda ve çakışma hesabında gösterir
 - Hangi ders çiftlerinin **hiçbir kombinasyonda** bir arada alınamadığını gösterir
+- **Kesin / belki ayrımı** — havuz iki gruba ayrılır ve liste de öyle görünür:
+  *Kesin* dersler her programa girer, otomatik seçimden asla düşmez ve elle
+  çıkarılamaz; *Belki* dersleri ancak çakışmadan sığarsa eklenir. Grup başlığı
+  belkilerin kaçının programa girdiğini yazar, verdict satırında da programın
+  kaç kesin + kaç belki dersinden oluştuğu görünür. "En iyi kombinasyonu bul"
+  tam olarak bu kuralı uygular: kesinleri tutar, belkilerden sığanları ekler
+- **Çakışmanın çözüm yolları** — çakışmasız bir program kurulamıyorsa SUits yalnız
+  "bir kısıtı gevşet" demiyor: olası tek hamleleri (bir dersi belki yapmak, bir
+  hoca kısıtını kaldırmak, bir section kilidini açmak, saat/boş gün tercihlerini
+  bırakmak) tek tek deneyip **yalnızca gerçekten işe yarayanları** düğme olarak
+  sunar. Tıklayınca hamle uygulanır ve program çakışmasız hâle gelir. Tanının
+  adım ve süre bütçesi var, hesap ekranı bekletmemek için çizimden sonra yapılır
+- **Manuel mod** — üstteki *Otomatik / Manuel* anahtarıyla tek tıkta SUchedule tarzı
+  tamamen elle çalışan bir ekrana geçersin. Soldaki listeden istediğin section'a
+  tıklarsın, program anında güncellenir, çakışan section kırmızı görünür. Otomatik
+  modda oluşan program manuel moda olduğu gibi taşınır
+- **Section kilidi** — herhangi bir section'ın yanındaki kilit simgesiyle onu
+  sabitlersin ("bu dersi arkadaşımla X section'ından alacağım"); çözücü bir daha
+  o section'ı değiştirmez
+- **Hata ekranı** — kullanıcının ayarları birbiriyle çeliştiğinde program sessizce
+  bozulmaz, üstte kırmızı bir kutu çıkar ve çözüm düğmesi sunar. İki durum:
+  kesin ders sayısı ders limitinden fazlaysa; ve kilitlenen section'lar birbiriyle
+  çakışıyorsa (hangi ikilinin çakıştığı adıyla yazılır)
 - **Ders ve kredi aralığı** — "4 ile 6 ders, 12 ile 18 kredi" dersin. Maksimumlar
   sert sınır (üstüne çıkacak seçim engellenir), minimumlar otomatik seçimin hedefi.
   SU kredisi BannerWeb verisinden gelir, bölüm seçmene gerek yok
 - Otomatik seçim aralığın içinde önce en çok dersi, aynı ders sayısında en yüksek
   krediyi hedefler; aralığa oturan çakışmasız kombinasyon yoksa bunu söyler
+- Otomatik seçim, hangi derslerin alınacağını ve her dersin hangi section'ını
+  kullanacağını **tek aramada birlikte** çözer ve yalnızca çakışmasız dizilim üretir.
+  Hedef ders sayısı yüksekten başlayıp iner, her hedefin kendi süre dilimi vardır;
+  8-10 derslik havuzlarda eski sürüm süreyi tek hedefte tüketip olduğundan küçük bir
+  program öneriyordu
+- Saat ve boş gün tercihi varsa önce tercihlere birebir uyan bir plan aranır; aynı
+  ders sayısına ulaşabiliyorsa o kazanır. Ulaşamıyorsa ders sayısı tercihin önüne
+  geçer ve fark uyarı olarak yazılır
+- Bir program önerildiğinde havuzdan **hangi derslerin neden dışarıda kaldığı** yazılır
 - Havuzdan ders çıkarmak tek tık: satırdaki × , aramada eklenmiş dersin üstüne
   tıklama, ya da başlıktaki **Temizle** ile hepsi birden
 - Seçilen section'ların CRN'lerini tek tıkla kopyalar
 - **Mobil için ayrı görünüm** — telefonda haftalık tablo yerine gün gün ajanda
   listesi; havuz paneli katlanabilir
+- **Kullanım rehberi** — site ilk açıldığında 9 adımlık kısa ve görsel bir tanıtım
+  çıkar: SUits'in ne yaptığı, havuz, kesin/belki ayrımı, ders-kredi aralığı, otomatik
+  çözüm, tercihler, section kilidi, manuel mod ve paylaşma. Her adımın çizimi SVG
+  olarak sayfanın içinde üretilir; dış dosya yoktur, `file://` ile de çalışır.
+  Bir kez gösterilir (`dk-guide` kaydı), sonra üst bardaki **?** düğmesiyle her an
+  yeniden açılır; ok tuşları, Esc ve nokta göstergesiyle gezinilir. TR ve EN
+- **Sınırlar her yoldan doğrulanır** — ders/kredi aralığı seçim kutusundan, eski
+  bağlantıdan, kayıtlı plandan ya da bozuk `localStorage` kaydından geçersiz gelemez;
+  `normalizeRanges()` her çizimde değerleri geçerli aralığa çeker ve üst bardaki
+  kutuları aynı değere getirir. Önceden boş bir seçim kutusu limiti 0 yapabiliyordu:
+  üst barda "1" görünüyor, hedef "0-0 ders" oluyor ve hata ekranı kapanmıyordu
 - **Türkçe / İngilizce** dil seçeneği (üstteki TR·EN düğmesi, tarayıcı diline göre otomatik başlar)
-- Açık/koyu tema, mobil uyumlu, çevrimdışı çalışır
+- Açık/koyu tema, mobil uyumlu, çevrimdışı çalışır. Dosyayı indirip çift tıklayarak
+  (`file://`) açtığında da her şey çalışır: veriler gömülü, rehberin çizimleri sayfanın
+  içinde üretiliyor, konsola tek bir hata bile düşmüyor
 
 ## GitHub Pages ile yayınlama (ücretsiz, ~3 dakika)
 

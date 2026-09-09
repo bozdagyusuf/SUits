@@ -44,6 +44,9 @@
 }
 
 *{box-sizing:border-box}
+/* display:flex verilen kutular hidden iken de yer kaplıyordu: boş havuz
+   başlığı ve boş kırmızı hata şeridi her açılışta görünüyordu */
+[hidden]{display:none !important}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0; background:var(--bg); color:var(--ink);
@@ -94,6 +97,55 @@ header.top{
 .btn.primary:hover{background:var(--accent); opacity:.88}
 .btn.tiny{padding:4px 10px; font-size:12px}
 
+/* ---- kullanım rehberi ---- */
+.helpbtn{
+  border:0; background:var(--sunken); color:var(--muted);
+  width:26px; height:26px; border-radius:999px; font-size:14px; font-weight:650;
+  display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto;
+  transition:background .14s ease, color .14s ease;
+}
+.helpbtn:hover{background:var(--line2); color:var(--ink)}
+.gd{
+  position:fixed; inset:0; z-index:80; display:flex; align-items:center; justify-content:center;
+  padding:20px; background:rgba(16,18,26,.42); backdrop-filter:saturate(140%) blur(3px);
+  animation:gdIn .18s ease;
+}
+:root:not([data-theme="light"]) .gd, :root[data-theme="dark"] .gd{background:rgba(0,0,0,.6)}
+@keyframes gdIn{from{opacity:0}to{opacity:1}}
+.gdcard{
+  position:relative; width:min(520px, 100%); max-height:calc(100dvh - 40px); overflow:auto;
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card);
+  box-shadow:var(--shadow); animation:gdUp .22s cubic-bezier(.2,.8,.3,1);
+}
+@keyframes gdUp{from{transform:translateY(10px) scale(.98); opacity:0}to{transform:none; opacity:1}}
+.gdclose{
+  position:absolute; top:10px; right:10px; z-index:2; border:0; background:var(--surface2); color:var(--muted);
+  width:28px; height:28px; border-radius:999px; font-size:17px; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+}
+.gdclose:hover{background:var(--sunken); color:var(--ink)}
+.gdart{
+  background:var(--surface2); border-bottom:1px solid var(--line);
+  border-radius:var(--r-card) var(--r-card) 0 0; padding:18px 20px 14px;
+}
+.gdart svg{display:block; width:100%; height:auto; max-height:170px}
+.gdbody{padding:16px 20px 4px}
+.gdstep{font-size:11.5px; font-weight:600; color:var(--faint); letter-spacing:.02em; margin-bottom:6px}
+.gdtitle{font-size:17px; margin-bottom:6px}
+.gdtext{margin:0; color:var(--muted); font-size:14px; line-height:1.5; min-height:84px}
+.gdfoot{display:flex; align-items:center; gap:10px; padding:12px 20px 16px}
+.gddots{display:flex; gap:5px; flex:1 1 auto; flex-wrap:wrap}
+.gddot{width:6px; height:6px; border-radius:999px; background:var(--line2); border:0; padding:0}
+.gddot.on{background:var(--accent); width:16px}
+.gdacts{display:flex; gap:6px; align-items:center}
+@media (max-width:560px){
+  .gd{padding:0; align-items:flex-end}
+  .gdcard{width:100%; max-height:92dvh; border-radius:18px 18px 0 0}
+  .gdart{border-radius:18px 18px 0 0; padding:16px 16px 12px}
+  .gdbody{padding:14px 16px 2px} .gdfoot{padding:10px 16px 14px}
+  .gdtext{min-height:96px}
+}
+
 .langsw, .modesw{display:inline-flex; background:var(--sunken); border-radius:9px; padding:2px; gap:2px}
 .langsw button, .modesw button{
   border:0; background:transparent; color:var(--muted);
@@ -123,6 +175,56 @@ header.top{
   background-size:4px 4px, 4px 4px; background-repeat:no-repeat; padding-right:26px;
 }
 
+/* ---------- hata ekrani ---------- */
+.errbox{
+  margin:18px 0 0; padding:16px 18px; border-radius:var(--r-card);
+  background:var(--bad-soft); border:1px solid color-mix(in srgb, var(--bad) 32%, transparent);
+  display:flex; gap:16px; align-items:center; flex-wrap:wrap;
+}
+.errbox .errmain{flex:1; min-width:240px}
+.errbox .errtitle{font-size:16px; font-weight:700; color:var(--bad); letter-spacing:-.01em}
+.errbox .errbody{font-size:13px; color:var(--ink); margin-top:5px; line-height:1.55}
+.errbox .erracts{display:flex; gap:8px; flex-wrap:wrap}
+.errbox .erracts .btn{background:var(--surface)}
+.errbox .erracts .btn.primary{background:var(--bad); color:#fff}
+
+/* ---------- manuel mod ---------- */
+.mbody{max-height:none; overflow:visible}
+.mcourse{border-bottom:1px solid var(--line)}
+.mcourse:last-child{border-bottom:0}
+.mhead{display:flex; align-items:center; gap:8px; padding:11px 16px; cursor:pointer; background:var(--surface)}
+.mhead:hover{background:var(--surface2)}
+.mhead .swatch{width:3px; align-self:stretch; border-radius:999px; flex:none}
+.mhead .code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; font-weight:650}
+.mhead .cnt{margin-left:auto; font-size:11.5px; color:var(--faint)}
+.mhead .car{color:var(--faint); font-size:11px; transition:transform .15s}
+.mcourse.open .mhead .car{transform:rotate(90deg)}
+.mtype{padding:2px 16px 8px}
+.mtype .tlbl{font-size:11px; font-weight:650; color:var(--faint); text-transform:uppercase; letter-spacing:.04em; margin:6px 0 4px}
+.msec{
+  display:flex; align-items:center; gap:8px; width:100%; text-align:left;
+  border:1px solid var(--line); background:var(--surface); color:var(--ink);
+  border-radius:10px; padding:7px 9px; margin-bottom:5px; cursor:pointer;
+  font-size:12px; transition:border-color .14s, background .14s;
+}
+.msec:hover{border-color:var(--accent)}
+.msec.on{border-color:var(--accent); background:var(--accent-soft)}
+.msec.clash{border-color:var(--bad); background:var(--bad-soft)}
+.msec .g{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-weight:650; flex:none; min-width:34px}
+.msec .tm{color:var(--muted); flex:1; min-width:0}
+.msec .lk{
+  flex:none; border:0; background:transparent; cursor:pointer; font-size:13px;
+  opacity:.35; padding:2px 3px; border-radius:6px; line-height:1;
+}
+.msec .lk:hover{opacity:.9; background:var(--sunken)}
+.msec .lk.on{opacity:1}
+.seclock{
+  flex:none; border:0; background:transparent; cursor:pointer; font-size:14px;
+  opacity:.32; padding:3px 5px; border-radius:7px; line-height:1;
+}
+.seclock:hover{opacity:.85; background:var(--sunken)}
+.seclock.on{opacity:1}
+
 /* ---------- verdict ---------- */
 .verdict{
   margin:20px 0 0; padding:20px 22px; border-radius:var(--r-card);
@@ -136,6 +238,18 @@ header.top{
 .v-main{flex:1 1 320px; min-width:0}
 .v-title{font-size:23px; font-weight:700; letter-spacing:-.03em}
 .v-sub{color:var(--muted); font-size:14px; margin-top:4px}
+/* çakışma tanısı: doğrulanmış çözüm düğmeleri */
+.vfix{margin-top:12px}
+.vfix .fxl{font-size:12px; font-weight:650; color:var(--muted); margin-bottom:6px}
+.vfix .fxr{display:flex; gap:7px; flex-wrap:wrap}
+.vfix .fx{
+  border:1px solid var(--line2); background:var(--surface); color:var(--ink);
+  padding:6px 12px; border-radius:999px; font-size:12.5px; font-weight:550;
+  transition:border-color .14s, background .14s;
+}
+.vfix .fx:hover{border-color:var(--accent); color:var(--accent)}
+.vfix .fx .mono{font-size:12.5px}
+.vfix .fxn{font-size:12px; color:var(--faint); margin-top:6px}
 .v-stats{display:flex; gap:26px; flex-wrap:wrap}
 .stat{min-width:74px}
 .stat .n{font-size:26px; font-weight:680; letter-spacing:-.03em; line-height:1.1; font-variant-numeric:tabular-nums}
@@ -146,6 +260,8 @@ header.top{
   padding:5px 11px 5px 8px; border-radius:999px; background:var(--sunken); color:var(--muted);
 }
 .mix b{font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+.mix.must{background:var(--accent-soft); color:var(--accent); font-weight:650}
+.mix.maybe{background:var(--sunken); color:var(--muted)}
 .mix.required{background:#E07B1E1E; color:#B36414}
 .mix.core{background:#0A7CFF1E; color:#0A6ADB}
 .mix.area{background:#8E52D61E; color:#7442B5}
@@ -207,6 +323,12 @@ header.top{
 .modesw{width:100%; margin-bottom:10px}
 .modesw button{flex:1}
 .modesw .cnt{align-self:center; font-size:11px; font-weight:650; color:var(--muted); padding:0 8px; font-variant-numeric:tabular-nums}
+/* yukarıdaki iki kural panel içindeki geçişler için; üst bardaki
+   Otomatik/Manuel anahtarı kendi genişliğinde kalsın */
+header.top .modesw{width:auto; margin-bottom:0}
+header.top .modesw button{flex:0 0 auto}
+/* üst bar ikinci satıra taşarsa ana düğme sağda kalsın */
+header.top #btnAuto{margin-left:auto}
 .searchrow{display:flex; gap:8px; flex-wrap:wrap}
 #q{flex:1 1 100%; min-width:0; border:0; background:var(--sunken); color:var(--ink); font-size:14px; padding:9px 13px; border-radius:11px}
 #q::placeholder{color:var(--faint)}
@@ -232,7 +354,17 @@ header.top{
 .currow select{flex:1; min-width:0; font-size:13px}
 .curnote{font-size:12px; color:var(--faint); line-height:1.4; margin-top:8px}
 .poolhead{padding:12px 18px 2px; font-size:12px; color:var(--faint); font-weight:600;
-  display:flex; align-items:center; gap:8px; justify-content:space-between}
+  display:flex; align-items:center; gap:8px; justify-content:space-between; flex-wrap:wrap}
+/* havuzun kuralı + kesin/belki grup başlıkları */
+.poollaw{padding:2px 18px 10px; font-size:12px; color:var(--faint); line-height:1.45}
+.poollaw b{color:var(--muted); font-weight:650}
+.gsep{
+  display:flex; align-items:baseline; gap:7px; padding:8px 16px 6px;
+  background:var(--surface2); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:1;
+}
+.gsep b{font-size:12px; font-weight:700; letter-spacing:-.01em}
+.gsep span{font-size:11.5px; color:var(--faint)}
+.gsep i{margin-left:auto; font-style:normal; font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums}
 .clist{max-height:min(46vh,440px); overflow-y:auto; display:flex; flex-direction:column}
 .crow{display:flex; gap:11px; padding:12px 16px; border-bottom:1px solid var(--line); cursor:pointer; align-items:flex-start}
 .crow:last-child{border-bottom:0}
@@ -246,6 +378,17 @@ header.top{
 .crow .tags{display:flex; gap:5px; margin-top:6px; flex-wrap:wrap; align-items:center}
 .crow .swatch{width:3px; align-self:stretch; border-radius:999px; flex:none; background:transparent}
 .tag{font-size:11px; font-weight:500; padding:2px 7px; border-radius:var(--r-chip); background:var(--sunken); color:var(--muted)}
+/* "kesin alacağım" düğmesi: aday derslerde soluk, kesinlerde dolu */
+.mustbtn{
+  border:1px solid var(--line2); background:transparent; color:var(--faint);
+  font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--r-chip);
+  cursor:pointer; transition:background .14s, color .14s, border-color .14s;
+}
+.mustbtn:hover{border-color:var(--accent); color:var(--accent)}
+.mustbtn.on{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.crow.must{background:color-mix(in srgb, var(--accent-soft) 60%, transparent)}
+.crow.must .swatch{background:var(--accent) !important}
+.crow input[type=checkbox]:disabled{opacity:.55; cursor:default}
 .tag.r{background:var(--warn-soft); color:var(--warn)}
 .tag.p{background:var(--accent-soft); color:var(--accent)}
 .rm{flex:none; align-self:center; border:0; background:transparent; color:var(--faint); font-size:17px; line-height:1; width:28px; height:28px; border-radius:999px; display:flex; align-items:center; justify-content:center; transition:background .14s, color .14s}
@@ -632,17 +775,51 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
       <span class="sep"></span>
       <span id="lblCred"></span><select id="crMin"></select><span class="rng">–</span><select id="crMax"></select>
     </span>
+    <span class="modesw" id="modesw">
+      <button data-mode="auto" class="on" id="mdAuto"></button><button data-mode="manual" id="mdManual"></button>
+    </span>
+    <button class="helpbtn" id="btnHelp" aria-label="?">?</button>
     <button class="btn" id="btnClear"></button>
     <button class="btn primary" id="btnAuto"></button>
   </div>
 </header>
 
+<!-- ilk açılışta gösterilen kısa görsel rehber; "?" ile tekrar açılır -->
+<div class="gd" id="guide" hidden>
+  <div class="gdcard" role="dialog" aria-modal="true" aria-labelledby="gdTitle">
+    <button class="gdclose" id="gdClose" aria-label="×">×</button>
+    <div class="gdart" id="gdArt"></div>
+    <div class="gdbody">
+      <div class="gdstep" id="gdStep"></div>
+      <h2 class="gdtitle" id="gdTitle"></h2>
+      <p class="gdtext" id="gdText"></p>
+    </div>
+    <div class="gdfoot">
+      <div class="gddots" id="gdDots"></div>
+      <div class="gdacts">
+        <button class="btn tiny" id="gdSkip"></button>
+        <button class="btn tiny" id="gdBack"></button>
+        <button class="btn primary" id="gdNext"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="wrap">
+
+  <div class="errbox" id="errBox" hidden>
+    <div class="errmain">
+      <div class="errtitle" id="errTitle"></div>
+      <div class="errbody" id="errBody"></div>
+    </div>
+    <div class="erracts" id="errActs"></div>
+  </div>
 
   <div class="verdict idle" id="verdict">
     <div class="v-main">
       <div class="v-title" id="vTitle"></div>
       <div class="v-sub" id="vSub"></div>
+      <div class="vfix" id="vFix" hidden></div>
     </div>
     <div class="v-stats" id="vStats"></div>
   </div>
@@ -678,7 +855,13 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
         </div>
 
         <div class="poolhead" id="poolHead" hidden><span id="poolHeadLbl"></span><span class="counter" id="counter">0</span></div>
+        <div class="poollaw" id="poolLaw" hidden></div>
         <div class="clist" id="clist"></div>
+      </div>
+
+      <div class="panel" id="manualPanel" hidden>
+        <h2><span id="lblManual"></span> <span class="hint" id="manualHint"></span></h2>
+        <div class="mbody" id="manualList"></div>
       </div>
     </div>
 
@@ -866,6 +1049,28 @@ const PALETTE = ["--c1","--c2","--c3","--c4","--c5","--c6","--c7","--c8","--c9",
 let MINSEL = 3,  MAXSEL = 6;
 let MINCR  = 0,  MAXCR  = 30;
 const SEL_HI = 10, CRED_HI = 40;
+/* Sınırlar hiçbir yoldan geçersiz kalmasın: boş/NaN bir <select> okuması,
+   eski biçimli bir plan ya da bozuk localStorage kaydı MINSEL/MAXSEL'i 0
+   yapabiliyordu; o durumda üst barda "1" görünürken değişken 0 kalıyor,
+   hedef "0-0 ders" oluyordu ve hata ekranı hiç kapanmıyordu. */
+function clampInt(v, lo, hi, dflt){
+  /* boş dize de geçersizdir: bir <select>'e listede olmayan bir değer
+     atandığında .value "" olur ve +"" === 0 sınırı sıfırlıyordu */
+  if (v === "" || v === null || v === undefined) return dflt;
+  const n = Math.round(Number(v));
+  if (!Number.isFinite(n)) return dflt;
+  return Math.min(hi, Math.max(lo, n));
+}
+function normalizeRanges(){
+  const a = MINSEL, b = MAXSEL, c = MINCR, d = MAXCR;
+  MAXSEL = clampInt(MAXSEL, 1, SEL_HI, 6);
+  MINSEL = clampInt(MINSEL, 1, SEL_HI, 3);
+  if (MINSEL > MAXSEL) MINSEL = MAXSEL;
+  MAXCR = clampInt(MAXCR, 0, CRED_HI, 30);
+  MINCR = clampInt(MINCR, 0, CRED_HI, 0);
+  if (MINCR > MAXCR) MINCR = MAXCR;
+  return a !== MINSEL || b !== MAXSEL || c !== MINCR || d !== MAXCR;
+}
 const selCred = () => credSum(selected);
 const inRange = () => selected.length >= MINSEL && selected.length <= MAXSEL &&
                       selCred() >= MINCR && selCred() <= MAXCR;
@@ -884,10 +1089,17 @@ const STR = {
     overCred:m=>`Kredi üst sınırın ${m}. Üstteki aralığı büyüt.`,
     rangeHint:(a,b,c,d)=>`Hedef: ${a}-${b} ders, ${c}-${d} kredi`,
     autoNoRange:(a,b,c,d)=>`${a}-${b} ders ve ${c}-${d} kredi aralığına oturan çakışmasız bir kombinasyon yok. Aralığı genişlet ya da havuza ders ekle.`,
-    poolTitle:"1 · Aday havuzu", poolEmpty:"boş", poolCount:n=>`${n} ders`,
-    poolHead:"2 · Programa katılacaklar", searchPh:"Ders kodu veya adı ara…", all:"Tümü",
+    poolTitle:"1 · Ders havuzu", poolEmpty:"boş", poolCount:n=>`${n} ders`,
+    poolHead:"2 · Kesin / belki", searchPh:"Ders kodu veya adı ara…", all:"Tümü",
     noMatch:"Eşleşen ders yok.", tooMany:(a,b)=>`${a} sonuç — ilk ${b} gösteriliyor, aramayı daralt.`,
-    emptyPool:"<b>1.</b> Yukarıdan ders ara, <b>+</b> ile havuza at.<br><b>2.</b> Programa girecekleri işaretle.<br><b>3.</b> Üstten <b>En iyi kombinasyonu bul</b>'a bas.",
+    emptyPool:"<b>1.</b> Yukarıdan ders ara, <b>+</b> ile havuza at.<br><b>2.</b> Kesin alacaklarına <b>kesin</b> de, gerisi <b>belki</b> kalsın.<br><b>3.</b> Üstten <b>En iyi kombinasyonu bul</b>'a bas.",
+    gMust:"Kesin", gMustSub:"her programa girer",
+    gMaybe:"Belki", gMaybeSub:"sığarsa eklenir",
+    gIn:n=>`${n} tanesi programda`, gAllIn:"hepsi programda", gNoneIn:"programa girmedi",
+    poolLaw:"Kesin dersler her programa girer, belki dersleri ise ancak sığarsa eklenir. Hangilerinin sığdığını <b>En iyi kombinasyonu bul</b> hesaplar.",
+    autoTip:"Kesin dersleri olduğu gibi tutar, belki derslerinden sığanları ekler ve her ders için en iyi section'ı seçer.",
+    inSched:(n,c)=>`Programda: ${n} ders · ${c} kredi`,
+    mixMust:n=>`${n} kesin`, mixMaybe:n=>`${n} belki`,
     secTag:n=>`${n} section`, selfClash:"kendi içinde çakışıyor", removeTitle:"Havuzdan çıkar",
     gridTitle:"Haftalık program", altTitle:"Alternatif çözümler", altHint:"aynı dersler, farklı section'lar",
     secTitle:"Seçilen section'lar", crnCount:n=>`${n} CRN`, copyCrn:"CRN'leri kopyala", copied:"Kopyalandı ✓",
@@ -939,6 +1151,38 @@ const STR = {
     prefBlockT:"Tercihlerin bu programı imkânsız kılıyor",
     prefBlockS:"Şu dersin hiçbir section'ı koyduğun kısıtlara uymuyor:",
     instWant:"hoca", instAny:"fark etmez",
+    mustOff:"belki", mustOn:"kesin",
+    modeAuto:"Otomatik", modeManual:"Manuel",
+    manualBadT:(n)=>`Programında ${n} saat çakışma var`,
+    manualBadS:"Şu dersler üst üste geliyor:",
+    manualTitle:"Section seç", manualHint:"tıkla, program anında güncellensin",
+    lockTip:"Bu section'ı sabitle — bir daha değişmesin",
+    unlockTip:"Sabitlemeyi kaldır",
+    errMustTitle:"Kesin ders sayısı limitten fazla",
+    errMustBody:(m,l)=>`${m} dersi kesin işaretledin ama ders limitin ${l}. Bu ikisi aynı anda olamaz: ya limiti ${m} yap ya da kesin işaretlerinden birini kaldır.`,
+    errMustFix:(m)=>`Limiti ${m} yap`,
+    errMustClear:"Kesin işaretleri kaldır",
+    errLockTitle:"Sabitlenen section'lar çakışıyor",
+    errLockPair:(a,b)=>`${a} ile ${b} aynı saate düşüyor. İkisi de sabitli olduğu için çözücü bunu açamıyor; birinin kilidini kaldır.`,
+    errLockBody:"Sabitlediğin section'lar yüzünden program çakışmasız kurulamıyor. Kilitleri kaldırırsan çakışmasız bir dizilim mümkün.",
+    errLockClear:"Sabitlemeleri kaldır",
+    lockCause:"Bu çakışma sabitlediğin section'lardan geliyor; kilitleri kaldırırsan çakışmasız bir program mümkün.",
+    mustOnTip:"Bu dersi kesin alacağım — otomatik seçim onu asla elemez",
+    mustOffTip:"Kesin işaretini kaldır, ders yine aday olarak kalsın",
+    mustClash:(list)=>`Kesin işaretlediğin dersler birlikte çakışmasız yerleşmiyor: ${list}.`,
+    fixTitle:"Çakışmasız yapmanın yolları",
+    fixDropMust:(c)=>`${c} belki olsun`,
+    fixDropSel:(c)=>`${c} programdan çıksın`,
+    fixInst:(c,n)=>`${c}: ${n} kısıtı kalksın`,
+    fixPin:(c)=>`${c}: section kilidi açılsın`,
+    fixPref:"Saat / boş gün tercihleri kalksın",
+    fixDropTip:(c)=>`${c} havuzda kalır, kalan dersler çakışmasız yerleşir`,
+    fixPairs:(l)=>`Şu ikililer hiçbir section kombinasyonunda bir arada olmuyor: ${l}.`,
+    fixNone:"Tek bir hamle yetmiyor: en az iki dersi programdan çıkarman ya da bir kısıtı gevşetmen gerekiyor.",
+    fixMore:"Bunlar denenmiş ve işe yaradığı doğrulanmış hamleler.",
+    fixPartial:"Arama bütçesi doldu, başka çözümler de olabilir.",
+    fixWait:"hesaplanıyor…",
+    autoDropped:(list)=>`Sığmayan belki dersleri: ${list} — bunlar geri kalanlarla çakışmasız yerleşmiyor, havuzda duruyor.`,
     plans:"Planlar", plansEmpty:"kayıtlı plan yok", planPh:"plan adı", planSave:"Kaydet", planWord:"Plan",
     wallpaper:"Duvar kâğıdı", wpTitle:"Duvar kâğıdı yap", wpColor:"Arka plan",
     clearPool:"Temizle",
@@ -966,7 +1210,30 @@ const STR = {
     days:["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"],
     daysS:["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"],
     types:{"":"Ders","R":"Recitation","D":"Discussion","L":"Lab","S":"Studio","E":"Ek","N":"Ek","M":"Ek"},
-    locale:"tr-TR"
+    locale:"tr-TR",
+    gdHelp:"Nasıl kullanılır?",
+    gdBack:"Geri", gdNext:"Devam", gdDone:"Başla", gdSkip:"Atla",
+    gdStep:(i,n)=>`${i} / ${n}`,
+    gdSteps:[
+      {t:"SUits ne yapıyor?",
+       d:"Almayı düşündüğün dersleri söylüyorsun, SUits hangilerinin birlikte çakışmadan alınabileceğini ve her ders için hangi section'ın en iyi programı verdiğini hesaplıyor. Bütün kombinasyonlar tarayıcında deneniyor."},
+      {t:"1. Dersleri havuza ekle",
+       d:"Soldaki kutudan ders ara ve ekle. Bölümünü seçersen dersler Required / Core / Area / University olarak etiketlenir. Havuz bir kısa listedir; hepsini almak zorunda değilsin."},
+      {t:"2. Kesin mi, belki mi?",
+       d:"Havuz ikiye ayrılır. <b>Kesin</b> dediklerin her programa girer, çıkarılamaz. <b>Belki</b> bıraktıkların ise ancak çakışmadan sığarsa eklenir. Hangi belkilerin sığdığına “En iyi kombinasyonu bul” karar verir."},
+      {t:"3. Ders ve kredi aralığı",
+       d:"Üst bardan kaç ders ve kaç kredi istediğini alt–üst sınır olarak veriyorsun. Üst sınır seçimi kısıtlar, alt sınır otomatik seçimin hedefidir."},
+      {t:"4. En iyi kombinasyonu bul",
+       d:"Bu düğme hem dersleri hem section'ları birlikte seçer. Ana kural her zaman aynı: çakışmasız bir program. Çakışma kaçınılmazsa SUits bunu denenmiş çözüm düğmeleriyle söyler: hangi dersi belki yaparsan ya da hangi kısıtı kaldırırsan program çakışmasız oluyor."},
+      {t:"5. Tercihlerini söyle",
+       d:"Başlangıç–bitiş saati, boş gün, dersler arası boşluk, hoca veya belirli bir section. Bir tercih mümkün değilse SUits sessizce yutmaz: nedenini yazar ve hangi alternatifin mümkün olduğunu söyler."},
+      {t:"6. Section'ı kilitle",
+       d:"Bir section'ı arkadaşınla aynı almak istiyorsan kilit simgesine bas; o section bir daha değişmez. Kilitler yüzünden çakışmasız program kurulamıyorsa uyarı çıkar."},
+      {t:"7. Manuel mod",
+       d:"Üstteki Manuel sekmesi programı sana bırakır: SUchedule'daki gibi soldaki listeden section'ları tek tek seçersin, çakışmalar anında görünür. Otomatik programın son hali oraya taşınır."},
+      {t:"Son adım",
+       d:"Programı paylaşabilir, yazdırabilir, CRN'leri tek tıkla kopyalayabilir ya da telefon duvar kâğıdı olarak kaydedebilirsin. Bu rehberi üstteki “?” düğmesinden tekrar açabilirsin."}
+    ]
   },
   en: {
     tagline:n=>`courses that fit your schedule · ${n} courses`,
@@ -976,10 +1243,17 @@ const STR = {
     overCred:m=>`Your credit ceiling is ${m}. Widen the range up top.`,
     rangeHint:(a,b,c,d)=>`Target: ${a}-${b} courses, ${c}-${d} credits`,
     autoNoRange:(a,b,c,d)=>`No conflict-free combination fits ${a}-${b} courses and ${c}-${d} credits. Widen the range or add more courses to the pool.`,
-    poolTitle:"1 · Candidate pool", poolEmpty:"empty", poolCount:n=>`${n} course${n===1?"":"s"}`,
-    poolHead:"2 · In your schedule", searchPh:"Search course code or name…", all:"All",
+    poolTitle:"1 · Course pool", poolEmpty:"empty", poolCount:n=>`${n} course${n===1?"":"s"}`,
+    poolHead:"2 · Must / maybe", searchPh:"Search course code or name…", all:"All",
     noMatch:"No matching course.", tooMany:(a,b)=>`${a} results — showing the first ${b}, narrow your search.`,
-    emptyPool:"<b>1.</b> Search above and add courses with <b>+</b>.<br><b>2.</b> Tick the ones for your schedule.<br><b>3.</b> Hit <b>Find the best combination</b> up top.",
+    emptyPool:"<b>1.</b> Search above and add courses with <b>+</b>.<br><b>2.</b> Mark the ones you will definitely take as <b>must</b>, leave the rest as <b>maybe</b>.<br><b>3.</b> Hit <b>Find the best combination</b> up top.",
+    gMust:"Must-take", gMustSub:"always in the schedule",
+    gMaybe:"Maybe", gMaybeSub:"added if it fits",
+    gIn:n=>`${n} in the schedule`, gAllIn:"all in the schedule", gNoneIn:"none made it in",
+    poolLaw:"Must-take courses are always in the schedule; maybe courses are added only if they fit. <b>Find the best combination</b> works out which ones do.",
+    autoTip:"Keeps every must-take course, adds the maybe courses that fit, and picks the best section for each.",
+    inSched:(n,c)=>`In schedule: ${n} courses · ${c} credits`,
+    mixMust:n=>`${n} must`, mixMaybe:n=>`${n} maybe`,
     secTag:n=>`${n} section${n===1?"":"s"}`, selfClash:"clashes with itself", removeTitle:"Remove from pool",
     gridTitle:"Weekly schedule", altTitle:"Alternative solutions", altHint:"same courses, different sections",
     secTitle:"Chosen sections", crnCount:n=>`${n} CRNs`, copyCrn:"Copy CRNs", copied:"Copied ✓",
@@ -1031,6 +1305,38 @@ const STR = {
     prefBlockT:"Your preferences make this schedule impossible",
     prefBlockS:"No section of this course satisfies your constraints:",
     instWant:"instructor", instAny:"any",
+    mustOff:"maybe", mustOn:"must",
+    modeAuto:"Auto", modeManual:"Manual",
+    manualBadT:(n)=>`${n} hours of overlap in your schedule`,
+    manualBadS:"These courses land on top of each other:",
+    manualTitle:"Pick sections", manualHint:"click one, the schedule updates instantly",
+    lockTip:"Lock this section so it never changes",
+    unlockTip:"Remove the lock",
+    errMustTitle:"More must-take courses than your limit",
+    errMustBody:(m,l)=>`You marked ${m} courses as must-take, but your course limit is ${l}. Those two cannot both hold: either raise the limit to ${m}, or unmark one of the courses.`,
+    errMustFix:(m)=>`Set the limit to ${m}`,
+    errMustClear:"Clear must-take marks",
+    errLockTitle:"Locked sections clash",
+    errLockPair:(a,b)=>`${a} and ${b} fall on the same hours. Both are locked, so the solver cannot move either one. Unlock one of them.`,
+    errLockBody:"The sections you locked make a conflict-free schedule impossible. Removing the locks would allow one.",
+    errLockClear:"Remove the locks",
+    lockCause:"This overlap comes from the sections you locked; remove the locks and a conflict-free schedule is possible.",
+    mustOnTip:"I am definitely taking this — the solver will never drop it",
+    mustOffTip:"Unmark it; the course stays in the pool as a candidate",
+    mustClash:(list)=>`The courses you marked as must-take do not fit together without an overlap: ${list}.`,
+    fixTitle:"Ways to make it clash-free",
+    fixDropMust:(c)=>`Make ${c} a maybe`,
+    fixDropSel:(c)=>`Drop ${c} from the schedule`,
+    fixInst:(c,n)=>`${c}: drop the ${n} constraint`,
+    fixPin:(c)=>`${c}: unlock the section`,
+    fixPref:"Drop the hour / free-day preferences",
+    fixDropTip:(c)=>`${c} stays in the pool, and the rest fit with no overlap`,
+    fixPairs:(l)=>`These pairs never fit together in any section combination: ${l}.`,
+    fixNone:"No single move is enough: you need to drop at least two courses or relax a constraint.",
+    fixMore:"Each of these was tried and verified to work.",
+    fixPartial:"The search budget ran out, there may be other ways too.",
+    fixWait:"working…",
+    autoDropped:(list)=>`Maybe courses that did not fit: ${list} — they clash with the rest and stay in the pool.`,
     plans:"Plans", plansEmpty:"no saved plans", planPh:"plan name", planSave:"Save", planWord:"Plan",
     wallpaper:"Wallpaper", wpTitle:"Make a wallpaper", wpColor:"Background",
     clearPool:"Clear",
@@ -1058,7 +1364,30 @@ const STR = {
     days:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
     daysS:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
     types:{"":"Lecture","R":"Recitation","D":"Discussion","L":"Lab","S":"Studio","E":"Extra","N":"Extra","M":"Extra"},
-    locale:"en-GB"
+    locale:"en-GB",
+    gdHelp:"How it works",
+    gdBack:"Back", gdNext:"Next", gdDone:"Start", gdSkip:"Skip",
+    gdStep:(i,n)=>`${i} / ${n}`,
+    gdSteps:[
+      {t:"What SUits does",
+       d:"You tell it which courses you are considering. SUits works out which of them fit together without a clash, and which section of each one gives the best schedule. Every combination is tried in your browser."},
+      {t:"1. Add courses to the pool",
+       d:"Search and add from the panel on the left. Pick your major and courses get tagged Required / Core / Area / University. The pool is a shortlist, you do not have to take all of it."},
+      {t:"2. Must-take or maybe",
+       d:"The pool splits in two. <b>Must-take</b> courses are in every schedule and cannot be dropped. <b>Maybe</b> courses are added only if they fit with no clash, and “Find the best combination” decides which ones do."},
+      {t:"3. Course and credit range",
+       d:"Set how many courses and credits you want as a low–high range in the top bar. The high end caps your picks, the low end is the target for auto-pick."},
+      {t:"4. Find the best combination",
+       d:"This button picks the courses and their sections together. The hard rule never changes: no time conflicts. If a clash is unavoidable, SUits offers tested one-click fixes: which course to make a maybe, or which constraint to drop, so the rest fit."},
+      {t:"5. Set your preferences",
+       d:"Earliest and latest hour, a free day, short gaps between classes, a specific instructor or section. If a preference is impossible, SUits says why instead of silently dropping it, and tells you what is possible instead."},
+      {t:"6. Lock a section",
+       d:"Taking a section with a friend? Hit the lock icon and that section stays put. If the locks make a clash-free schedule impossible, you get a clear warning."},
+      {t:"7. Manual mode",
+       d:"The Manual tab hands the schedule back to you: pick sections one by one from the left, SUchedule style, with clashes shown instantly. Your automatic schedule carries over as the starting point."},
+      {t:"That's it",
+       d:"Share the schedule as a link, print it, copy the CRNs with one click, or save it as a phone wallpaper. You can reopen this guide any time from the “?” button up top."}
+    ]
   }
 };
 let LANG = "tr";
@@ -1446,7 +1775,7 @@ const CF_FAIL_BUDGET = 300000, CF_ALT_BUDGET = 40000;
 /* İlk çakışmasız atamayı bulunca durur — tam çözümden çok daha ucuz.
    true = yerleşir, false = yerleşmez, null = bütçe doldu, bilinmiyor.
    "Bilinmiyor"u yanlış uyarı basmaktansa sessiz kalmak için ayırıyoruz. */
-function existsCF(lists, budget){
+function existsCF(lists, budget, stat){
   const order = lists.map((l,i)=>i).sort((a,b)=>lists[a].length-lists[b].length).map(i=>lists[i]);
   const mask = new Set();
   let found = false, steps = 0, spent = false;
@@ -1465,7 +1794,76 @@ function existsCF(lists, budget){
     }
   };
   walk(0);
+  if (stat) stat.steps = steps;               // tanı için: gerçekten harcanan adım
   return found ? true : (spent ? null : false);
+}
+
+/* ================= çakışma tanısı: "ne yaparsam düzelir" =================
+   Çakışma varken "bir kısıtı gevşet" demek kullanıcıya iş bırakıyor. Burada
+   olası tek hamleleri tek tek deneyip yalnızca gerçekten işe yarayanları
+   döndürüyoruz: hangi dersi çıkarınca, hangi hoca kısıtını ya da kilidi
+   kaldırınca, ya da tercihleri bırakınca kalanlar çakışmasız yerleşiyor. */
+const FIX_BUDGET = 500000;     // tüm tanı için toplam adım bütçesi
+const FIX_MS = 700;            // ve duvar saati sınırı: tanı hiçbir durumda ekranı bekletmesin
+let _fixKey = "", _fixRes = null, _fixLeft = 0, _fixEnd = 0;
+
+/* code'un seçenekleri; hoca kısıtı ve/veya kilit istenirse yok sayılır */
+function optsRelaxed(code, dropInst, dropPin){
+  const want = dropInst ? null : INSTREQ[code];
+  const pins = dropPin ? null : pinsOf(code);
+  return optsOf(code).filter(o =>
+    (!want || (o.picks[0].sec.inst || "").includes(want)) &&
+    (!pins || o.picks.every(({cls,sec}) => !pins[cls.type] || pins[cls.type] === sec.crn)));
+}
+/* verilen ders kümesi çakışmasız yerleşiyor mu; over: {kod: seçenek listesi} */
+function fitsCF(codes, optsFn, over){
+  const lists = codes.map(c => (over && over[c]) ? over[c] : optsFn(c)).filter(l => l.length);
+  if (lists.length < 2) return true;
+  if (_fixLeft <= 0 || Date.now() > _fixEnd) return null;
+  const stat = {steps:0};
+  const r = existsCF(lists, Math.min(_fixLeft, 150000), stat);
+  _fixLeft -= stat.steps;                     // yalnız gerçekten harcanan düşülür
+  return r;                                   // null = bilinmiyor, öneri olarak sunulmaz
+}
+function fixKey(codes){
+  return (codes || []).filter(c => optsOf(c).length).join(",") + "#" + MUST.join(",")
+       + "#" + JSON.stringify(INSTREQ) + "#" + pinKey()
+       + "#" + PREFS.early + "-" + PREFS.late + "#" + OFF_EFF.join("");
+}
+function fixHints(codes){
+  const list = (codes || []).filter(c => optsOf(c).length);
+  const key = fixKey(codes);
+  if (key === _fixKey) return _fixRes;
+  _fixKey = key; _fixLeft = FIX_BUDGET; _fixEnd = Date.now() + FIX_MS;
+  const out = {pairs:[], drops:[], relax:[], pref:false, partial:false};
+  _fixRes = out;
+  if (list.length < 2) return out;
+  if (fitsCF(list, allowedOpts) !== false) return out;   // zaten oluyor ya da bilinmiyor
+  /* 1) hiçbir kombinasyonda bir arada olmayan ikililer */
+  for (let i = 0; i < list.length; i++) for (let j = i+1; j < list.length; j++){
+    if (fitsCF([list[i], list[j]], allowedOpts) === false) out.pairs.push([list[i], list[j]]);
+  }
+  /* 2) tek ders çıkarınca oluyor mu */
+  for (const c of list){
+    const rest = list.filter(x => x !== c);
+    if (fitsCF(rest, allowedOpts) === true) out.drops.push(c);
+  }
+  /* 3) hoca kısıtı / section kilidi kaldırılınca oluyor mu */
+  for (const c of list){
+    if (INSTREQ[c]){
+      const over = {}; over[c] = optsRelaxed(c, true, false);
+      if (fitsCF(list, allowedOpts, over) === true) out.relax.push({code:c, kind:"inst", name:INSTREQ[c]});
+    }
+    if (pinsOf(c)){
+      const over = {}; over[c] = optsRelaxed(c, false, true);
+      if (fitsCF(list, allowedOpts, over) === true) out.relax.push({code:c, kind:"pin"});
+    }
+  }
+  /* 4) saat aralığı / boş gün tercihleri bırakılırsa oluyor mu */
+  const prefsOn = PREFS.off.length > 0 || PREFS.early > 0 || PREFS.late < NSLOT-1;
+  if (prefsOn && fitsCF(list, c => optsRelaxed(c, false, false)) === true) out.pref = true;
+  out.partial = _fixLeft <= 0 || Date.now() > _fixEnd;   // bütçe bitti: liste eksik olabilir
+  return out;
 }
 
 /* Bir ders o günü neden boşaltamıyor?
@@ -1658,11 +2056,46 @@ function renderPrefs(){
 /* ================= durum ================= */
 let pool = [];          // aday havuzu (ders kodları)
 let selected = [];      // havuzdan programa katılanlar
+let MUST = [];          // "bu dönem kesin alacağım" — otomatik seçim bunları asla elemez
 let solutions = null, altIndex = 0;
+
+const isMust = code => MUST.includes(code);
+/* Tanı ekranındaki düğmelerin uyguladığı hamleler */
+function dropCourse(code){          // kesin işaretini kaldırıp programdan çıkar, havuzda kalır
+  MUST = MUST.filter(c => c !== code);
+  selected = selected.filter(c => c !== code);
+  altIndex = 0; save(); render();
+}
+function resetPrefs(){
+  PREFS.early = 0; PREFS.late = NSLOT-1; PREFS.off = [];
+  _allow.clear(); _offRep.clear(); _winRep.clear();
+  try{ localStorage.setItem("dk-prefs", JSON.stringify(PREFS)); }catch(e){}
+  altIndex = 0; render();
+}
+/* Kesin ders sayısı limiti aşarsa bunu sessizce düzeltmiyoruz: ikisi çelişiyor,
+   kullanıcı hangisini değiştireceğine kendi karar versin (hata ekranı çıkar). */
+const mustOverflow = () => MUST.length > MAXSEL;
+const effMax = () => MAXSEL;
+
+/* mod: otomatik çözücü ya da tamamen elle (SUchedule tarzı) */
+let MODE = "auto";
+let MANUAL = {};        // {kod: {tür: crn}} — elle seçilen section'lar
+function setMust(code, on){
+  if (on){
+    if (!MUST.includes(code)) MUST.push(code);
+    if (!selected.includes(code)) selected.push(code);   // kesin ders daima programda
+  } else {
+    MUST = MUST.filter(c => c !== code);
+  }
+  altIndex = 0; save(); render();
+}
 
 const save = () => { try{
   localStorage.setItem("dk-pool", JSON.stringify(pool));
   localStorage.setItem("dk-sel", JSON.stringify(selected));
+  localStorage.setItem("dk-must", JSON.stringify(MUST));
+  localStorage.setItem("dk-manual", JSON.stringify(MANUAL));
+  localStorage.setItem("dk-mode", MODE);
   localStorage.setItem("dk-range", JSON.stringify({a:MINSEL, b:MAXSEL, c:MINCR, d:MAXCR}));
 }catch(e){} };
 
@@ -1675,14 +2108,18 @@ function addToPool(code){
 function removeFromPool(code){
   pool = pool.filter(c => c !== code);
   selected = selected.filter(c => c !== code);
+  MUST = MUST.filter(c => c !== code);
   altIndex = 0; render();
 }
 function toggle(code){
   const i = selected.indexOf(code);
-  if (i >= 0) selected.splice(i,1);
+  if (i >= 0){
+    if (isMust(code)) return;      // kesin ders programdan çıkarılamaz
+    selected.splice(i,1);
+  }
   else {
     /* maksimumlar sert sınır: ne ders sayısı ne kredi üstüne çıkabilir */
-    const overCount = selected.length >= MAXSEL;
+    const overCount = selected.length >= effMax();
     const overCred  = MAXCR < CRED_HI && selCred() + credOf(code) > MAXCR;
     if (overCount || overCred){
       const el = document.getElementById("counter");
@@ -1917,21 +2354,42 @@ function renderPool(){
   if (!pool.length){
     el.innerHTML = `<div class="empty">${T().emptyPool}</div>`;
   }
-  pool.forEach(code => {
+  /* Liste iki gruba ayrılır: kesinler ve belkiler. Böylece "hangisi ne
+     anlama geliyor" ayrımı listenin kendisinden okunuyor; başlıkta da
+     o gruptan kaçının programa girdiği yazıyor. */
+  const mustList  = pool.filter(isMust);
+  const maybeList = pool.filter(c => !isMust(c));
+  const order = mustList.concat(maybeList);
+  const groupHead = (kind, list) => {
+    const S = T();
+    const inN = list.filter(c => selected.includes(c)).length;
+    const note = kind === "must" ? "" :
+      (list.length === 0 ? "" : inN === 0 ? S.gNoneIn : inN === list.length ? S.gAllIn : S.gIn(inN));
+    return `<div class="gsep"><b>${kind === "must" ? S.gMust : S.gMaybe}</b>` +
+           `<span>${kind === "must" ? S.gMustSub : S.gMaybeSub}</span>` +
+           `<i>${list.length}${note ? " · " + note : ""}</i></div>`;
+  };
+  order.forEach((code, idx) => {
+    if (idx === 0 && mustList.length) el.insertAdjacentHTML("beforeend", groupHead("must", mustList));
+    if (idx === mustList.length && maybeList.length)
+      el.insertAdjacentHTML("beforeend", groupHead("maybe", maybeList));
     const c = BY[code];
     const on = selected.includes(code);
     const blocked = !on && selected.some(s => pairOf(s, code).n > 0);
     const extras = c.classes.filter(cl => cl.type !== "");
     const selfClash = optsOf(code)[0].selfClash;
+    const must = isMust(code);
     const row = document.createElement("div");
-    row.className = "crow" + (on?" on":"") + (blocked?" dim":"");
+    row.className = "crow" + (on?" on":"") + (blocked?" dim":"") + (must?" must":"");
     row.innerHTML =
       `<span class="swatch" style="background:${on?colorOf(code):"transparent"}"></span>
-       <input type="checkbox" ${on?"checked":""} aria-label="${c.code}">
+       <input type="checkbox" ${on?"checked":""} ${must?"disabled":""} aria-label="${c.code}">
        <span class="txt">
          <span class="code">${c.code}</span>
          <div class="nm">${c.name}</div>
          <div class="tags">
+           <button class="mustbtn${must?" on":""}" data-code="${c.code}"
+             title="${must?T().mustOffTip:T().mustOnTip}">${must?T().mustOn:T().mustOff}</button>
            ${catChip(c.code)}
            <span class="tag">${T().secTag(c.classes[0].sections.length)}</span>
            ${extras.map(cl=>`<span class="tag r">${T().types[cl.type]||cl.type} ×${cl.sections.length}</span>`).join("")}
@@ -1955,15 +2413,21 @@ function renderPool(){
     }
     row.querySelector("input").addEventListener("change", () => toggle(code));
     row.querySelector(".txt").addEventListener("click", () => toggle(code));
+    row.querySelector(".mustbtn").addEventListener("click", e => {
+      e.stopPropagation(); setMust(code, !isMust(code));
+    });
     row.querySelector(".rm").addEventListener("click", e => { e.stopPropagation(); removeFromPool(code); });
     el.appendChild(row);
   });
   document.getElementById("poolHint").textContent = pool.length ? T().poolCount(pool.length) : T().poolEmpty;
   const cn = document.getElementById("counter");
   const cr = selCred();
-  cn.textContent = `${selected.length} ${T().courseWord} · ${cr} ${T().creditWord}`;
+  cn.textContent = T().inSched(selected.length, cr);
   cn.classList.toggle("full", selected.length > 0 && inRange());
   cn.title = T().rangeHint(MINSEL, MAXSEL, MINCR, MAXCR);
+  /* havuzun kuralı tek cümleyle listenin başında dursun */
+  const law = document.getElementById("poolLaw");
+  if (law){ law.hidden = !pool.length; law.innerHTML = T().poolLaw; }
 }
 
 /* ================= program tablosu ================= */
@@ -2078,11 +2542,13 @@ function renderSections(sol){
               `<option value="${s.crn}"${s.crn===sec.crn?" selected":""}>${label(s)}</option>`).join("") +
           `</select>`
         : `<span class="pl">${label(sec)}</span>`;
+      const locked = pins[cls.type] === sec.crn;
       return `<div class="row">
         <span class="k">${(T().types[cls.type]||cls.type).slice(0,4).toUpperCase()}</span>
         <span class="v">${sec.crn}</span>
         ${picker}
-        ${pins[cls.type]?`<button class="unpin" data-code="${code}" data-type="${cls.type}" title="${T().unpin}">📌</button>`:""}
+        <button class="seclock${locked?" on":""}" data-code="${code}" data-type="${cls.type}" data-crn="${sec.crn}"
+          title="${locked?T().unlockTip:T().lockTip}">${locked?"🔒":"🔓"}</button>
         ${seatChip(sec)}
       </div>`;
     }).join("");
@@ -2094,10 +2560,14 @@ function renderSections(sol){
       (who?`<div class="who">${who}</div>`:"") + rows;
     grid.appendChild(div);
   });
-  grid.querySelectorAll(".secsel").forEach(sel => sel.onchange = () =>
-    setPin(sel.dataset.code, sel.dataset.type, sel.value));
-  grid.querySelectorAll(".unpin").forEach(btn => btn.onclick = () =>
-    setPin(btn.dataset.code, btn.dataset.type, null));
+  grid.querySelectorAll(".secsel").forEach(sel => sel.onchange = () => {
+    if (MODE === "manual") manualPick(sel.dataset.code, sel.dataset.type, sel.value);
+    else setPin(sel.dataset.code, sel.dataset.type, sel.value);
+  });
+  grid.querySelectorAll(".seclock").forEach(btn => btn.onclick = () => {
+    const cur = (pinsOf(btn.dataset.code)||{})[btn.dataset.type];
+    setPin(btn.dataset.code, btn.dataset.type, cur === btn.dataset.crn ? null : btn.dataset.crn);
+  });
   document.getElementById("crnHint").textContent = T().crnCount(crns.length);
   const ua = document.getElementById("btnUnpinAll");
   ua.hidden = !Object.keys(PINNED).length;
@@ -2136,11 +2606,67 @@ function renderAlts(){
 
 /* ================= verdict ================= */
 function blockedByPrefs(){ return selected.filter(prefBlocked); }
+/* Çakışma tanısını düğmelere çevirir. Her düğme, denenip çakışmasız sonuç
+   verdiği doğrulanmış tek bir hamledir; tıklayınca uygulanır. */
+/* Tanı, çakışma varken birkaç yüz milisaniye sürebiliyor. Ekranı bekletmemek
+   için hesap bir sonraki karede yapılır; sonuç önbellekteyse anında basılır. */
+let _fixSeq = 0;
+function paintFix(codes){
+  const box = document.getElementById("vFix");
+  if (!box) return;
+  const token = ++_fixSeq;
+  if (fixKey(codes) === _fixKey){ drawFix(codes, box); return; }
+  box.hidden = false;
+  box.innerHTML = `<div class="fxl">${TX().fixTitle}</div><div class="fxn">${TX().fixWait}</div>`;
+  setTimeout(() => {
+    if (token !== _fixSeq) return;                 // arada yeni bir çizim oldu
+    fixHints(codes);
+    drawFix(codes, box);
+  }, 30);
+}
+function drawFix(codes, box){
+  const S = TX();
+  const f = fixHints(codes);
+  /* ucuz hamle önce: kısıt gevşetmek dersten vazgeçmekten iyidir,
+     ders çıkarmak gerekiyorsa da önce "belki" olanlar */
+  const acts = [];
+  f.relax.forEach(r => acts.push(r.kind === "inst"
+    ? {label:S.fixInst(r.code, r.name), run:() => setInstReq(r.code, "")}
+    : {label:S.fixPin(r.code), run:() => clearPins(r.code)}));
+  if (f.pref) acts.push({label:S.fixPref, run:resetPrefs});
+  f.drops.filter(c => !isMust(c)).forEach(c => acts.push({
+    label:S.fixDropSel(c), tip:S.fixDropTip(c), run:() => dropCourse(c)
+  }));
+  f.drops.filter(isMust).forEach(c => acts.push({
+    label:S.fixDropMust(c), tip:S.fixDropTip(c), run:() => dropCourse(c)
+  }));
+  const notes = [];
+  /* verdict metni zaten "hiçbir kombinasyonda bir arada olmayan" ikilileri
+     yazıyor; burada yalnız kısıtlar yüzünden doğanları, tekrar etmeden ekle */
+  const softPairs = f.pairs.filter(([a,b]) => pairOf(a,b).n === 0);
+  if (softPairs.length)
+    notes.push(S.fixPairs(softPairs.slice(0,4).map(([a,b]) => `${a} ↔ ${b}`).join(", ")));
+  if (!acts.length && f.pairs.length === 0 && !f.partial) notes.push(S.fixNone);
+  if (f.partial) notes.push(S.fixPartial);
+  if (!acts.length && !notes.length){ box.hidden = true; box.innerHTML = ""; return; }
+  box.hidden = false;
+  box.innerHTML =
+    (acts.length ? `<div class="fxl">${S.fixTitle}</div><div class="fxr">` +
+      acts.slice(0,6).map((a,i) =>
+        `<button class="fx" data-i="${i}"${a.tip?` title="${a.tip.replace(/"/g,"&quot;")}"`:""}>${a.label}</button>`
+      ).join("") + `</div>` : "") +
+    (notes.length ? `<div class="fxn">${notes.join(" ")}</div>` : "");
+  box.querySelectorAll(".fx").forEach(b =>
+    b.onclick = () => { const a = acts[+b.dataset.i]; if (a) a.run(); });
+}
+
 function renderVerdict(sol){
   const v = document.getElementById("verdict");
   const T = document.getElementById("vTitle"), S = document.getElementById("vSub"), St = document.getElementById("vStats");
   v.className = "verdict";
   St.innerHTML = "";
+  const fixBox = document.getElementById("vFix");
+  if (fixBox){ fixBox.hidden = true; fixBox.innerHTML = ""; }
   const blk = blockedByPrefs();
   if (!sol && blk.length){
     v.classList.add("bad");
@@ -2166,15 +2692,36 @@ function renderVerdict(sol){
     v.classList.add("ok");
     T.textContent = TX().okT(selected.length);
     S.textContent = TX().okS;
+  } else if (sol.manual){
+    /* elle modda çakışmayı kullanıcı kendi kurdu: "en iyi ihtimalle" demek yanlış olur */
+    v.classList.add(sol.c <= 1 ? "warn" : "bad");
+    T.textContent = TX().manualBadT(sol.c);
+    const over = [];
+    for (let i=0;i<sol.codes.length;i++) for (let j=i+1;j<sol.codes.length;j++){
+      const A = sol.picks[i].mask, B = sol.picks[j].mask;
+      for (const k of A) if (B.has(k)){ over.push([sol.codes[i], sol.codes[j]]); break; }
+    }
+    S.innerHTML = over.length
+      ? TX().manualBadS + " " + over.map(([a,b])=>`<b class="mono">${a} ↔ ${b}</b>`).join(", ") + "."
+      : TX().manualBadS;
   } else {
     v.classList.add(sol.c <= 1 ? "warn" : "bad");
     T.textContent = TX().badT(sol.c);
-    S.innerHTML = hard.length
+    S.innerHTML = LOCK_CLASH ? TX().lockCause
+      : hard.length
       ? TX().hardPairs + hard.map(([a,b])=>`<b class="mono">${a} ↔ ${b}</b>`).join(", ") + "."
       : TX().noPairClash;
+    paintFix(selected);          // "ne yaparsam düzelir": doğrulanmış hamleler
   }
   const cred = credSum(selected);
   const parts = [];
+  /* programa girenlerin kaçı kesin, kaçı belki: kesin/belki/otomatik seçim
+     arasındaki bağ burada sayıyla görünür */
+  if (selected.length){
+    const mIn = selected.filter(isMust).length;
+    if (mIn) parts.push(`<span class="mix must">${TX().mixMust(mIn)}</span>`);
+    if (selected.length - mIn) parts.push(`<span class="mix maybe">${TX().mixMaybe(selected.length - mIn)}</span>`);
+  }
   if (CURMAP){
     const cnt = {}; let none = 0;
     selected.forEach(c => { const k = catOf(c); if (k) cnt[k] = (cnt[k]||0)+1; else none++; });
@@ -2230,27 +2777,254 @@ function renderMatrix(){
 }
 
 /* ================= render ================= */
+/* ================= elle seçim (manuel mod) =================
+   SUchedule'ın alıştırdığı akış: soldan section'ları tıklarsın, program anında
+   güncellenir, çakışma varsa kırmızı görünür. Çözücü hiç karışmaz. */
+
+/* Elle seçilenlerden çözüm nesnesi üretir; render fonksiyonları bunu da anlar. */
+function manualSol(){
+  const codes = [], picks = [];
+  const count = new Map();
+  for (const code of selected){
+    const c = BY[code]; if (!c) continue;
+    const chosen = [];
+    for (const cls of c.classes){
+      const want = MANUAL[code] && MANUAL[code][cls.type];
+      const sec = usableSections(cls).find(x => x.crn === want);
+      if (sec) chosen.push({cls, sec});
+    }
+    if (!chosen.length) continue;
+    const mask = new Set();
+    chosen.forEach(({sec}) => sec.mt.forEach(m => { for (let k=0;k<m.du;k++) mask.add(m.d*NSLOT+m.s+k); }));
+    mask.forEach(k => count.set(k, (count.get(k)||0)+1));
+    codes.push(code);
+    picks.push({picks:chosen, mask});
+  }
+  if (!codes.length) return null;
+  const mask = new Set(), conflicts = new Set();
+  for (const [k,n] of count){ mask.add(k); if (n > 1) conflicts.add(k); }
+  return {codes, picks, mask, conflicts, c:conflicts.size, m:score(mask), manual:true};
+}
+
+/* Otomatik programı elle moda taşı: her dersin o anki section'ları başlangıç olur. */
+function seedManual(){
+  const sol = solutions ? solutions[altIndex] : null;
+  MANUAL = {};
+  if (sol) sol.codes.forEach((code,i) => {
+    MANUAL[code] = {};
+    sol.picks[i].picks.forEach(({cls,sec}) => { MANUAL[code][cls.type] = sec.crn; });
+  });
+  /* çözümde olmayan seçili dersler için ilk uygun section'ı ata */
+  selected.forEach(code => {
+    if (MANUAL[code] || !BY[code]) return;
+    MANUAL[code] = {};
+    BY[code].classes.forEach(cls => { const ss = usableSections(cls); if (ss.length) MANUAL[code][cls.type] = ss[0].crn; });
+  });
+}
+
+function setMode(m){
+  if (m === MODE) return;
+  if (m === "manual") seedManual();
+  MODE = m;
+  try{ localStorage.setItem("dk-mode", MODE); }catch(e){}
+  altIndex = 0; render();
+}
+
+function manualPick(code, type, crn){
+  MANUAL[code] = MANUAL[code] || {};
+  MANUAL[code][type] = crn;
+  if (!selected.includes(code)) selected.push(code);
+  try{ localStorage.setItem("dk-manual", JSON.stringify(MANUAL)); }catch(e){}
+  render();
+}
+
+function renderManual(sol){
+  const box = document.getElementById("manualList");
+  const S = T();
+  box.innerHTML = "";
+  const list = selected.length ? selected : pool;
+  if (!list.length){ box.innerHTML = `<div class="empty">${S.emptyPool}</div>`; return; }
+  /* çakışan dilimler: seçilmiş section'ları kırmızı göstermek için */
+  const clash = sol ? sol.conflicts : new Set();
+  list.forEach(code => {
+    const c = BY[code]; if (!c) return;
+    const wrap = document.createElement("div");
+    wrap.className = "mcourse open";
+    const picked = MANUAL[code] || {};
+    const nPick = Object.keys(picked).length;
+    wrap.innerHTML = `<div class="mhead">
+        <span class="swatch" style="background:${selected.includes(code)?colorOf(code):"transparent"}"></span>
+        <span class="code">${code}</span>
+        <span class="cnt">${nPick}/${c.classes.length}</span>
+        <span class="car">▸</span>
+      </div>` +
+      c.classes.map(cls => {
+        const ss = usableSections(cls);
+        return `<div class="mtype">
+          <div class="tlbl">${S.types[cls.type] || cls.type || "Ders"}</div>` +
+          ss.map(sec => {
+            const on = picked[cls.type] === sec.crn;
+            const bad = on && sec.mt.some(m => { for (let k=0;k<m.du;k++) if (clash.has(m.d*NSLOT+m.s+k)) return true; return false; });
+            const locked = (pinsOf(code)||{})[cls.type] === sec.crn;
+            const t = sec.mt.map(m => `${S.daysS[m.d]} ${rangeLabel(m.s,m.du)}`).join(" · ") || "TBA";
+            const pl = [...new Set(sec.mt.map(m=>m.p).filter(Boolean))].join(", ");
+            return `<button class="msec${on?" on":""}${bad?" clash":""}" data-code="${code}" data-type="${cls.type}" data-crn="${sec.crn}">
+              <span class="g">${sec.group}</span>
+              <span class="tm">${t}${pl?" · "+pl:""}${sec.inst?" · "+sec.inst.split(",")[0]:""}</span>
+              <span class="lk${locked?" on":""}" data-lock="${sec.crn}" title="${locked?S.unlockTip:S.lockTip}">${locked?"🔒":"🔓"}</span>
+            </button>`;
+          }).join("") + `</div>`;
+      }).join("");
+    wrap.querySelector(".mhead").onclick = () => wrap.classList.toggle("open");
+    wrap.querySelectorAll(".msec").forEach(btn => btn.onclick = e => {
+      const lk = e.target.closest(".lk");
+      if (lk){
+        e.stopPropagation();
+        const cur = (pinsOf(btn.dataset.code)||{})[btn.dataset.type];
+        setPin(btn.dataset.code, btn.dataset.type, cur === btn.dataset.crn ? null : btn.dataset.crn);
+        return;
+      }
+      manualPick(btn.dataset.code, btn.dataset.type, btn.dataset.crn);
+    });
+    box.appendChild(wrap);
+  });
+  document.getElementById("manualHint").textContent = S.manualHint;
+}
+
+/* ================= hata ekranı ================= */
+function showError(title, body, actions){
+  const box = document.getElementById("errBox");
+  document.getElementById("errTitle").textContent = title;
+  document.getElementById("errBody").textContent = body;
+  const acts = document.getElementById("errActs");
+  acts.innerHTML = "";
+  (actions||[]).forEach(a => {
+    const btn = document.createElement("button");
+    btn.className = "btn" + (a.primary ? " primary" : "");
+    btn.textContent = a.label;
+    btn.onclick = a.run;
+    acts.appendChild(btn);
+  });
+  box.hidden = false;
+}
+const clearError = () => { document.getElementById("errBox").hidden = true; };
+
+let LOCK_CLASH = null;     // verdict de kilitleri suçlayabilsin diye render öncesi hesaplanır
+/* Sabitlenen section'lar yüzünden çakışma çıkıyor mu? Çıkıyorsa hangi ikili? */
+function lockClash(sol){
+  if (!sol || sol.c === 0) return null;
+  const locked = selected.filter(c => pinsOf(c));
+  if (!locked.length) return null;
+  /* 1) doğrudan: sabitlenen iki section aynı saatte mi */
+  const slots = [];
+  for (const code of locked){
+    const pins = pinsOf(code) || {};
+    for (const cls of BY[code].classes){
+      const sec = usableSections(cls).find(x => x.crn === pins[cls.type]);
+      if (!sec) continue;
+      const set = new Set();
+      sec.mt.forEach(m => { for (let k=0;k<m.du;k++) set.add(m.d*NSLOT+m.s+k); });
+      slots.push({code, group:sec.group, set});
+    }
+  }
+  for (let i=0;i<slots.length;i++) for (let j=i+1;j<slots.length;j++){
+    if (slots[i].code === slots[j].code) continue;
+    for (const k of slots[i].set) if (slots[j].set.has(k))
+      return {pair:[`${slots[i].code} · ${slots[i].group}`, `${slots[j].code} · ${slots[j].group}`], locked};
+  }
+  /* 2) dolaylı: sabitler kalksa çakışmasız olabiliyor mu */
+  const free = selected.map(c => {
+    const ok = baseOk2(c);
+    return optsOf(c).filter(ok);
+  });
+  if (free.some(l => !l.length)) return null;
+  return existsCF(free, 800000) === true ? {pair:null, locked} : null;
+}
+/* sabitlemeleri yok sayan, yalnız hoca kısıtını uygulayan filtre */
+function baseOk2(code){
+  const want = INSTREQ[code];
+  return o => !want || (o.picks[0].sec.inst || "").includes(want);
+}
+
 function render(){
+  /* hiçbir yol geçersiz bir sınırla buraya gelmesin; düzeltme olduysa
+     üst bardaki seçim kutuları ve kayıt da aynı değere getirilsin */
+  if (normalizeRanges()){ try{ syncRangeUI(); saveRanges(); }catch(e){} }
   syncOffEff();          // çözücüye girmeden önce: hangi boş günler gerçekten tutulabiliyor
   renderPlans();
   renderPrefs();
+  const manual = MODE === "manual";
+  document.getElementById("poolPanel").hidden = manual;
+  document.getElementById("manualPanel").hidden = !manual;
+  document.querySelectorAll("#modesw button").forEach(b => b.classList.toggle("on", b.dataset.mode === MODE));
+  document.getElementById("btnAuto").hidden = manual;
   renderPool();
   renderResults();
   renderMatrix();
+  if (manual){
+    /* elle mod açıkken sayfa yenilendiyse seçim boş kalmasın: bir kez çözüp tohumla */
+    if (selected.length && !Object.keys(MANUAL).length){
+      solutions = solve(selected);
+      seedManual();
+    }
+    solutions = null;
+    LOCK_CLASH = null;
+    const sol = manualSol();
+    renderManual(sol);
+    renderVerdict(sol);
+    renderGrid(sol);
+    renderSections(sol);
+    renderAlts();
+    checkErrors(sol);
+    save();
+    return;
+  }
   solutions = selected.length ? solve(selected) : null;
   if (solutions && altIndex >= solutions.length) altIndex = 0;
   const sol = solutions ? solutions[altIndex] : null;
+  LOCK_CLASH = lockClash(sol);
   renderVerdict(sol);
   renderGrid(sol);
   renderSections(sol);
   renderAlts();
+  checkErrors(sol);
   save();
+}
+
+/* Kullanıcının kendi ayarlarının birbiriyle çeliştiği durumlar. */
+function checkErrors(sol){
+  const S = T();
+  if (mustOverflow()){
+    const acts = [];
+    /* Limit en fazla SEL_HI olabildiği için, kesin ders sayısı bunun
+       üstündeyse "limiti yükselt" düğmesi sorunu çözmez; gösterilmesin. */
+    if (MUST.length <= SEL_HI){
+      acts.push({label:S.errMustFix(MUST.length), primary:true, run:()=>{
+        MAXSEL = MUST.length;
+        MINSEL = Math.min(MINSEL, MAXSEL);
+        normalizeRanges();
+        syncRangeUI(); saveRanges(); altIndex=0; render();
+      }});
+    }
+    acts.push({label:S.errMustClear, primary:acts.length===0, run:()=>{ MUST = []; altIndex=0; save(); render(); }});
+    showError(S.errMustTitle, S.errMustBody(MUST.length, MAXSEL), acts);
+    return;
+  }
+  const lc = MODE === "manual" ? null : LOCK_CLASH;
+  if (lc){
+    showError(S.errLockTitle,
+      lc.pair ? S.errLockPair(lc.pair[0], lc.pair[1]) : S.errLockBody,
+      [{label:S.errLockClear, primary:true, run:()=>{ clearPins(); }}]);
+    return;
+  }
+  clearError();
 }
 
 
 /* ================= paylaşılabilir bağlantı ================= */
 function encodeState(){
-  const s = {p:pool, s:selected, n:MAXSEL, nlo:MINSEL, clo:MINCR, chi:MAXCR,
+  const s = {p:pool, s:selected, q:MUST, md:MODE, mn:MANUAL,
+             n:MAXSEL, nlo:MINSEL, clo:MINCR, chi:MAXCR,
              k:PINNED, i:INSTREQ,
              e:PREFS.early, l:PREFS.late, o:PREFS.off,
              m:MAJOR, a:ADMIT};
@@ -2269,13 +3043,16 @@ function applyState(s){
   if (!s) return false;
   if (Array.isArray(s.p)) pool = s.p.filter(c => BY[c]);
   if (Array.isArray(s.s)) selected = s.s.filter(c => pool.includes(c));
+  MUST = Array.isArray(s.q) ? s.q.filter(c => pool.includes(c)) : [];
+  if (s.md === "manual" || s.md === "auto") MODE = s.md;
+  if (s.mn && typeof s.mn === "object") MANUAL = s.mn;
+  MUST.forEach(c => { if (!selected.includes(c)) selected.push(c); });
   /* eski bağlantılarda yalnız s.n (tek limit) var, onlar da açılabilsin */
   if (Number.isInteger(s.n)   && s.n   >= 1 && s.n   <= SEL_HI)  MAXSEL = s.n;
   if (Number.isInteger(s.nlo) && s.nlo >= 1 && s.nlo <= SEL_HI)  MINSEL = s.nlo;
   if (Number.isInteger(s.clo) && s.clo >= 0 && s.clo <= CRED_HI) MINCR  = s.clo;
   if (Number.isInteger(s.chi) && s.chi >= 0 && s.chi <= CRED_HI) MAXCR  = s.chi;
-  if (MINSEL > MAXSEL) MINSEL = MAXSEL;
-  if (MINCR  > MAXCR)  MINCR  = MAXCR;
+  normalizeRanges();
   syncRangeUI();
   if (s.k && typeof s.k === "object"){ Object.keys(PINNED).forEach(k => delete PINNED[k]); Object.assign(PINNED, s.k); }
   if (s.i && typeof s.i === "object"){ Object.keys(INSTREQ).forEach(k => delete INSTREQ[k]); Object.assign(INSTREQ, s.i); }
@@ -2661,7 +3438,9 @@ let PLANS = [];
 let ACTIVE_PLAN = "";
 function savePlans(){ try{ localStorage.setItem("dk-plans", JSON.stringify(PLANS)); }catch(e){} }
 function planState(){
-  return {p:pool.slice(), s:selected.slice(), n:MAXSEL, k:JSON.parse(JSON.stringify(PINNED)),
+  return {p:pool.slice(), s:selected.slice(), q:MUST.slice(), md:MODE, mn:JSON.parse(JSON.stringify(MANUAL)),
+          n:MAXSEL, nlo:MINSEL, clo:MINCR, chi:MAXCR,
+          k:JSON.parse(JSON.stringify(PINNED)),
           i:JSON.parse(JSON.stringify(INSTREQ)),
           e:PREFS.early, l:PREFS.late, o:PREFS.off.slice(), m:MAJOR, a:ADMIT};
 }
@@ -2724,55 +3503,132 @@ function renderPlans(){
   bar.querySelector("#planName").addEventListener("keydown", e => { if (e.key === "Enter") savePlan(); });
 }
 
-/* ================= otomatik öneri ================= */
-const SUBSET_CAP = 40000;
-const AUTO_LEVEL_MS = 2500;   // her ders sayısı denemesine ayrılan süre
-const QUOTA = {};
-/* Hedef sırası: önce ders sayısı (maksimumdan minimuma inerek ilk olan kazanır),
-   aynı ders sayısında toplam kredisi yüksek olan, kredi de eşitse programı
-   daha derli toplu olan. Kredi aralığının dışında kalan alt kümeler elenir. */
-function autoSuggest(){
-  if (pool.length < 2) return {n:0};
-  const hiN = Math.min(MAXSEL, pool.length);
-  const loN = Math.max(1, Math.min(MINSEL, hiN));
-  let sawCredMiss = false;              // ders sayısı tuttu ama kredi aralığı tutmadı
-  for (let n = hiN; n >= loN; n--){
-    let best = null, bestSol = null, bestCr = -1, tried = 0, capped = false;
-    /* her seviye kendi süre bütçesiyle başlar: üst seviye bütçeyi tüketse de
-       alt seviyeler taze bütçeyle denenir, öneri hiç dönmemezlik etmez */
-    const levelEnd = Date.now() + AUTO_LEVEL_MS;
-    CF_DEADLINE = levelEnd;
-    const rec = (start, acc, cr) => {
-      if (capped) return;
-      if (acc.length === n){
-        if (cr < MINCR || cr > MAXCR){ sawCredMiss = true; return; }
-        if (++tried > SUBSET_CAP){ capped = true; return; }
-        if (Date.now() > levelEnd){ capped = true; return; }
-        const sol = solveCF(acc);
-        if (sol && (cr > bestCr || (cr === bestCr && bestSol && cmpM(sol.m, bestSol.m) < 0))){
-          best = acc.slice(); bestSol = sol; bestCr = cr;
-        }
-        return;
-      }
-      if (pool.length - start < n - acc.length) return;
-      for (let i=start;i<pool.length;i++){
-        if (prefBlocked(pool[i])) continue;
-        if (acc.some(a => pairOf(a, pool[i]).n > 0)) continue;
-        const cr2 = cr + credOf(pool[i]);
-        if (cr2 > MAXCR){ sawCredMiss = true; continue; }   // kredi yalnız artar, bu dal elenir
-        acc.push(pool[i]); rec(i+1, acc, cr2); acc.pop();
-        if (capped) return;
-      }
-    };
-    rec(0, [], 0);
-    CF_DEADLINE = Infinity;
-    if (best){
-      selected = best.slice().sort((a,b)=>pool.indexOf(a)-pool.indexOf(b));
-      altIndex = 0; render();
-      return {n, cred:bestCr, capped, short: n < hiN};
+/* ================= otomatik öneri =================
+   Eski sürüm önce C(havuz, n) alt kümelerini sayıyor, her biri için ayrı bir
+   çakışmasız arama çalıştırıyordu. 8-10 derslik havuzda bu, seviye başına
+   ayrılan süreyi doldurup "kısaltıldı" diyerek olduğundan küçük bir program
+   öneriyordu.
+
+   Yenisi tek bir aramada hem hangi derslerin alınacağını hem de her dersin
+   hangi section'ını kullanacağını birlikte seçiyor. Arama YALNIZCA çakışmasız
+   dizilimler üretiyor: sitenin birinci amacı çakışmasız program, ders sayısı
+   ve kredi ondan sonra geliyor. Her adımda ders ya uyan bir section'la alınır
+   ya da (kesin değilse) atlanır; "kalanların hepsini alsam bile eldekini
+   geçemem" olan dallar budanır. */
+const PLAN_BUDGET_MS = 6000;    // tüm arama için üst süre
+const PLAN_TARGET_MS = 1400;    // tek bir ders sayısı hedefine ayrılan süre
+const PLAN_POLISH_MS = 400;     // hedef tutunca krediyi iyileştirmek için ek süre
+const PLAN_NODE_CAP  = 6000000;
+
+/* Belirli bir ders sayısını (target) tam olarak tutturan, çakışmasız bir seçim ara.
+   Hedefin sabit olması budamayı çok güçlendiriyor: "kalanların hepsini alsam bile
+   hedefe ulaşamam" olan dallar anında kesiliyor. Bu yüzden hedef yüksekten başlayıp
+   iner; ilk tutan hedef kazanır, yani ders sayısı her zaman önceliklidir. */
+function searchTarget(items, target, deadline, st){
+  const mask = new Set();
+  let best = null, hitAt = 0;
+  const walk = (i, chosen, cr) => {
+    if (st.stopped) return;
+    if (++st.nodes > PLAN_NODE_CAP){ st.stopped = true; return; }
+    if ((st.nodes & 4095) === 0){
+      const now = Date.now();
+      if (now > deadline || (best && now > hitAt + PLAN_POLISH_MS)){ st.stopped = true; return; }
     }
+    if (chosen.length === target){
+      if (cr < MINCR){ st.credMiss = true; return; }
+      if (!best){ best = {n:target, cr, codes:chosen.slice()}; hitAt = Date.now(); }
+      else if (cr > best.cr) best = {n:target, cr, codes:chosen.slice()};
+      return;
+    }
+    if (i === items.length) return;
+    if (chosen.length + (items.length - i) < target) return;   // hedefe ulaşılamaz
+    const it = items[i];
+    if (cr + it.cr <= MAXCR){
+      for (const opt of it.opts){
+        let bad = false;
+        for (const k of opt.mask) if (mask.has(k)){ bad = true; break; }
+        if (bad) continue;
+        for (const k of opt.mask) mask.add(k);
+        chosen.push(it.code);
+        walk(i+1, chosen, cr + it.cr);
+        chosen.pop();
+        for (const k of opt.mask) mask.delete(k);
+        if (st.stopped) return;
+      }
+    } else st.credMiss = true;
+    if (!it.must) walk(i+1, chosen, cr);      // kesin dersler atlanamaz
+  };
+  walk(0, [], 0);
+  return best;
+}
+
+/* Saat aralığına ve boş gün isteğine BİREBİR uyan seçenekler; geri düşüş yok.
+   Bunlarla bir plan kurulabiliyorsa tercih o plandan yana kullanılır. */
+function prefOpts(code){
+  const ok = baseOk(code);
+  return optsOf(code).filter(o => ok(o) && !optOffDay(o, PREFS.off) && optInWindow(o));
+}
+
+function planRun(optsOfCode, budgetMs){
+  const items = pool
+    .map(c => ({code:c, opts:optsOfCode(c), cr:credOf(c), must:isMust(c)}))
+    .filter(it => it.opts.length)
+    /* önce kesin dersler, sonra az seçenekli olanlar: budama erken devreye girer */
+    .sort((a,b) => (b.must?1:0)-(a.must?1:0) || a.opts.length-b.opts.length);
+  const mustCount = items.filter(i => i.must).length;
+  /* kesin bir ders bu seçenek kümesiyle hiç yerleşemiyorsa bu tur baştan geçersiz */
+  if (mustCount < MUST.filter(c => allowedOpts(c).length).length)
+    return {best:null, capped:false, credMiss:false, mustCount, hiN:0};
+  const hiN = Math.min(effMax(), items.length);
+  const loN = Math.max(1, Math.min(MINSEL, hiN), mustCount);
+
+  /* Her hedefe kendi süre dilimi veriliyor. Üstteki hedefin "olmuyor" ispatı
+     pahalı olabiliyor; tüm bütçeyi orada harcayıp alttaki hedeflere hiç sıra
+     gelmemesi, kullanıcıya boş sonuç dönmek demekti. */
+  const deadline = Date.now() + budgetMs;
+  const st = {nodes:0, stopped:false, credMiss:false};
+  let best = null, higherCut = false;
+  for (let target = hiN; target >= loN; target--){
+    const now = Date.now();
+    if (now > deadline){ higherCut = true; break; }
+    st.stopped = false;
+    const r = searchTarget(items, target, Math.min(deadline, now + PLAN_TARGET_MS), st);
+    if (r){ best = r; break; }                 // hedef tuttu, daha büyüğü zaten denendi
+    if (st.stopped) higherCut = true;          // bu hedef taranamadı, mümkün olabilirdi
   }
-  return {n:0, credMiss: sawCredMiss};
+  return {best, capped:higherCut, credMiss:st.credMiss, mustCount, hiN};
+}
+
+/* Önce tercihlere birebir uyan bir plan aranır. Aynı ders sayısına ulaşabiliyorsa
+   o kazanır; ulaşamıyorsa ders sayısı tercihten önce gelir ve gevşek tur seçilir.
+   Tercih yoksa tek tur yeter. */
+function bestPlan(){
+  const prefsOn = PREFS.off.length > 0 || PREFS.early > 0 || PREFS.late < NSLOT-1;
+  if (!prefsOn) return planRun(allowedOpts, PLAN_BUDGET_MS);
+  const strict = planRun(prefOpts, Math.round(PLAN_BUDGET_MS * 0.45));
+  const loose  = planRun(allowedOpts, Math.round(PLAN_BUDGET_MS * 0.55));
+  if (strict.best && (!loose.best || strict.best.n >= loose.best.n)) return strict;
+  return loose;
+}
+
+function autoSuggest(){
+  if (!pool.length) return {n:0};
+  const r = bestPlan();
+  if (!r.best){
+    /* kesin dersler kendi aralarında yerleşmiyorsa bunu ayrıca söyle */
+    if (r.mustCount > 1){
+      const m = MUST.filter(c => allowedOpts(c).length);
+      const lists = m.map(c => allowedOpts(c));
+      if (m.length && existsCF(lists, 1000000) === false)
+        return {n:0, mustClash:m.slice()};
+    }
+    return {n:0, credMiss:r.credMiss, capped:r.capped};
+  }
+  selected = r.best.codes.slice().sort((a,b)=>pool.indexOf(a)-pool.indexOf(b));
+  altIndex = 0; render();
+  const dropped = pool.filter(c => !selected.includes(c));
+  return {n:r.best.n, cred:r.best.cr, capped:r.capped,
+          short: r.best.n < r.hiN, dropped};
 }
 
 /* ================= olaylar ================= */
@@ -2784,14 +3640,20 @@ document.getElementById("btnAuto").onclick = e => {
     e.target.textContent = label;
     const S = document.getElementById("vSub");
     if (!r.n){
-      S.textContent = r.credMiss ? T().autoNoRange(MINSEL, MAXSEL, MINCR, MAXCR) : T().autoNone;
+      S.textContent = r.mustClash ? T().mustClash(r.mustClash.join(", "))
+                    : r.credMiss  ? T().autoNoRange(MINSEL, effMax(), MINCR, MAXCR)
+                                  : T().autoNone;
+      if (r.mustClash) paintFix(r.mustClash);
     } else if (r.short){
-      S.textContent = T().autoShort(MAXSEL, r.n);
+      /* neden daha az ders: hangi dersler dışarıda kaldı, açıkça yaz */
+      S.textContent = T().autoShort(effMax(), r.n);
+      if (r.dropped && r.dropped.length) S.textContent += " " + T().autoDropped(r.dropped.join(", "));
     }
     if (r.capped) S.textContent += T().autoCapped;
   }, 20);
 };
-document.getElementById("btnClear").onclick = () => { selected = []; altIndex = 0; render(); };
+/* kesin dersler seçimde kalır */
+document.getElementById("btnClear").onclick = () => { selected = MUST.slice(); altIndex = 0; render(); };
 const mobileQ = window.matchMedia("(max-width:760px)");
 document.getElementById("poolHead2").addEventListener("click", e => {
   if (!mobileQ.matches) return;
@@ -2840,12 +3702,17 @@ function saveRanges(){
 }
 /* bir uç değişince diğerini geçmesin: min büyürse max onu takip eder, tersi de */
 function onRangeChange(which){
-  const a = +selMinSel.value, b = +selMaxSel.value, c = +crMinSel.value, d = +crMaxSel.value;
-  MINSEL = a; MAXSEL = b; MINCR = c; MAXCR = d;
+  /* Boş ya da listede olmayan bir değer okunursa (+"" === 0) sınırı
+     bozmak yerine mevcut değeri koru. */
+  MINSEL = clampInt(selMinSel.value, 1, SEL_HI, MINSEL);
+  MAXSEL = clampInt(selMaxSel.value, 1, SEL_HI, MAXSEL);
+  MINCR  = clampInt(crMinSel.value,  0, CRED_HI, MINCR);
+  MAXCR  = clampInt(crMaxSel.value,  0, CRED_HI, MAXCR);
   if (which === "selMin" && MAXSEL < MINSEL) MAXSEL = MINSEL;
   if (which === "selMax" && MINSEL > MAXSEL) MINSEL = MAXSEL;
   if (which === "crMin"  && MAXCR  < MINCR)  MAXCR  = MINCR;
   if (which === "crMax"  && MINCR  > MAXCR)  MINCR  = MAXCR;
+  normalizeRanges();
   if (selected.length > MAXSEL) selected = selected.slice(0, MAXSEL);
   syncRangeUI(); saveRanges();
   altIndex = 0; render();
@@ -2866,12 +3733,17 @@ try{
     if (R.c >= 0 && R.c <= CRED_HI) MINCR  = R.c;
     if (R.d >= 0 && R.d <= CRED_HI) MAXCR  = R.d;
   }
-  if (MINSEL > MAXSEL) MINSEL = MAXSEL;
-  if (MINCR  > MAXCR)  MINCR  = MAXCR;
+  normalizeRanges();
   const P = JSON.parse(localStorage.getItem("dk-pool") || "[]");
   if (Array.isArray(P)) pool = P.filter(c => BY[c]);
+  const MD = localStorage.getItem("dk-mode"); if (MD === "manual" || MD === "auto") MODE = MD;
+  const MN = JSON.parse(localStorage.getItem("dk-manual") || "null");
+  if (MN && typeof MN === "object") MANUAL = MN;
+  const MU = JSON.parse(localStorage.getItem("dk-must") || "[]");
+  if (Array.isArray(MU)) MUST = MU.filter(c => pool.includes(c));
   const S = JSON.parse(localStorage.getItem("dk-sel") || "[]");
-  if (Array.isArray(S)) selected = S.filter(c => pool.includes(c)).slice(0, MAXSEL);
+  if (Array.isArray(S)) selected = S.filter(c => pool.includes(c)).slice(0, effMax());
+  MUST.forEach(c => { if (!selected.includes(c)) selected.push(c); });   // kesin ders daima seçili
   const M = localStorage.getItem("dk-major"); if (MAJORS.includes(M)) MAJOR = M;
   const A = localStorage.getItem("dk-admit"); if (ADMITS.includes(A)) ADMIT = A;
   const PR = JSON.parse(localStorage.getItem("dk-prefs") || "null");
@@ -2899,11 +3771,18 @@ try{
 }catch(e){}
 
 /* paylaşılan bağlantı her şeyin üstüne yazar */
-if (location.hash.startsWith("#p=")) {
-  if (applyState(decodeState(location.hash.slice(3)))) {
-    try{ history.replaceState(null, "", location.pathname); }catch(e){}
-  }
+function openShared(){
+  if (!location.hash.startsWith("#p=")) return false;
+  const ok = applyState(decodeState(location.hash.slice(3)));
+  if (ok){ try{ history.replaceState(null, "", location.pathname); }catch(e){} }
+  return ok;
 }
+openShared();
+/* Site zaten açıkken paylaşılan bir link tıklanırsa tarayıcı sayfayı yeniden
+   yüklemez, yalnız hash değişir; o durumda da programı yükle. */
+window.addEventListener("hashchange", () => {
+  if (openShared()){ syncRangeUI(); rebuildSubjects(); render(); }
+});
 
 function embeddedLabel(){ return T().chipEmb(buildDateLabel()); }
 
@@ -2913,6 +3792,8 @@ function applyStatic(){
   set("lblLimit", S.limit); set("lblCred", S.limitCred);
   set("btnClear", S.clear); set("btnAuto", S.auto);
   set("lblPool", S.poolTitle); set("poolHeadLbl", S.poolHead);
+  set("lblManual", S.manualTitle); set("manualHint", S.manualHint);
+  set("mdAuto", S.modeAuto); set("mdManual", S.modeManual);
   set("lblGrid", S.gridTitle);
   set("lblAlt", S.altTitle); set("hintAlt", S.altHint);
   set("lblSec", S.secTitle); set("btnCrn", S.copyCrn);
@@ -2927,7 +3808,187 @@ function applyStatic(){
   set("ftSrc", S.srcLink); set("ftData", S.dataFrom); set("ftCur", S.curData);
   document.querySelectorAll("#langsw button").forEach(btn =>
     btn.classList.toggle("on", btn.dataset.lang === LANG));
+  const hb = document.getElementById("btnHelp");
+  if (hb) hb.title = S.gdHelp;
+  document.getElementById("btnAuto").title = S.autoTip;
+  if (!document.getElementById("guide").hidden) gdPaint();
 }
+
+/* ================= kullanım rehberi =================
+   İlk açılışta bir kez gösterilir (dk-guide), sonra üstteki "?" ile açılır.
+   Görseller SVG olarak burada üretiliyor: dış dosya yok, file:// ile de çalışır. */
+const GD_SEEN = "dk-guide";
+let gdI = 0;
+const gdBox   = document.getElementById("guide");
+/* küçük çizim parçaları */
+const gdRect = (x,y,w,h,f,r=4,o=1) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${f}" opacity="${o}"/>`;
+const gdLine = (x1,y1,x2,y2) => `<path d="M${x1} ${y1}H${x2}" stroke="var(--line2)" stroke-width="1"/>`;
+const gdCard = (x,y,w,h) => gdRect(x,y,w,h,"var(--surface)",8) +
+  `<rect x="${x+.5}" y="${y+.5}" width="${w-1}" height="${h-1}" rx="8" fill="none" stroke="var(--line2)"/>`;
+/* 5 günlük mini takvim; blocks: [gün(0-4), üstten oran, yükseklik, renk] */
+function gdMini(x, y, w, h, blocks, dim = -1, band = null){
+  const cw = w / 5;
+  let s = gdCard(x, y, w, h);
+  for (let d = 1; d < 5; d++) s += `<path d="M${x + d*cw} ${y+12}V${y+h-4}" stroke="var(--line)" stroke-width="1"/>`;
+  s += gdLine(x, y+12, x+w, y+12);
+  if (dim >= 0) s += gdRect(x + dim*cw + 1, y+13, cw-2, h-16, "var(--sunken)", 3);
+  if (band){                                   // kapalı saat aralığı (tercih ekranı)
+    const [top, ht] = band;
+    s += gdRect(x+1, y+13+top, w-2, ht, "var(--sunken)", 3, .95) +
+      `<path d="M${x+1} ${y+13+top+ht}H${x+w-1}" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="3 3" opacity=".8"/>`;
+  }
+  for (const [d, top, ht, c] of blocks)
+    s += gdRect(x + d*cw + 2.5, y + 14 + top, cw - 5, ht, c, 3, .9);
+  return s;
+}
+const gdWrap = (inner) => `<svg viewBox="0 0 320 132" role="img" aria-hidden="true">${inner}</svg>`;
+const GD_ARROW = (x,y) => `<path d="M${x} ${y}h20m-6-5 6 5-6 5" fill="none" stroke="var(--faint)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+const GD_ART = [
+  /* 0 · ne yapıyor: aday dersler → çakışmasız program */
+  () => gdWrap(
+    gdCard(14,20,96,92) +
+    [0,1,2,3].map(i => gdRect(24, 32+i*20, 76, 13, i<3?"var(--sunken)":"var(--sunken)", 4)).join("") +
+    [0,1,2,3].map(i => gdRect(28, 35+i*20, 6, 7, "var(--c"+(i+1)+")", 2, .85)).join("") +
+    GD_ARROW(120, 66) +
+    gdMini(152, 20, 154, 92, [[0,6,22,"var(--c1)"],[2,6,22,"var(--c1)"],[1,34,18,"var(--c2)"],[3,34,18,"var(--c2)"],[0,58,16,"var(--c3)"],[4,12,26,"var(--c4)"]])),
+  /* 1 · havuza ders ekle */
+  () => gdWrap(
+    gdCard(40,14,240,104) +
+    gdRect(52,26,216,20,"var(--sunken)",6) +
+    `<circle cx="65" cy="36" r="4.5" fill="none" stroke="var(--faint)" stroke-width="1.5"/><path d="M68.5 39.5 72 43" stroke="var(--faint)" stroke-width="1.5" stroke-linecap="round"/>` +
+    gdRect(76,32,64,8,"var(--line2)",3) +
+    [0,1,2].map(i => {
+      const y = 56 + i*20, cy = y + 8, on = i === 0;
+      return gdRect(52, y, 216, 16, "var(--surface2)", 5) +
+        gdRect(60, y+5, 52, 6, "var(--line2)", 3) +
+        gdRect(118, y+5, 34, 6, "var(--accent)", 3, .28) +
+        `<circle cx="256" cy="${cy}" r="7" fill="var(--accent)" opacity="${on ? 1 : .22}"/>` +
+        `<path d="M252.5 ${cy}h7M256 ${cy-3.5}v7" stroke="${on ? "var(--accent-ink)" : "var(--accent)"}" stroke-width="1.6" stroke-linecap="round"/>`;
+    }).join("")),
+  /* 2 · kesin / aday */
+  () => gdWrap(
+    gdCard(40,20,240,92) +
+    [0,1].map(i => {
+      const y = 34 + i*34, on = i === 0;
+      return gdRect(52, y, 216, 26, "var(--surface2)", 6) +
+        gdRect(62, y+7, 60, 7, "var(--line2)", 3) +
+        gdRect(128, y+7, 30, 7, "var(--line2)", 3, .55) +
+        gdRect(208, y+5, 52, 16, on ? "var(--accent)" : "var(--sunken)", 8) +
+        (on ? `<path d="M220 ${y+13} 225 ${y+18} 236 ${y+8}" fill="none" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`
+            : gdRect(220, y+10, 28, 6, "var(--faint)", 3, .5));
+    }).join("")),
+  /* 3 · ders ve kredi aralığı */
+  () => gdWrap(
+    gdCard(14,34,292,50) +
+    gdRect(28,52,34,14,"var(--line2)",4,.55) +
+    gdRect(70,50,26,18,"var(--surface2)",5) + `<text x="83" y="63" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)">3</text>` +
+    `<text x="104" y="63" text-anchor="middle" font-size="11" fill="var(--faint)">–</text>` +
+    gdRect(112,50,26,18,"var(--surface2)",5) + `<text x="125" y="63" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)">6</text>` +
+    `<path d="M152 48v22" stroke="var(--line)" stroke-width="1"/>` +
+    gdRect(166,52,30,14,"var(--line2)",4,.55) +
+    gdRect(204,50,26,18,"var(--surface2)",5) + `<text x="217" y="63" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)">18</text>` +
+    `<text x="238" y="63" text-anchor="middle" font-size="11" fill="var(--faint)">–</text>` +
+    gdRect(246,50,26,18,"var(--surface2)",5) + `<text x="259" y="63" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)">30</text>` +
+    `<path d="M83 88v10M125 88v10M217 88v10M259 88v10" stroke="var(--line2)" stroke-width="1" stroke-dasharray="2 3"/>` +
+    gdRect(60,100,90,10,"var(--accent)",5,.18) + gdRect(196,100,86,10,"var(--accent)",5,.18)),
+  /* 4 · en iyi kombinasyonu bul */
+  () => gdWrap(
+    gdRect(14,52,84,26,"var(--accent)",13) +
+    gdRect(28,62,56,6,"var(--accent-ink)",3,.9) +
+    GD_ARROW(108, 66) +
+    gdMini(140, 16, 166, 100,
+      [[0,4,26,"var(--c1)"],[2,4,26,"var(--c1)"],[1,36,20,"var(--c2)"],[3,36,20,"var(--c2)"],
+       [0,62,18,"var(--c3)"],[4,10,24,"var(--c4)"],[2,62,18,"var(--c5)"],[3,62,18,"var(--c5)"]])),
+  /* 5 · tercihler: erken saatler kapalı, cuma boş, mümkün değilse açıklama */
+  () => gdWrap(
+    gdMini(14, 12, 168, 108,
+      [[0,26,22,"var(--c1)"],[1,26,22,"var(--c1)"],[2,54,20,"var(--c2)"],[3,54,20,"var(--c2)"],[0,80,14,"var(--c3)"]],
+      4, [0, 22]) +
+    `<text x="98" y="31" text-anchor="middle" font-size="8.5" fill="var(--faint)">09:40</text>` +
+    gdCard(196,26,110,80) +
+    gdRect(208,38,52,7,"var(--line2)",3) +
+    [0,1,2].map(i => gdRect(208, 54+i*14, i===2?58:86, 6, "var(--line2)", 3, .5)).join("") +
+    `<circle cx="290" cy="41" r="8" fill="var(--warn)" opacity=".18"/><text x="290" y="45" text-anchor="middle" font-size="11" font-weight="700" fill="var(--warn)">!</text>`),
+  /* 6 · section kilidi */
+  () => gdWrap(
+    gdMini(60, 14, 200, 104,
+      [[0,6,26,"var(--c1)"],[2,6,26,"var(--c1)"],[1,40,22,"var(--c2)"],[3,40,22,"var(--c2)"],[4,68,16,"var(--c3)"]]) +
+    `<g transform="translate(176 58)">
+       <rect x="-13" y="-13" width="26" height="26" rx="9" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.6"/>
+       <rect x="-6" y="-1" width="12" height="9.5" rx="2.2" fill="var(--accent)"/>
+       <path d="M-3.4 -1v-3.4a3.4 3.4 0 0 1 6.8 0V-1" fill="none" stroke="var(--accent)" stroke-width="1.8"/>
+     </g>`),
+  /* 7 · manuel mod */
+  () => gdWrap(
+    gdCard(14,14,112,104) +
+    gdRect(24,24,54,7,"var(--line2)",3) +
+    [0,1,2,3].map(i => gdRect(24, 40+i*17, 92, 13, i===1?"var(--accent)":"var(--surface2)", 4, i===1?.16:1) +
+      gdRect(30, 44+i*17, i===1?46:38, 5, i===1?"var(--accent)":"var(--line2)", 2)).join("") +
+    `<path d="M92 76l0 12 3.5-3.5 2.5 5 2.5-1.2-2.5-5H103z" fill="var(--ink)"/>` +
+    gdMini(140, 14, 166, 104,
+      [[0,6,24,"var(--c1)"],[2,6,24,"var(--c1)"],[1,38,20,"var(--c2)"],[4,38,20,"var(--c4)"],[3,64,18,"var(--c3)"]])),
+  /* 8 · paylaş, yazdır, duvar kâğıdı */
+  () => gdWrap(
+    gdMini(14, 14, 150, 104,
+      [[0,6,24,"var(--c1)"],[2,6,24,"var(--c1)"],[1,36,20,"var(--c2)"],[3,36,20,"var(--c2)"],[4,64,18,"var(--c4)"]]) +
+    [0,1,2].map(i => gdCard(186, 20+i*34, 34, 26)).join("") +
+    `<path d="M203 26v14M197.5 31.5 203 26l5.5 5.5" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>` +
+    `<path d="M196 68v-6h14v6m-16 0h18v9h-18zm4 5h10v6h-10z" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linejoin="round"/>` +
+    `<rect x="197" y="90" width="12" height="20" rx="2.5" fill="none" stroke="var(--accent)" stroke-width="1.6"/><path d="M201 94h4" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round"/>` +
+    [0,1,2].map(i => gdRect(230, 28+i*34, 62, 6, "var(--line2)", 3)).join(""))
+];
+function gdPaint(){
+  const S = T(), steps = S.gdSteps, n = steps.length;
+  gdI = Math.min(Math.max(gdI, 0), n - 1);
+  document.getElementById("gdArt").innerHTML = (GD_ART[gdI] || GD_ART[0])();
+  document.getElementById("gdStep").textContent = S.gdStep(gdI + 1, n);
+  document.getElementById("gdTitle").textContent = steps[gdI].t;
+  document.getElementById("gdText").innerHTML = steps[gdI].d;
+  document.getElementById("gdDots").innerHTML =
+    steps.map((_, i) => `<button class="gddot${i === gdI ? " on" : ""}" data-i="${i}" aria-label="${i+1}"></button>`).join("");
+  const back = document.getElementById("gdBack"), skip = document.getElementById("gdSkip"), next = document.getElementById("gdNext");
+  back.textContent = S.gdBack; skip.textContent = S.gdSkip;
+  next.textContent = gdI === n - 1 ? S.gdDone : S.gdNext;
+  back.hidden = gdI === 0;
+  skip.hidden = gdI === n - 1;
+}
+function gdOpen(i){
+  gdI = i || 0;
+  gdBox.hidden = false;
+  gdPaint();
+  document.getElementById("gdNext").focus({preventScroll:true});
+}
+function gdClose(){
+  gdBox.hidden = true;
+  try{ localStorage.setItem(GD_SEEN, "1"); }catch(e){}
+}
+function gdGo(d){
+  const n = T().gdSteps.length;
+  if (gdI + d >= n){ gdClose(); return; }
+  gdI = Math.max(0, gdI + d);
+  gdPaint();
+}
+document.getElementById("btnHelp").onclick = () => gdOpen(0);
+document.getElementById("gdNext").onclick  = () => gdGo(1);
+document.getElementById("gdBack").onclick  = () => gdGo(-1);
+document.getElementById("gdSkip").onclick  = gdClose;
+document.getElementById("gdClose").onclick = gdClose;
+document.getElementById("gdDots").addEventListener("click", e => {
+  const b = e.target.closest(".gddot");
+  if (b){ gdI = +b.dataset.i; gdPaint(); }
+});
+gdBox.addEventListener("click", e => { if (e.target === gdBox) gdClose(); });
+document.addEventListener("keydown", e => {
+  if (gdBox.hidden) return;
+  if (e.key === "Escape"){ gdClose(); }
+  else if (e.key === "ArrowRight"){ gdGo(1); }
+  else if (e.key === "ArrowLeft"){ gdGo(-1); }
+});
+/* ilk ziyaret: veriler yerleşsin diye kısa bir gecikmeyle aç */
+try{
+  if (!localStorage.getItem(GD_SEEN)) setTimeout(() => { if (gdBox.hidden) gdOpen(0); }, 700);
+}catch(e){}
+
 function setLang(l){
   if (l === LANG) return;
   LANG = l;
@@ -2936,6 +3997,10 @@ function setLang(l){
   const note = document.getElementById("curNote");
   if (note) note.textContent = !MAJOR ? T().curHint : (CURMAP ? T().curOk(MAJOR, ADMIT) : T().curFail);
 }
+document.getElementById("modesw").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-mode]");
+  if (btn) setMode(btn.dataset.mode);
+});
 document.getElementById("langsw").addEventListener("click", e => {
   const btn = e.target.closest("button[data-lang]");
   if (btn) setLang(btn.dataset.lang);
@@ -3018,8 +4083,10 @@ async function loadLive(force){
   chipInfo = {key:"loading"};
   setChip("loading", T().chipLoading, T().chipTitle);
 
-  // 1) kendi sitendeki data.json
+  // 1) kendi sitendeki data.json — file:// ile açıldığında fetch bu şemayı
+  //    desteklemiyor, boşuna denenip konsola hata basmasın
   try{
+    if (location.protocol === "file:") throw 0;
     const j = await getJSON(SELF_SRC, 4000);
     const list = normalize(j);
     if (sane(list)){
