@@ -2,9 +2,9 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
 
-Sabancı Üniversitesi ders programı planlayıcısı. Kesin alacağın ve belki alacağın
-dersleri söylersin, SUits tüm ders–recitation kombinasyonlarını tarayıp çakışmasız
-ve en derli toplu programı bulur.
+Sabancı Üniversitesi ders programı planlayıcısı. Derslerini kesin / olsa iyi / belki
+diye işaretlersin, SUits tüm ders–recitation kombinasyonlarını tarayıp çakışmasız ve
+en derli toplu programı bulur.
 
 Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
 `index.html` her şeyi içeriyor.
@@ -60,12 +60,22 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
 - Recitation, discussion ve lab'ları dersin parçası sayar — ayrı ders olarak değil,
   ama programda ve çakışma hesabında gösterir
 - Hangi ders çiftlerinin **hiçbir kombinasyonda** bir arada alınamadığını gösterir
-- **Kesin / belki ayrımı** — havuz iki gruba ayrılır ve liste de öyle görünür:
+- **Üç seviye: kesin / olsa iyi / belki** — havuz üç gruba ayrılır ve liste de öyle
+  görünür. Her satırdaki üç bölmeli anahtarla istediğin seviyeye tek dokunuşta
+  geçersin; sırayla tıklayıp döndürmek yok.
   *Kesin* dersler her programa girer, otomatik seçimden asla düşmez ve elle
-  çıkarılamaz; *Belki* dersleri ancak çakışmadan sığarsa eklenir. Grup başlığı
-  belkilerin kaçının programa girdiğini yazar, verdict satırında da programın
-  kaç kesin + kaç belki dersinden oluştuğu görünür. "En iyi kombinasyonu bul"
-  tam olarak bu kuralı uygular: kesinleri tutar, belkilerden sığanları ekler
+  çıkarılamaz. *Olsa iyi* kesinin yumuşak hâlidir: aynı sayıda ders veren programlar
+  arasında öne geçer, ama onu tutmak programı küçültecekse düşebilir. *Belki*
+  dersleri yalnız yer kalırsa eklenir. Grup başlıkları o gruptan kaçının programa
+  girdiğini yazar, sonuç satırında da programın kaç kesin + kaç olsa iyi + kaç belki
+  dersinden oluştuğu görünür
+- **Sıralama kuralı** — otomatik seçim şu sırayla karar verir: (1) kesin derslerin
+  hepsi, (2) en çok ders, (3) eşit ders sayısında en çok "olsa iyi" dersi, (4) en
+  yüksek kredi, (5) program kalitesi (boş gün, ders arası boşluk, kampüste geçen
+  süre). Yani "olsa iyi" hiçbir zaman ders sayısından feragat ettirmez; bunu isteyen
+  dersi kesin işaretler. Gerçek veriyle doğrulanmış örnek: ACC 301 hem ARA 510 hem
+  BIO 635 ile çakışıyor. "Olsa iyi" iken program 4 derste kalır ve ACC 301 girmez;
+  "kesin" iken ACC 301 girer ve program 3 derse iner
 - **Çakışmanın çözüm yolları** — çakışmasız bir program kurulamıyorsa SUits yalnız
   "bir kısıtı gevşet" demiyor: olası tek hamleleri (bir dersi belki yapmak, bir
   hoca kısıtını kaldırmak, bir section kilidini açmak, saat/boş gün tercihlerini
@@ -76,6 +86,15 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
   tamamen elle çalışan bir ekrana geçersin. Soldaki listeden istediğin section'a
   tıklarsın, program anında güncellenir, çakışan section kırmızı görünür. Otomatik
   modda oluşan program manuel moda olduğu gibi taşınır
+- **Section önizlemesi** — manuel modda bir section'ın üstüne fareyle geldiğinde
+  "bunu seçersem programım ne olur" sorusunun cevabı tabloda beliriyor: o section
+  kesik çerçeveli ve soluk olarak yerine oturur, geri kalan program söner, çakışma
+  doğacaksa hücre kırmızıya döner ve başlıkta kaç saat çakışacağı yazar. Fare
+  çekilince her şey eski hâline döner, seçim değişmez. Dokunmatikte kapalı
+- **Manuel listede program hep ekranda** — section listesi 7000 piksele çıkıp sayfayı
+  uzatıyor, aşağı indikçe program görüş alanından çıkıyordu. Liste artık kendi içinde
+  kayıyor; sağdaki program yerinde duruyor. Sol panelin yapışma noktası da üst barın
+  gerçek yüksekliğine göre hesaplanıyor, panelin üstü artık barın altında kalmıyor
 - **Section kilidi** — herhangi bir section'ın yanındaki kilit simgesiyle onu
   sabitlersin ("bu dersi arkadaşımla X section'ından alacağım"); çözücü bir daha
   o section'ı değiştirmez
@@ -100,10 +119,23 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
 - Havuzdan ders çıkarmak tek tık: satırdaki × , aramada eklenmiş dersin üstüne
   tıklama, ya da başlıktaki **Temizle** ile hepsi birden
 - Seçilen section'ların CRN'lerini tek tıkla kopyalar
+- **Ferah havuz listesi** — ders satırı üç sessiz katman: kimlik (kod, kategori,
+  section sayıları, kaldır), ad, ve ayrıntı (ön koşul, hoca menüsü, seviye anahtarı).
+  Eskiden her ayrıntı ayrı bir rozetti; yan yana beş rozet satırı 104-155 piksele
+  çıkarıyor ve listede aynı anda yalnız 3 ders görünüyordu. Şimdi satırlar 89-100
+  piksel, aynı ekranda 5-8 ders görünüyor, hiçbir genişlikte taşma yok
+- **Overload uyarısı** — programın toplam kredisi 20'yi geçerse sonuç satırında ve
+  havuz sayacında sarı bir uyarı çıkar: bu program için overload onayı gerekebilir
 - **Mobil için ayrı görünüm** — telefonda haftalık tablo yerine gün gün ajanda
   listesi; havuz paneli katlanabilir
+- **Dokunmatikte doğru geri bildirim** — fare imleciyle çalışan "havuzdaki dersin
+  üstüne gel, kırmızı × ile çıkar" görünümü artık yalnız gerçek imleçte
+  (`@media (hover: hover) and (pointer: fine)`). Telefonda `:hover` son dokunulan
+  satırda takılı kaldığı için, eklenen ders kırmızı × gösteriyor, kullanıcı
+  "eklenmedi" sanıp tekrar basınca dersi siliyordu. Aynı kural havuz satırındaki
+  vurgu, "kesin yap" çerçevesi ve manuel moddaki section çerçevesi için de geçerli
 - **Kullanım rehberi** — site ilk açıldığında 9 adımlık kısa ve görsel bir tanıtım
-  çıkar: SUits'in ne yaptığı, havuz, kesin/belki ayrımı, ders-kredi aralığı, otomatik
+  çıkar: SUits'in ne yaptığı, havuz, kesin/olsa iyi/belki, ders-kredi aralığı, otomatik
   çözüm, tercihler, section kilidi, manuel mod ve paylaşma. Her adımın çizimi SVG
   olarak sayfanın içinde üretilir; dış dosya yoktur, `file://` ile de çalışır.
   Bir kez gösterilir (`dk-guide` kaydı), sonra üst bardaki **?** düğmesiyle her an

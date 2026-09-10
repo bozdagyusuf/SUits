@@ -189,7 +189,10 @@ header.top{
 .errbox .erracts .btn.primary{background:var(--bad); color:#fff}
 
 /* ---------- manuel mod ---------- */
-.mbody{max-height:none; overflow:visible}
+/* Manuel listede her dersin tüm section'ları var; liste 7000 piksele çıkıp
+   sayfayı uzatıyor, program yukarıda kalıyordu. Liste kendi içinde kaysın:
+   sağdaki program ekranda kalır. */
+.mbody{max-height:calc(100dvh - var(--railtop, 74px) - 92px); overflow-y:auto; overscroll-behavior:contain}
 .mcourse{border-bottom:1px solid var(--line)}
 .mcourse:last-child{border-bottom:0}
 .mhead{display:flex; align-items:center; gap:8px; padding:11px 16px; cursor:pointer; background:var(--surface)}
@@ -207,7 +210,6 @@ header.top{
   border-radius:10px; padding:7px 9px; margin-bottom:5px; cursor:pointer;
   font-size:12px; transition:border-color .14s, background .14s;
 }
-.msec:hover{border-color:var(--accent)}
 .msec.on{border-color:var(--accent); background:var(--accent-soft)}
 .msec.clash{border-color:var(--bad); background:var(--bad-soft)}
 .msec .g{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-weight:650; flex:none; min-width:34px}
@@ -216,7 +218,10 @@ header.top{
   flex:none; border:0; background:transparent; cursor:pointer; font-size:13px;
   opacity:.35; padding:2px 3px; border-radius:6px; line-height:1;
 }
-.msec .lk:hover{opacity:.9; background:var(--sunken)}
+@media (hover: hover) and (pointer: fine){
+  .msec:hover{border-color:var(--accent)}
+  .msec .lk:hover{opacity:.9; background:var(--sunken)}
+}
 .msec .lk.on{opacity:1}
 .seclock{
   flex:none; border:0; background:transparent; cursor:pointer; font-size:14px;
@@ -306,7 +311,9 @@ header.top{
 /* ---------- layout ---------- */
 .cols{display:grid; grid-template-columns:330px minmax(0,1fr); gap:18px; margin-top:18px; align-items:start}
 @media (max-width:960px){ .cols{grid-template-columns:minmax(0,1fr)} }
-.rail{position:sticky; top:74px; min-width:0; z-index:1}
+/* Üst bar sabit ve yüksekliği içeriğe göre değişiyor; sol panelin yapışma
+   noktası da ona göre ayarlanıyor, yoksa panelin üstü barın altında kalıyor. */
+.rail{position:sticky; top:var(--railtop, 74px); min-width:0; z-index:1}
 .stack{display:flex; flex-direction:column; gap:18px; min-width:0; position:relative; z-index:0}
 .panel{background:var(--surface); border-radius:var(--r-card); box-shadow:var(--shadow); overflow:hidden}
 .panel > h2{
@@ -338,16 +345,21 @@ header.top #btnAuto{margin-left:auto}
 .results{max-height:300px; overflow-y:auto; border-top:1px solid var(--line)}
 .res{display:flex; gap:10px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); cursor:pointer; font-size:13px}
 .res:last-child{border-bottom:0}
-.res:hover{background:var(--surface2)}
 .res .code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; font-weight:600; flex:none; width:80px}
 .res .nm{color:var(--muted); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .res .add{color:var(--accent); font-weight:600; flex:none; font-size:16px; line-height:1}
 .res.have{background:var(--accent-soft)}
 .res.have .code, .res.have .nm{opacity:.65}
 .res .add .del{display:none}
-.res.have:hover .add .chk{display:none}
-.res.have:hover .add .del{display:inline; color:var(--bad)}
-.res.have:hover{background:var(--bad-soft)}
+/* "Havuzda olan derse gel, kırmızı × ile çıkar" görünümü YALNIZ gerçek imleçte.
+   Dokunmatikte :hover son dokunulan satırda takılı kalıyor: ders eklendiği hâlde
+   satır kırmızı × gösteriyor, kullanıcı eklenmedi sanıp tekrar basınca siliniyordu. */
+@media (hover: hover) and (pointer: fine){
+  .res:hover{background:var(--surface2)}
+  .res.have:hover .add .chk{display:none}
+  .res.have:hover .add .del{display:inline; color:var(--bad)}
+  .res.have:hover{background:var(--bad-soft)}
+}
 .resnote{padding:10px 16px; font-size:12.5px; color:var(--faint); border-bottom:1px solid var(--line)}
 .curbox{padding:12px 14px; border-bottom:1px solid var(--line)}
 .currow{display:flex; gap:8px}
@@ -365,38 +377,83 @@ header.top #btnAuto{margin-left:auto}
 .gsep b{font-size:12px; font-weight:700; letter-spacing:-.01em}
 .gsep span{font-size:11.5px; color:var(--faint)}
 .gsep i{margin-left:auto; font-style:normal; font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums}
-.clist{max-height:min(46vh,440px); overflow-y:auto; display:flex; flex-direction:column}
-.crow{display:flex; gap:11px; padding:12px 16px; border-bottom:1px solid var(--line); cursor:pointer; align-items:flex-start}
+.clist{max-height:min(58vh,600px); overflow-y:auto; display:flex; flex-direction:column}
+.crow{display:flex; gap:10px; padding:10px 16px; border-bottom:1px solid var(--line); cursor:pointer; align-items:flex-start}
 .crow:last-child{border-bottom:0}
-.crow:hover{background:var(--surface2)}
 .crow.on{background:var(--accent-soft)}
 .crow.dim{opacity:.42}
-.crow input[type=checkbox]{margin:2px 0 0; accent-color:var(--accent); width:17px; height:17px; flex:none; cursor:pointer}
+.crow input[type=checkbox]{margin:3px 0 0; accent-color:var(--accent); width:17px; height:17px; flex:none; cursor:pointer}
 .crow .txt{min-width:0; flex:1}
-.crow .code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; font-weight:650}
-.crow .nm{font-size:12.5px; color:var(--muted); line-height:1.35; margin-top:1px}
-.crow .tags{display:flex; gap:5px; margin-top:6px; flex-wrap:wrap; align-items:center}
+/* 1. katman: kod, kategori ve seviye anahtarı tek hizada */
+.crow .hd{display:flex; align-items:center; gap:7px; min-width:0}
+.crow .hd .cnt{font-size:10.5px; color:var(--faint); margin-left:auto; white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis; padding-left:6px}
+/* 3. katmanın sağ ucu seviye anahtarına ayrılmış. Anahtar float ile sağa
+   sabitlenmiş: yanındaki metin sığdığı kadar yanına, sığmazsa altına akar;
+   böylece hem anahtar hep tam görünür hem de ön koşul/hoca kırpılmaz. */
+.crow .meta{display:block}
+.crow .meta::after{content:""; display:block; clear:both}
+.crow .meta .tiersw{float:right; margin-left:8px}
+.crow .meta .mtx{margin-right:2px}
+/* hoca menüsü metnin bir parçası gibi akar */
+.crow .meta .instwrap{white-space:nowrap}
+.crow .code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; font-weight:650; flex:none}
+/* 2. katman: ders adı, tek satır — tamamı title'da duruyor */
+.crow .nm{font-size:12.5px; color:var(--muted); line-height:1.35; margin-top:2px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+/* 3. katman: section/ön koşul/hoca — rozet yığını değil, sessiz gri satır.
+   Hoca menüsü tıklanabilir olduğu için kırpılmıyor, gerekirse alta sarıyor. */
+.crow .meta{font-size:11px; color:var(--faint); margin-top:4px; line-height:1.45}
+.crow .meta .mi{white-space:nowrap}
+.crow .hd .cat{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .crow .swatch{width:3px; align-self:stretch; border-radius:999px; flex:none; background:transparent}
 .tag{font-size:11px; font-weight:500; padding:2px 7px; border-radius:var(--r-chip); background:var(--sunken); color:var(--muted)}
-/* "kesin alacağım" düğmesi: aday derslerde soluk, kesinlerde dolu */
-.mustbtn{
-  border:1px solid var(--line2); background:transparent; color:var(--faint);
-  font-size:11px; font-weight:600; padding:2px 8px; border-radius:var(--r-chip);
-  cursor:pointer; transition:background .14s, color .14s, border-color .14s;
+/* Üç bölmeli seviye anahtarı: her seviyeye tek dokunuşla gidilir */
+.tiersw{display:inline-flex; margin-left:auto; flex:none; background:var(--sunken);
+  border-radius:8px; padding:2px; gap:2px}
+.tiersw .tb{
+  border:0; background:transparent; color:var(--faint);
+  font-size:10px; font-weight:600; letter-spacing:-.015em;
+  padding:2px 6px; border-radius:6px; line-height:1.35; cursor:pointer;
+  transition:background .14s, color .14s;
 }
-.mustbtn:hover{border-color:var(--accent); color:var(--accent)}
-.mustbtn.on{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.tiersw .tb.on{background:var(--surface); color:var(--ink); box-shadow:var(--shadow-sm)}
+.tiersw .tb[data-tier="must"].on{background:var(--accent); color:var(--accent-ink)}
+.tiersw .tb[data-tier="pref"].on{background:var(--surface); color:var(--accent)}
 .crow.must{background:color-mix(in srgb, var(--accent-soft) 60%, transparent)}
 .crow.must .swatch{background:var(--accent) !important}
+.crow.pref{background:color-mix(in srgb, var(--accent-soft) 28%, transparent)}
+.gsep.pref b{color:var(--accent)}
+/* önizleme: seçilecek section soluk ve kesik çerçeveli, geri kalan program soluklaşır */
+table.sched.previewing .blk:not(.ghost){opacity:.38}
+.blk.ghost{
+  opacity:.9; outline:2px dashed var(--ink); outline-offset:-3px;
+  animation:ghostIn .16s ease;
+}
+@keyframes ghostIn{from{opacity:.25; transform:scale(.97)}to{opacity:.9; transform:none}}
+.hint.bad{color:var(--bad); font-weight:600}
+.mix.pref{background:color-mix(in srgb, var(--accent-soft) 55%, transparent); color:var(--accent)}
+.mix.over{background:var(--warn-soft); color:var(--warn); font-weight:650}
 .crow input[type=checkbox]:disabled{opacity:.55; cursor:default}
 .tag.r{background:var(--warn-soft); color:var(--warn)}
 .tag.p{background:var(--accent-soft); color:var(--accent)}
 .rm{flex:none; align-self:center; border:0; background:transparent; color:var(--faint); font-size:17px; line-height:1; width:28px; height:28px; border-radius:999px; display:flex; align-items:center; justify-content:center; transition:background .14s, color .14s}
-.crow:hover .rm{background:var(--sunken)}
-.rm:hover{background:var(--bad) !important; color:#fff !important}
-.instrow{display:flex; align-items:center; gap:7px; margin-top:7px}
-.instrow .ilbl{font-size:11px; color:var(--faint); font-weight:550; flex:none}
-.instsel{flex:1; min-width:0; font-size:12px; padding:4px 8px; padding-right:24px; background-color:var(--surface2)}
+/* satır vurgusu, "kesin yap" çerçevesi ve kırmızı × yalnız gerçek imleçte:
+   dokunmatikte bunlar son dokunulan satırda takılı kalıp seçili gibi duruyordu */
+@media (hover: hover) and (pointer: fine){
+  .crow:hover{background:var(--surface2)}
+  .crow.on:hover{background:var(--accent-soft)}
+  .tiersw .tb:not(.on):hover{background:var(--surface); color:var(--ink)}
+  .crow:hover .rm{background:var(--sunken)}
+  .rm:hover{background:var(--bad) !important; color:#fff !important}
+}
+.instwrap{white-space:nowrap}
+.instsel{
+  border:0; background:transparent; color:var(--muted); font-size:11px;
+  padding:0 14px 0 0; border-radius:6px; max-width:104px;
+  background-position:calc(100% - 4px) 52%, calc(100% - 1px) 52%;
+}
+.instsel:hover{color:var(--ink)}
 .cat{font-size:10px; font-weight:700; padding:2.5px 7px; border-radius:var(--r-chip); white-space:nowrap; flex:none}
 .cat.required{background:#E07B1E22; color:#B36414}
 .cat.core{background:#0A7CFF22; color:#0A6ADB}
@@ -516,6 +573,9 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
 /* tek sütuna düşen genişlikler: yapışkan panel alttaki içeriğin üstüne biniyordu */
 @media (max-width:960px){
   .rail{position:static; top:auto; z-index:auto}
+  /* tek sütunlu düzende program zaten listenin altında: liste kendi içinde
+     kaymasın, sayfayla birlikte aksın */
+  .mbody{max-height:none; overflow:visible}
   header.top{position:static}
 }
 
@@ -614,7 +674,7 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
   /* ---- layout / paneller ---- */
   .cols{ grid-template-columns:352px minmax(0,1fr); gap:24px; margin-top:24px }
   .stack{ gap:24px }
-  .rail{ top:82px }
+  .rail{ top:var(--railtop, 82px) }
   .panel > h2{ font-size:15px; font-weight:600; padding:18px 22px; letter-spacing:-.012em }
   .panel > h2 .hint{ font-size:12.5px }
   .pbody{ padding:22px }
@@ -629,11 +689,12 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
   .res .nm{ font-size:13.5px }
   .curbox, .takenbox, .bulkbox{ padding:16px 18px }
   .poolhead{ padding:16px 22px 4px; font-size:12.5px }
-  .clist{ max-height:min(52vh,540px) }
-  .crow{ padding:15px 18px; gap:13px }
+  .clist{ max-height:min(60vh,680px) }
+  .crow{ padding:11px 18px; gap:13px }
   .crow .code{ font-size:14px }
-  .crow .nm{ font-size:13px; margin-top:2px }
-  .crow .tags{ margin-top:8px }
+  .crow .nm{ font-size:13px; margin-top:3px }
+  .crow .meta{ font-size:11.5px; margin-top:4px }
+  .tiersw .tb{ font-size:11px; padding:3px 10px }
   .tag, .cat{ padding:3px 8px }
   .taken{ padding:5px 11px; font-size:12px }
   .curnote, .neednote{ font-size:12.5px }
@@ -1049,6 +1110,8 @@ const PALETTE = ["--c1","--c2","--c3","--c4","--c5","--c6","--c7","--c8","--c9",
 let MINSEL = 3,  MAXSEL = 6;
 let MINCR  = 0,  MAXCR  = 30;
 const SEL_HI = 10, CRED_HI = 40;
+/* Normal ders yükü sınırı: üstüne çıkan program overload onayı ister */
+const OVERLOAD_CR = 20;
 /* Sınırlar hiçbir yoldan geçersiz kalmasın: boş/NaN bir <select> okuması,
    eski biçimli bir plan ya da bozuk localStorage kaydı MINSEL/MAXSEL'i 0
    yapabiliyordu; o durumda üst barda "1" görünürken değişken 0 kalıyor,
@@ -1090,16 +1153,19 @@ const STR = {
     rangeHint:(a,b,c,d)=>`Hedef: ${a}-${b} ders, ${c}-${d} kredi`,
     autoNoRange:(a,b,c,d)=>`${a}-${b} ders ve ${c}-${d} kredi aralığına oturan çakışmasız bir kombinasyon yok. Aralığı genişlet ya da havuza ders ekle.`,
     poolTitle:"1 · Ders havuzu", poolEmpty:"boş", poolCount:n=>`${n} ders`,
-    poolHead:"2 · Kesin / belki", searchPh:"Ders kodu veya adı ara…", all:"Tümü",
+    poolHead:"2 · Kesin / olsa iyi / belki", searchPh:"Ders kodu veya adı ara…", all:"Tümü",
     noMatch:"Eşleşen ders yok.", tooMany:(a,b)=>`${a} sonuç — ilk ${b} gösteriliyor, aramayı daralt.`,
     emptyPool:"<b>1.</b> Yukarıdan ders ara, <b>+</b> ile havuza at.<br><b>2.</b> Kesin alacaklarına <b>kesin</b> de, gerisi <b>belki</b> kalsın.<br><b>3.</b> Üstten <b>En iyi kombinasyonu bul</b>'a bas.",
     gMust:"Kesin", gMustSub:"her programa girer",
+    gPref:"Olsa iyi", gPrefSub:"eşit ders sayısında öne geçer",
     gMaybe:"Belki", gMaybeSub:"sığarsa eklenir",
     gIn:n=>`${n} tanesi programda`, gAllIn:"hepsi programda", gNoneIn:"programa girmedi",
-    poolLaw:"Kesin dersler her programa girer, belki dersleri ise ancak sığarsa eklenir. Hangilerinin sığdığını <b>En iyi kombinasyonu bul</b> hesaplar.",
-    autoTip:"Kesin dersleri olduğu gibi tutar, belki derslerinden sığanları ekler ve her ders için en iyi section'ı seçer.",
+    poolLaw:"<b>Kesin</b> dersler her programa girer. <b>Olsa iyi</b> dersleri, aynı sayıda ders veren programlar arasında öne geçer ama program küçülecekse düşebilir. <b>Belki</b> dersleri yalnız yer kalırsa eklenir.",
+    autoTip:"Kesin dersleri olduğu gibi tutar, en çok dersi hedefler, eşitlikte olsa iyi derslerini kayırır ve her ders için en iyi section'ı seçer.",
     inSched:(n,c)=>`Programda: ${n} ders · ${c} kredi`,
-    mixMust:n=>`${n} kesin`, mixMaybe:n=>`${n} belki`,
+    mixMust:n=>`${n} kesin`, mixPref:n=>`${n} olsa iyi`, mixMaybe:n=>`${n} belki`,
+    overload:n=>`${n} kredi · overload`,
+    overloadTip:n=>`${n} kredi, normal yükün (${OVERLOAD_CR} kredi) üstünde. Bu program için overload onayı gerekebilir.`,
     secTag:n=>`${n} section`, selfClash:"kendi içinde çakışıyor", removeTitle:"Havuzdan çıkar",
     gridTitle:"Haftalık program", altTitle:"Alternatif çözümler", altHint:"aynı dersler, farklı section'lar",
     secTitle:"Seçilen section'lar", crnCount:n=>`${n} CRN`, copyCrn:"CRN'leri kopyala", copied:"Kopyalandı ✓",
@@ -1151,11 +1217,13 @@ const STR = {
     prefBlockT:"Tercihlerin bu programı imkânsız kılıyor",
     prefBlockS:"Şu dersin hiçbir section'ı koyduğun kısıtlara uymuyor:",
     instWant:"hoca", instAny:"fark etmez",
-    mustOff:"belki", mustOn:"kesin",
+    mustOff:"belki", mustOn:"kesin", prefOn:"olsa iyi",
     modeAuto:"Otomatik", modeManual:"Manuel",
     manualBadT:(n)=>`Programında ${n} saat çakışma var`,
     manualBadS:"Şu dersler üst üste geliyor:",
-    manualTitle:"Section seç", manualHint:"tıkla, program anında güncellensin",
+    manualTitle:"Section seç", manualHint:"üstüne gel, programda gör; tıkla, seç",
+    previewOk:"Bu section'ı seçersen çakışma olmaz",
+    previewBad:n=>`Bu section'ı seçersen ${n} saat çakışma olur`,
     lockTip:"Bu section'ı sabitle — bir daha değişmesin",
     unlockTip:"Sabitlemeyi kaldır",
     errMustTitle:"Kesin ders sayısı limitten fazla",
@@ -1169,6 +1237,10 @@ const STR = {
     lockCause:"Bu çakışma sabitlediğin section'lardan geliyor; kilitleri kaldırırsan çakışmasız bir program mümkün.",
     mustOnTip:"Bu dersi kesin alacağım — otomatik seçim onu asla elemez",
     mustOffTip:"Kesin işaretini kaldır, ders yine aday olarak kalsın",
+    tipMust:"Kesin: bu ders programdan asla çıkmaz",
+    tipPref:"Olsa iyi: eşit ders sayısında öne geçer, ama program küçülecekse düşebilir",
+    tipMaybe:"Belki: yalnız yer kalırsa eklenir",
+    tierLabel:"Ders seviyesi",
     mustClash:(list)=>`Kesin işaretlediğin dersler birlikte çakışmasız yerleşmiyor: ${list}.`,
     fixTitle:"Çakışmasız yapmanın yolları",
     fixDropMust:(c)=>`${c} belki olsun`,
@@ -1219,12 +1291,12 @@ const STR = {
        d:"Almayı düşündüğün dersleri söylüyorsun, SUits hangilerinin birlikte çakışmadan alınabileceğini ve her ders için hangi section'ın en iyi programı verdiğini hesaplıyor. Bütün kombinasyonlar tarayıcında deneniyor."},
       {t:"1. Dersleri havuza ekle",
        d:"Soldaki kutudan ders ara ve ekle. Bölümünü seçersen dersler Required / Core / Area / University olarak etiketlenir. Havuz bir kısa listedir; hepsini almak zorunda değilsin."},
-      {t:"2. Kesin mi, belki mi?",
-       d:"Havuz ikiye ayrılır. <b>Kesin</b> dediklerin her programa girer, çıkarılamaz. <b>Belki</b> bıraktıkların ise ancak çakışmadan sığarsa eklenir. Hangi belkilerin sığdığına “En iyi kombinasyonu bul” karar verir."},
+      {t:"2. Kesin, olsa iyi, belki",
+       d:"Her ders satırındaki üç bölmeli anahtardan seviyeyi seçersin, tek dokunuş yeter. <b>Kesin</b> dersler her programa girer, çıkarılamaz. <b>Olsa iyi</b> dersleri, aynı sayıda ders veren programlar arasında öne geçer ama program küçülecekse düşebilir. <b>Belki</b> dersleri yalnız yer kalırsa eklenir."},
       {t:"3. Ders ve kredi aralığı",
        d:"Üst bardan kaç ders ve kaç kredi istediğini alt–üst sınır olarak veriyorsun. Üst sınır seçimi kısıtlar, alt sınır otomatik seçimin hedefidir."},
       {t:"4. En iyi kombinasyonu bul",
-       d:"Bu düğme hem dersleri hem section'ları birlikte seçer. Ana kural her zaman aynı: çakışmasız bir program. Çakışma kaçınılmazsa SUits bunu denenmiş çözüm düğmeleriyle söyler: hangi dersi belki yaparsan ya da hangi kısıtı kaldırırsan program çakışmasız oluyor."},
+       d:"Bu düğme hem dersleri hem section'ları birlikte seçer. Sıralama şu: kesinler hiç düşmez, sonra en çok ders, eşitlikte olsa iyi dersleri, sonra kredi, en son program kalitesi. Çakışma kaçınılmazsa SUits denenmiş çözüm düğmeleri sunar."},
       {t:"5. Tercihlerini söyle",
        d:"Başlangıç–bitiş saati, boş gün, dersler arası boşluk, hoca veya belirli bir section. Bir tercih mümkün değilse SUits sessizce yutmaz: nedenini yazar ve hangi alternatifin mümkün olduğunu söyler."},
       {t:"6. Section'ı kilitle",
@@ -1244,16 +1316,19 @@ const STR = {
     rangeHint:(a,b,c,d)=>`Target: ${a}-${b} courses, ${c}-${d} credits`,
     autoNoRange:(a,b,c,d)=>`No conflict-free combination fits ${a}-${b} courses and ${c}-${d} credits. Widen the range or add more courses to the pool.`,
     poolTitle:"1 · Course pool", poolEmpty:"empty", poolCount:n=>`${n} course${n===1?"":"s"}`,
-    poolHead:"2 · Must / maybe", searchPh:"Search course code or name…", all:"All",
+    poolHead:"2 · Must / preferred / maybe", searchPh:"Search course code or name…", all:"All",
     noMatch:"No matching course.", tooMany:(a,b)=>`${a} results — showing the first ${b}, narrow your search.`,
     emptyPool:"<b>1.</b> Search above and add courses with <b>+</b>.<br><b>2.</b> Mark the ones you will definitely take as <b>must</b>, leave the rest as <b>maybe</b>.<br><b>3.</b> Hit <b>Find the best combination</b> up top.",
     gMust:"Must-take", gMustSub:"always in the schedule",
+    gPref:"Preferred", gPrefSub:"wins ties at the same course count",
     gMaybe:"Maybe", gMaybeSub:"added if it fits",
     gIn:n=>`${n} in the schedule`, gAllIn:"all in the schedule", gNoneIn:"none made it in",
-    poolLaw:"Must-take courses are always in the schedule; maybe courses are added only if they fit. <b>Find the best combination</b> works out which ones do.",
-    autoTip:"Keeps every must-take course, adds the maybe courses that fit, and picks the best section for each.",
+    poolLaw:"<b>Must-take</b> courses are in every schedule. <b>Preferred</b> ones win between schedules with the same number of courses, but can still drop if keeping them would mean fewer courses. <b>Maybe</b> ones are added only if there is room.",
+    autoTip:"Keeps every must-take course, aims for the most courses, favours the preferred ones on a tie, and picks the best section for each.",
     inSched:(n,c)=>`In schedule: ${n} courses · ${c} credits`,
-    mixMust:n=>`${n} must`, mixMaybe:n=>`${n} maybe`,
+    mixMust:n=>`${n} must`, mixPref:n=>`${n} preferred`, mixMaybe:n=>`${n} maybe`,
+    overload:n=>`${n} credits · overload`,
+    overloadTip:n=>`${n} credits is above the normal load of ${OVERLOAD_CR}. This schedule may need an overload approval.`,
     secTag:n=>`${n} section${n===1?"":"s"}`, selfClash:"clashes with itself", removeTitle:"Remove from pool",
     gridTitle:"Weekly schedule", altTitle:"Alternative solutions", altHint:"same courses, different sections",
     secTitle:"Chosen sections", crnCount:n=>`${n} CRNs`, copyCrn:"Copy CRNs", copied:"Copied ✓",
@@ -1305,11 +1380,13 @@ const STR = {
     prefBlockT:"Your preferences make this schedule impossible",
     prefBlockS:"No section of this course satisfies your constraints:",
     instWant:"instructor", instAny:"any",
-    mustOff:"maybe", mustOn:"must",
+    mustOff:"maybe", mustOn:"must", prefOn:"preferred",
     modeAuto:"Auto", modeManual:"Manual",
     manualBadT:(n)=>`${n} hours of overlap in your schedule`,
     manualBadS:"These courses land on top of each other:",
-    manualTitle:"Pick sections", manualHint:"click one, the schedule updates instantly",
+    manualTitle:"Pick sections", manualHint:"hover to preview it, click to pick it",
+    previewOk:"Picking this section leaves no overlap",
+    previewBad:n=>`Picking this section causes ${n} hours of overlap`,
     lockTip:"Lock this section so it never changes",
     unlockTip:"Remove the lock",
     errMustTitle:"More must-take courses than your limit",
@@ -1323,6 +1400,10 @@ const STR = {
     lockCause:"This overlap comes from the sections you locked; remove the locks and a conflict-free schedule is possible.",
     mustOnTip:"I am definitely taking this — the solver will never drop it",
     mustOffTip:"Unmark it; the course stays in the pool as a candidate",
+    tipMust:"Must-take: never leaves the schedule",
+    tipPref:"Preferred: wins ties at the same course count, but drops if keeping it means fewer courses",
+    tipMaybe:"Maybe: added only if there is room",
+    tierLabel:"Course tier",
     mustClash:(list)=>`The courses you marked as must-take do not fit together without an overlap: ${list}.`,
     fixTitle:"Ways to make it clash-free",
     fixDropMust:(c)=>`Make ${c} a maybe`,
@@ -1373,12 +1454,12 @@ const STR = {
        d:"You tell it which courses you are considering. SUits works out which of them fit together without a clash, and which section of each one gives the best schedule. Every combination is tried in your browser."},
       {t:"1. Add courses to the pool",
        d:"Search and add from the panel on the left. Pick your major and courses get tagged Required / Core / Area / University. The pool is a shortlist, you do not have to take all of it."},
-      {t:"2. Must-take or maybe",
-       d:"The pool splits in two. <b>Must-take</b> courses are in every schedule and cannot be dropped. <b>Maybe</b> courses are added only if they fit with no clash, and “Find the best combination” decides which ones do."},
+      {t:"2. Must, preferred, maybe",
+       d:"Each course row has a three-way switch; one tap sets its tier. <b>Must-take</b> courses are in every schedule and cannot be dropped. <b>Preferred</b> ones win between schedules with the same number of courses, but can still drop if keeping them would mean fewer courses. <b>Maybe</b> ones are added only if there is room."},
       {t:"3. Course and credit range",
        d:"Set how many courses and credits you want as a low–high range in the top bar. The high end caps your picks, the low end is the target for auto-pick."},
       {t:"4. Find the best combination",
-       d:"This button picks the courses and their sections together. The hard rule never changes: no time conflicts. If a clash is unavoidable, SUits offers tested one-click fixes: which course to make a maybe, or which constraint to drop, so the rest fit."},
+       d:"This button picks the courses and their sections together. The order is: must-take courses never drop, then the most courses, then preferred ones on a tie, then credits, then schedule quality. If a clash is unavoidable, SUits offers tested one-click fixes."},
       {t:"5. Set your preferences",
        d:"Earliest and latest hour, a free day, short gaps between classes, a specific instructor or section. If a preference is impossible, SUits says why instead of silently dropping it, and tells you what is possible instead."},
       {t:"6. Lock a section",
@@ -2057,12 +2138,18 @@ function renderPrefs(){
 let pool = [];          // aday havuzu (ders kodları)
 let selected = [];      // havuzdan programa katılanlar
 let MUST = [];          // "bu dönem kesin alacağım" — otomatik seçim bunları asla elemez
+let PREF = [];          // "olsa iyi" — kesinin yumuşak hâli: eşit ders sayısında kayrılır,
+                        //             ama program küçülecekse düşebilir
 let solutions = null, altIndex = 0;
 
 const isMust = code => MUST.includes(code);
+const isPref = code => PREF.includes(code);
+/* Bir ders üç seviyeden yalnız birinde olabilir: kesin / olsa iyi / belki */
+const tierOf = code => isMust(code) ? "must" : isPref(code) ? "pref" : "maybe";
 /* Tanı ekranındaki düğmelerin uyguladığı hamleler */
-function dropCourse(code){          // kesin işaretini kaldırıp programdan çıkar, havuzda kalır
+function dropCourse(code){          // seviyesini belkiye indirip programdan çıkarır, havuzda kalır
   MUST = MUST.filter(c => c !== code);
+  PREF = PREF.filter(c => c !== code);
   selected = selected.filter(c => c !== code);
   altIndex = 0; save(); render();
 }
@@ -2083,17 +2170,38 @@ let MANUAL = {};        // {kod: {tür: crn}} — elle seçilen section'lar
 function setMust(code, on){
   if (on){
     if (!MUST.includes(code)) MUST.push(code);
+    PREF = PREF.filter(c => c !== code);                 // iki seviyede birden olamaz
     if (!selected.includes(code)) selected.push(code);   // kesin ders daima programda
   } else {
     MUST = MUST.filter(c => c !== code);
   }
   altIndex = 0; save(); render();
 }
+function setPref(code, on){
+  if (on){
+    if (!PREF.includes(code)) PREF.push(code);
+    MUST = MUST.filter(c => c !== code);
+  } else {
+    PREF = PREF.filter(c => c !== code);
+  }
+  altIndex = 0; save(); render();
+}
+/* Üç bölmeli anahtar: hangi seviyeye basılırsa doğrudan oraya geçer */
+function setTier(code, tier){
+  if (tierOf(code) === tier) return;
+  if (tier === "must") return setMust(code, true);
+  if (tier === "pref") return setPref(code, true);
+  MUST = MUST.filter(c => c !== code);
+  PREF = PREF.filter(c => c !== code);
+  altIndex = 0; save(); render();
+}
+
 
 const save = () => { try{
   localStorage.setItem("dk-pool", JSON.stringify(pool));
   localStorage.setItem("dk-sel", JSON.stringify(selected));
   localStorage.setItem("dk-must", JSON.stringify(MUST));
+  localStorage.setItem("dk-pref", JSON.stringify(PREF));
   localStorage.setItem("dk-manual", JSON.stringify(MANUAL));
   localStorage.setItem("dk-mode", MODE);
   localStorage.setItem("dk-range", JSON.stringify({a:MINSEL, b:MAXSEL, c:MINCR, d:MAXCR}));
@@ -2109,6 +2217,7 @@ function removeFromPool(code){
   pool = pool.filter(c => c !== code);
   selected = selected.filter(c => c !== code);
   MUST = MUST.filter(c => c !== code);
+  PREF = PREF.filter(c => c !== code);
   altIndex = 0; render();
 }
 function toggle(code){
@@ -2354,67 +2463,93 @@ function renderPool(){
   if (!pool.length){
     el.innerHTML = `<div class="empty">${T().emptyPool}</div>`;
   }
-  /* Liste iki gruba ayrılır: kesinler ve belkiler. Böylece "hangisi ne
-     anlama geliyor" ayrımı listenin kendisinden okunuyor; başlıkta da
-     o gruptan kaçının programa girdiği yazıyor. */
-  const mustList  = pool.filter(isMust);
-  const maybeList = pool.filter(c => !isMust(c));
-  const order = mustList.concat(maybeList);
+  /* Liste üç gruba ayrılır: kesin → olsa iyi → belki. "Hangisi ne anlama
+     geliyor" ayrımı listenin kendisinden okunuyor; başlıkta da o gruptan
+     kaçının programa girdiği yazıyor. */
+  const GT = [
+    {kind:"must",  list:pool.filter(isMust)},
+    {kind:"pref",  list:pool.filter(isPref)},
+    {kind:"maybe", list:pool.filter(c => tierOf(c) === "maybe")}
+  ];
+  const order = GT.reduce((a,g) => a.concat(g.list), []);
   const groupHead = (kind, list) => {
     const S = T();
     const inN = list.filter(c => selected.includes(c)).length;
     const note = kind === "must" ? "" :
       (list.length === 0 ? "" : inN === 0 ? S.gNoneIn : inN === list.length ? S.gAllIn : S.gIn(inN));
-    return `<div class="gsep"><b>${kind === "must" ? S.gMust : S.gMaybe}</b>` +
-           `<span>${kind === "must" ? S.gMustSub : S.gMaybeSub}</span>` +
+    const lbl = kind === "must" ? S.gMust : kind === "pref" ? S.gPref : S.gMaybe;
+    const sub = kind === "must" ? S.gMustSub : kind === "pref" ? S.gPrefSub : S.gMaybeSub;
+    return `<div class="gsep ${kind}"><b>${lbl}</b><span>${sub}</span>` +
            `<i>${list.length}${note ? " · " + note : ""}</i></div>`;
   };
+  const heads = {};
+  let at = 0;
+  for (const g of GT){ if (g.list.length) heads[at] = g; at += g.list.length; }
   order.forEach((code, idx) => {
-    if (idx === 0 && mustList.length) el.insertAdjacentHTML("beforeend", groupHead("must", mustList));
-    if (idx === mustList.length && maybeList.length)
-      el.insertAdjacentHTML("beforeend", groupHead("maybe", maybeList));
+    if (heads[idx]) el.insertAdjacentHTML("beforeend", groupHead(heads[idx].kind, heads[idx].list));
     const c = BY[code];
     const on = selected.includes(code);
     const blocked = !on && selected.some(s => pairOf(s, code).n > 0);
     const extras = c.classes.filter(cl => cl.type !== "");
     const selfClash = optsOf(code)[0].selfClash;
-    const must = isMust(code);
+    const must = isMust(code), pref = isPref(code), tier = tierOf(code);
     const row = document.createElement("div");
-    row.className = "crow" + (on?" on":"") + (blocked?" dim":"") + (must?" must":"");
+    row.className = "crow" + (on?" on":"") + (blocked?" dim":"")
+                  + (must?" must":"") + (pref?" pref":"");
+    /* Satır üç sessiz katmandan oluşuyor: kimlik, ad, ayrıntı.
+       Eskiden her ayrıntı ayrı bir rozetti; yan yana beş rozet listeyi
+       okunmaz hâle getiriyor ve satırı iki katına çıkarıyordu. */
+    const S = T();
+    /* Sayılar kimlik satırının boşluğuna, ön koşul ve hoca alt satıra:
+       böylece tıklanabilir hoca menüsü hiçbir genişlikte kırpılmıyor. */
+    const cnt = [S.secTag(c.classes[0].sections.length)].concat(
+      extras.map(cl => `<span title="${S.types[cl.type]||cl.type}">${cl.type||"?"}×${cl.sections.length}</span>`));
+    const cntHTML = cnt.map(x => `<span class="mi">${x}</span>`).join(" · ");
+    const preHTML = (c.pre && c.pre.length)
+      ? `<span class="mi">${S.prereq}: ${c.pre.join(", ")}</span>` : "";
     row.innerHTML =
       `<span class="swatch" style="background:${on?colorOf(code):"transparent"}"></span>
        <input type="checkbox" ${on?"checked":""} ${must?"disabled":""} aria-label="${c.code}">
        <span class="txt">
-         <span class="code">${c.code}</span>
-         <div class="nm">${c.name}</div>
-         <div class="tags">
-           <button class="mustbtn${must?" on":""}" data-code="${c.code}"
-             title="${must?T().mustOffTip:T().mustOnTip}">${must?T().mustOn:T().mustOff}</button>
+         <div class="hd">
+           <span class="code">${c.code}</span>
            ${catChip(c.code)}
-           <span class="tag">${T().secTag(c.classes[0].sections.length)}</span>
-           ${extras.map(cl=>`<span class="tag r">${T().types[cl.type]||cl.type} ×${cl.sections.length}</span>`).join("")}
-           ${selfClash?`<span class="tag r">${T().selfClash}</span>`:""}
-           ${(c.pre&&c.pre.length)?`<span class="tag p">${T().prereq}: ${c.pre.join(", ")}</span>`:""}
+           ${selfClash?`<span class="tag r">${S.selfClash}</span>`:""}
+           <span class="cnt">${cntHTML}</span>
+           <button class="rm" title="${S.removeTitle}" aria-label="${S.removeTitle}">×</button>
          </div>
-       </span>
-       <button class="rm" title="${T().removeTitle}" aria-label="${T().removeTitle}">×</button>`;
+         <div class="nm" title="${c.name.replace(/"/g,"&quot;")}">${c.name}</div>
+         <div class="meta">
+           <span class="mtx">${preHTML}</span>
+           <span class="tiersw" role="group" aria-label="${S.tierLabel}">
+             ${["must","pref","maybe"].map(k =>
+               `<button class="tb${tier===k?" on":""}" data-tier="${k}" data-code="${c.code}"
+                  title="${k==="must"?S.tipMust:k==="pref"?S.tipPref:S.tipMaybe}"
+                  >${k==="must"?S.mustOn:k==="pref"?S.prefOn:S.mustOff}</button>`).join("")}
+           </span>
+         </div>
+       </span>`;
     const teachers = instructorsOf(code);
     if (teachers.length > 1){
-      const wrap = document.createElement("div");
-      wrap.className = "instrow";
-      wrap.innerHTML = `<span class="ilbl">${T().instWant}</span>
-        <select class="instsel">
-          <option value="">${T().instAny}</option>
+      /* hoca seçimi kendi satırını kaplamasın: ayrıntı satırının içinde,
+         çerçevesiz bir açılır menü olarak dursun */
+      const wrap = document.createElement("span");
+      wrap.className = "instwrap";
+      wrap.innerHTML = `<select class="instsel" aria-label="${S.instWant}" title="${S.instWant}">
+          <option value="">${S.instWant}: ${S.instAny}</option>
           ${teachers.map(t => `<option value="${t.replace(/"/g,"&quot;")}"${INSTREQ[code]===t?" selected":""}>${t}</option>`).join("")}
         </select>`;
       wrap.onclick = e => e.stopPropagation();
       wrap.querySelector("select").onchange = e => setInstReq(code, e.target.value);
-      row.querySelector(".txt").appendChild(wrap);
+      row.querySelector(".meta").insertBefore(wrap, row.querySelector(".tiersw"));
     }
     row.querySelector("input").addEventListener("change", () => toggle(code));
     row.querySelector(".txt").addEventListener("click", () => toggle(code));
-    row.querySelector(".mustbtn").addEventListener("click", e => {
-      e.stopPropagation(); setMust(code, !isMust(code));
+    row.querySelector(".tiersw").addEventListener("click", e => {
+      const btn = e.target.closest("button[data-tier]");
+      if (!btn) return;
+      e.stopPropagation();
+      setTier(code, btn.dataset.tier);          // her seviyeye tek dokunuşla
     });
     row.querySelector(".rm").addEventListener("click", e => { e.stopPropagation(); removeFromPool(code); });
     el.appendChild(row);
@@ -2423,15 +2558,16 @@ function renderPool(){
   const cn = document.getElementById("counter");
   const cr = selCred();
   cn.textContent = T().inSched(selected.length, cr);
-  cn.classList.toggle("full", selected.length > 0 && inRange());
-  cn.title = T().rangeHint(MINSEL, MAXSEL, MINCR, MAXCR);
+  cn.classList.toggle("full", selected.length > 0 && inRange() && cr <= OVERLOAD_CR);
+  cn.classList.toggle("over", cr > OVERLOAD_CR);
+  cn.title = cr > OVERLOAD_CR ? T().overloadTip(cr) : T().rangeHint(MINSEL, MAXSEL, MINCR, MAXCR);
   /* havuzun kuralı tek cümleyle listenin başında dursun */
   const law = document.getElementById("poolLaw");
   if (law){ law.hidden = !pool.length; law.innerHTML = T().poolLaw; }
 }
 
 /* ================= program tablosu ================= */
-function renderGrid(sol){
+function renderGrid(sol, ghostCrn){
   const t = document.getElementById("sched");
   const occ = {};
   let maxDay = 4, maxSlot = 10;   // en az 18:40'a kadar göster
@@ -2442,7 +2578,8 @@ function renderGrid(sol){
       for (let k=0;k<m.du;k++){
         if (m.s+k > maxSlot) maxSlot = m.s+k;
         (occ[m.d*NSLOT+m.s+k] = occ[m.d*NSLOT+m.s+k]||[]).push({
-          code, type:cls.type, place:m.p, first:k===0, crn:sec.crn, inst:sec.inst
+          code, type:cls.type, place:m.p, first:k===0, crn:sec.crn, inst:sec.inst,
+          ghost: !!ghostCrn && sec.crn === ghostCrn
         });
       }
     }));
@@ -2457,7 +2594,7 @@ function renderGrid(sol){
       const items = occ[d*NSLOT+s] || [];
       let inner = "";
       items.slice(0,2).forEach((it,n) => {
-        const cls = items.length>1 ? (n===0?"blk half":"blk half half2") : "blk";
+        const cls = (items.length>1 ? (n===0?"blk half":"blk half half2") : "blk") + (it.ghost?" ghost":"");
         inner += `<div class="${cls}" style="background:${colorOf(it.code)}" title="${it.code}${it.type?" "+(T().types[it.type]||it.type):""} · ${it.place||"—"} · CRN ${it.crn}${it.inst?" · "+it.inst:""}">
             <span class="bc">${it.code}${it.type?" "+it.type:""}</span>
             ${it.first?`<span class="bm">${it.place||""}</span>`:""}
@@ -2634,11 +2771,11 @@ function drawFix(codes, box){
     ? {label:S.fixInst(r.code, r.name), run:() => setInstReq(r.code, "")}
     : {label:S.fixPin(r.code), run:() => clearPins(r.code)}));
   if (f.pref) acts.push({label:S.fixPref, run:resetPrefs});
-  f.drops.filter(c => !isMust(c)).forEach(c => acts.push({
-    label:S.fixDropSel(c), tip:S.fixDropTip(c), run:() => dropCourse(c)
-  }));
-  f.drops.filter(isMust).forEach(c => acts.push({
-    label:S.fixDropMust(c), tip:S.fixDropTip(c), run:() => dropCourse(c)
+  /* ucuzdan pahalıya: önce belki, sonra olsa iyi, en son kesin dersi bırak */
+  const dropOrder = c => tierOf(c) === "maybe" ? 0 : tierOf(c) === "pref" ? 1 : 2;
+  f.drops.slice().sort((a,b) => dropOrder(a) - dropOrder(b)).forEach(c => acts.push({
+    label: tierOf(c) === "maybe" ? S.fixDropSel(c) : S.fixDropMust(c),
+    tip: S.fixDropTip(c), run: () => dropCourse(c)
   }));
   const notes = [];
   /* verdict metni zaten "hiçbir kombinasyonda bir arada olmayan" ikilileri
@@ -2719,8 +2856,11 @@ function renderVerdict(sol){
      arasındaki bağ burada sayıyla görünür */
   if (selected.length){
     const mIn = selected.filter(isMust).length;
+    const pIn = selected.filter(isPref).length;
+    const yIn = selected.length - mIn - pIn;
     if (mIn) parts.push(`<span class="mix must">${TX().mixMust(mIn)}</span>`);
-    if (selected.length - mIn) parts.push(`<span class="mix maybe">${TX().mixMaybe(selected.length - mIn)}</span>`);
+    if (pIn) parts.push(`<span class="mix pref">${TX().mixPref(pIn)}</span>`);
+    if (yIn) parts.push(`<span class="mix maybe">${TX().mixMaybe(yIn)}</span>`);
   }
   if (CURMAP){
     const cnt = {}; let none = 0;
@@ -2729,6 +2869,9 @@ function renderVerdict(sol){
       parts.push(`<span class="mix ${k}"><b>${cnt[k]}</b>${TX().cats[k]}</span>`));
     if (none) parts.push(`<span class="mix out"><b>${none}</b>${TX().notInCur}</span>`);
   }
+  /* 20 krediyi geçen program overload onayı isteyebilir: sessizce geçme */
+  if (cred > OVERLOAD_CR)
+    parts.push(`<span class="mix over" title="${TX().overloadTip(cred)}">${TX().overload(cred)}</span>`);
   /* kredi toplamı üstteki istatistiklerde duruyor; burada yalnız hedefin dışındaysa uyar */
   if (selected.length && !inRange())
     parts.push(`<span class="mix out">${TX().rangeHint(MINSEL, MAXSEL, MINCR, MAXCR)}</span>`);
@@ -2782,14 +2925,18 @@ function renderMatrix(){
    güncellenir, çakışma varsa kırmızı görünür. Çözücü hiç karışmaz. */
 
 /* Elle seçilenlerden çözüm nesnesi üretir; render fonksiyonları bunu da anlar. */
-function manualSol(){
+/* pv verilirse o section geçici olarak seçilmiş sayılır: fareyle üstüne
+   gelindiğinde "seçersem programım ne olur" önizlemesi bundan çıkıyor. */
+function manualSol(pv){
   const codes = [], picks = [];
   const count = new Map();
-  for (const code of selected){
+  const list = (pv && !selected.includes(pv.code)) ? selected.concat([pv.code]) : selected;
+  for (const code of list){
     const c = BY[code]; if (!c) continue;
     const chosen = [];
     for (const cls of c.classes){
-      const want = MANUAL[code] && MANUAL[code][cls.type];
+      const want = (pv && pv.code === code && pv.type === cls.type)
+        ? pv.crn : (MANUAL[code] && MANUAL[code][cls.type]);
       const sec = usableSections(cls).find(x => x.crn === want);
       if (sec) chosen.push({cls, sec});
     }
@@ -2838,6 +2985,33 @@ function manualPick(code, type, crn){
   render();
 }
 
+/* ================= manuel mod: section önizlemesi =================
+   Fareyle bir section'ın üstüne gelince "bunu seçersem programım ne olur"
+   sorusunun cevabı tabloda soluk olarak beliriyor; çakışma olacaksa o hücre
+   kırmızıya döndüğü için karar tıklamadan önce veriliyor. */
+const HOVER_FINE = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+let PREVIEW = null;
+function previewGrid(pv){
+  if (MODE !== "manual") return;
+  const same = (a,b) => (!a && !b) || (a && b && a.code===b.code && a.type===b.type && a.crn===b.crn);
+  if (same(pv, PREVIEW)) return;
+  PREVIEW = pv;
+  const sol = manualSol(pv);
+  renderGrid(sol, pv ? pv.crn : null);
+  const t = document.getElementById("sched");
+  t.classList.toggle("previewing", !!pv);
+  const hint = document.getElementById("gridHint");
+  if (pv){
+    if (hint.dataset.keep === undefined) hint.dataset.keep = hint.textContent;
+    const n = sol ? sol.c : 0;
+    hint.textContent = n ? T().previewBad(n) : T().previewOk;
+    hint.classList.toggle("bad", !!n);
+  } else {
+    if (hint.dataset.keep !== undefined){ hint.textContent = hint.dataset.keep; delete hint.dataset.keep; }
+    hint.classList.remove("bad");
+  }
+}
+
 function renderManual(sol){
   const box = document.getElementById("manualList");
   const S = T();
@@ -2884,11 +3058,22 @@ function renderManual(sol){
         setPin(btn.dataset.code, btn.dataset.type, cur === btn.dataset.crn ? null : btn.dataset.crn);
         return;
       }
+      previewGrid(null);
       manualPick(btn.dataset.code, btn.dataset.type, btn.dataset.crn);
+    });
+    if (HOVER_FINE) wrap.querySelectorAll(".msec").forEach(btn => {
+      btn.addEventListener("mouseenter", () => {
+        if (btn.classList.contains("on")) { previewGrid(null); return; }   // zaten seçili
+        previewGrid({code:btn.dataset.code, type:btn.dataset.type, crn:btn.dataset.crn});
+      });
     });
     box.appendChild(wrap);
   });
   document.getElementById("manualHint").textContent = S.manualHint;
+  if (HOVER_FINE && !box.dataset.leave){         // listeden çıkınca önizleme kalksın
+    box.dataset.leave = "1";
+    box.addEventListener("mouseleave", () => previewGrid(null));
+  }
 }
 
 /* ================= hata ekranı ================= */
@@ -2947,6 +3132,10 @@ function baseOk2(code){
 }
 
 function render(){
+  /* yeniden çizim önizlemeyi geçersiz kılar */
+  PREVIEW = null;
+  const _sch = document.getElementById("sched");
+  if (_sch) _sch.classList.remove("previewing");
   /* hiçbir yol geçersiz bir sınırla buraya gelmesin; düzeltme olduysa
      üst bardaki seçim kutuları ve kayıt da aynı değere getirilsin */
   if (normalizeRanges()){ try{ syncRangeUI(); saveRanges(); }catch(e){} }
@@ -2977,6 +3166,7 @@ function render(){
     renderAlts();
     checkErrors(sol);
     save();
+    syncRailTop();   // manuel mod üst barı kısaltıyor: yapışma noktası da düşsün
     return;
   }
   solutions = selected.length ? solve(selected) : null;
@@ -2989,6 +3179,7 @@ function render(){
   renderAlts();
   checkErrors(sol);
   save();
+  syncRailTop();     // panel yerleşimi bittikten sonra ölç
 }
 
 /* Kullanıcının kendi ayarlarının birbiriyle çeliştiği durumlar. */
@@ -3023,7 +3214,7 @@ function checkErrors(sol){
 
 /* ================= paylaşılabilir bağlantı ================= */
 function encodeState(){
-  const s = {p:pool, s:selected, q:MUST, md:MODE, mn:MANUAL,
+  const s = {p:pool, s:selected, q:MUST, w:PREF, md:MODE, mn:MANUAL,
              n:MAXSEL, nlo:MINSEL, clo:MINCR, chi:MAXCR,
              k:PINNED, i:INSTREQ,
              e:PREFS.early, l:PREFS.late, o:PREFS.off,
@@ -3044,6 +3235,7 @@ function applyState(s){
   if (Array.isArray(s.p)) pool = s.p.filter(c => BY[c]);
   if (Array.isArray(s.s)) selected = s.s.filter(c => pool.includes(c));
   MUST = Array.isArray(s.q) ? s.q.filter(c => pool.includes(c)) : [];
+  PREF = Array.isArray(s.w) ? s.w.filter(c => pool.includes(c) && !MUST.includes(c)) : [];
   if (s.md === "manual" || s.md === "auto") MODE = s.md;
   if (s.mn && typeof s.mn === "object") MANUAL = s.mn;
   MUST.forEach(c => { if (!selected.includes(c)) selected.push(c); });
@@ -3438,7 +3630,7 @@ let PLANS = [];
 let ACTIVE_PLAN = "";
 function savePlans(){ try{ localStorage.setItem("dk-plans", JSON.stringify(PLANS)); }catch(e){} }
 function planState(){
-  return {p:pool.slice(), s:selected.slice(), q:MUST.slice(), md:MODE, mn:JSON.parse(JSON.stringify(MANUAL)),
+  return {p:pool.slice(), s:selected.slice(), q:MUST.slice(), w:PREF.slice(), md:MODE, mn:JSON.parse(JSON.stringify(MANUAL)),
           n:MAXSEL, nlo:MINSEL, clo:MINCR, chi:MAXCR,
           k:JSON.parse(JSON.stringify(PINNED)),
           i:JSON.parse(JSON.stringify(INSTREQ)),
@@ -3524,10 +3716,16 @@ const PLAN_NODE_CAP  = 6000000;
    Hedefin sabit olması budamayı çok güçlendiriyor: "kalanların hepsini alsam bile
    hedefe ulaşamam" olan dallar anında kesiliyor. Bu yüzden hedef yüksekten başlayıp
    iner; ilk tutan hedef kazanır, yani ders sayısı her zaman önceliklidir. */
+/* Hedef ders sayısı sabitken iki plan arasında sıralama:
+   önce "olsa iyi" dersinin sayısı, sonra kredi. Ders sayısı bu fonksiyonun
+   dışında, hedefin kendisiyle zaten sabitlenmiş durumda; yani "olsa iyi"
+   hiçbir zaman ders sayısından feragat ettirmez. */
+const betterPlan = (pf, cr, best) => pf > best.pf || (pf === best.pf && cr > best.cr);
+
 function searchTarget(items, target, deadline, st){
   const mask = new Set();
   let best = null, hitAt = 0;
-  const walk = (i, chosen, cr) => {
+  const walk = (i, chosen, cr, pf) => {
     if (st.stopped) return;
     if (++st.nodes > PLAN_NODE_CAP){ st.stopped = true; return; }
     if ((st.nodes & 4095) === 0){
@@ -3536,8 +3734,8 @@ function searchTarget(items, target, deadline, st){
     }
     if (chosen.length === target){
       if (cr < MINCR){ st.credMiss = true; return; }
-      if (!best){ best = {n:target, cr, codes:chosen.slice()}; hitAt = Date.now(); }
-      else if (cr > best.cr) best = {n:target, cr, codes:chosen.slice()};
+      if (!best){ best = {n:target, cr, pf, codes:chosen.slice()}; hitAt = Date.now(); }
+      else if (betterPlan(pf, cr, best)) best = {n:target, cr, pf, codes:chosen.slice()};
       return;
     }
     if (i === items.length) return;
@@ -3550,15 +3748,15 @@ function searchTarget(items, target, deadline, st){
         if (bad) continue;
         for (const k of opt.mask) mask.add(k);
         chosen.push(it.code);
-        walk(i+1, chosen, cr + it.cr);
+        walk(i+1, chosen, cr + it.cr, pf + (it.pref ? 1 : 0));
         chosen.pop();
         for (const k of opt.mask) mask.delete(k);
         if (st.stopped) return;
       }
     } else st.credMiss = true;
-    if (!it.must) walk(i+1, chosen, cr);      // kesin dersler atlanamaz
+    if (!it.must) walk(i+1, chosen, cr, pf);      // kesin dersler atlanamaz
   };
-  walk(0, [], 0);
+  walk(0, [], 0, 0);
   return best;
 }
 
@@ -3571,10 +3769,12 @@ function prefOpts(code){
 
 function planRun(optsOfCode, budgetMs){
   const items = pool
-    .map(c => ({code:c, opts:optsOfCode(c), cr:credOf(c), must:isMust(c)}))
+    .map(c => ({code:c, opts:optsOfCode(c), cr:credOf(c), must:isMust(c), pref:isPref(c)}))
     .filter(it => it.opts.length)
-    /* önce kesin dersler, sonra az seçenekli olanlar: budama erken devreye girer */
-    .sort((a,b) => (b.must?1:0)-(a.must?1:0) || a.opts.length-b.opts.length);
+    /* Sıra: kesin → olsa iyi → belki, her grupta az seçenekli önce.
+       Budama erken devreye girsin diye; ayrıca ilk bulunan plan çoğunlukla
+       "olsa iyi" dersleri zaten içerir, cilalama turu da onu iyileştirir. */
+    .sort((a,b) => (b.must?1:0)-(a.must?1:0) || (b.pref?1:0)-(a.pref?1:0) || a.opts.length-b.opts.length);
   const mustCount = items.filter(i => i.must).length;
   /* kesin bir ders bu seçenek kümesiyle hiç yerleşemiyorsa bu tur baştan geçersiz */
   if (mustCount < MUST.filter(c => allowedOpts(c).length).length)
@@ -3741,6 +3941,8 @@ try{
   if (MN && typeof MN === "object") MANUAL = MN;
   const MU = JSON.parse(localStorage.getItem("dk-must") || "[]");
   if (Array.isArray(MU)) MUST = MU.filter(c => pool.includes(c));
+  const PF = JSON.parse(localStorage.getItem("dk-pref") || "[]");
+  if (Array.isArray(PF)) PREF = PF.filter(c => pool.includes(c) && !MUST.includes(c));
   const S = JSON.parse(localStorage.getItem("dk-sel") || "[]");
   if (Array.isArray(S)) selected = S.filter(c => pool.includes(c)).slice(0, effMax());
   MUST.forEach(c => { if (!selected.includes(c)) selected.push(c); });   // kesin ders daima seçili
@@ -3865,17 +4067,25 @@ const GD_ART = [
         `<circle cx="256" cy="${cy}" r="7" fill="var(--accent)" opacity="${on ? 1 : .22}"/>` +
         `<path d="M252.5 ${cy}h7M256 ${cy-3.5}v7" stroke="${on ? "var(--accent-ink)" : "var(--accent)"}" stroke-width="1.6" stroke-linecap="round"/>`;
     }).join("")),
-  /* 2 · kesin / aday */
+  /* 2 · kesin / olsa iyi / belki: satırdaki üç bölmeli anahtar */
   () => gdWrap(
-    gdCard(40,20,240,92) +
-    [0,1].map(i => {
-      const y = 34 + i*34, on = i === 0;
-      return gdRect(52, y, 216, 26, "var(--surface2)", 6) +
-        gdRect(62, y+7, 60, 7, "var(--line2)", 3) +
-        gdRect(128, y+7, 30, 7, "var(--line2)", 3, .55) +
-        gdRect(208, y+5, 52, 16, on ? "var(--accent)" : "var(--sunken)", 8) +
-        (on ? `<path d="M220 ${y+13} 225 ${y+18} 236 ${y+8}" fill="none" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`
-            : gdRect(220, y+10, 28, 6, "var(--faint)", 3, .5));
+    gdCard(28,8,264,116) +
+    [0,1,2].map(i => {
+      const y = 20 + i*36;                 // her satır: kod + ad + anahtar
+      const sx = 168, sw = 108, cw = sw/3; // anahtarın yeri ve bölme genişliği
+      let g = gdRect(40, y, 240, 28, "var(--surface2)", 7) +
+        gdRect(50, y+7, 44, 7, "var(--line2)", 3) +
+        gdRect(100, y+7, 30, 7, "var(--line2)", 3, .5) +
+        gdRect(sx, y+6, sw, 16, "var(--sunken)", 8);
+      const on = i;                        // 0 kesin, 1 olsa iyi, 2 belki
+      const ox = sx + on*cw + 1.5;
+      g += gdRect(ox, y+7.5, cw-3, 13, on === 0 ? "var(--accent)" : "var(--surface)", 6);
+      for (let k = 0; k < 3; k++){
+        const cx = sx + k*cw + cw/2;
+        const fill = k === on ? (k === 0 ? "var(--accent-ink)" : "var(--accent)") : "var(--faint)";
+        g += gdRect(cx - 10, y + 11.5, 20, 5, fill, 2.5, k === on ? .95 : .5);
+      }
+      return g;
     }).join("")),
   /* 3 · ders ve kredi aralığı */
   () => gdWrap(
@@ -4005,6 +4215,17 @@ document.getElementById("langsw").addEventListener("click", e => {
   const btn = e.target.closest("button[data-lang]");
   if (btn) setLang(btn.dataset.lang);
 });
+/* üst barın gerçek yüksekliğini ölç: dil, pencere genişliği ve sarma
+   durumuna göre değiştiği için sabit bir sayı tutmuyor */
+function syncRailTop(){
+  const h = document.querySelector("header.top");
+  if (!h) return;
+  const fixed = getComputedStyle(h).position === "sticky";
+  const t = fixed ? Math.round(h.getBoundingClientRect().height) + 12 : 12;
+  document.documentElement.style.setProperty("--railtop", t + "px");
+}
+window.addEventListener("resize", syncRailTop);
+
 function refreshBrand(){
   document.getElementById("brandSub").textContent = TERM ? `${TERM} · ${T().poolCount(DATA.length)}` : T().tagline(DATA.length);
 }
