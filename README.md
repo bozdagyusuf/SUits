@@ -31,8 +31,13 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
   derslik; 8 yumuşak arka plan rengi, 3 telefon boyutu, saat ve bildirimler için
   üstte boşluk. Bölüm seçiliyse ders kategorisi (Zorunlu / Core / Area / Üniversite /
   Free) de yazılabilir
-- **Yazdır** — sitenin kendi hazırladığı temiz bir çıktı sayfası: haftalık tablo,
-  ders/CRN/saat/derslik/hoca listesi ve kopyalanabilir CRN satırı
+- **Tabloyu indir** — programın yatay A4 tablosu tek dosya olarak iner
+  (2339 × 1654 piksel, 200 dpi PNG): beyaz zemin, gün sütunları, saat sütunu,
+  renkli ders blokları (kod, saat aralığı, derslik, hoca), sağda ders + CRN
+  listesi, altta tek satırda bütün CRN'ler. Sayfayı yazıcıya göndermez, görüntü
+  üretir; WhatsApp'a atmak ya da duvara basmak için hazır. Manuel modda o anda
+  elle kurduğun program çıkar. Ctrl+P ile yazdırmak isteyene sitenin kendi temiz
+  çıktı sayfası da duruyor
 - **Hoca adları** ders kartlarında ve tablo ipuçlarında görünür
 - **Seviye filtresi** — 100 / 200 / 300 / 400 / 500+ ile 472 dersi hızla daraltırsın
 - **Zaman tercihleri** — "10:40'tan önce ders olmasın", "17:30'dan sonra bitmesin",
@@ -99,12 +104,38 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
   sabitlersin ("bu dersi arkadaşımla X section'ından alacağım"); çözücü bir daha
   o section'ı değiştirmez
 - **Hata ekranı** — kullanıcının ayarları birbiriyle çeliştiğinde program sessizce
-  bozulmaz, üstte kırmızı bir kutu çıkar ve çözüm düğmesi sunar. İki durum:
-  kesin ders sayısı ders limitinden fazlaysa; ve kilitlenen section'lar birbiriyle
-  çakışıyorsa (hangi ikilinin çakıştığı adıyla yazılır)
-- **Ders ve kredi aralığı** — "4 ile 6 ders, 12 ile 18 kredi" dersin. Maksimumlar
-  sert sınır (üstüne çıkacak seçim engellenir), minimumlar otomatik seçimin hedefi.
-  SU kredisi BannerWeb verisinden gelir, bölüm seçmene gerek yok
+  bozulmaz, üstte kırmızı bir kutu çıkar ve çözüm düğmesi sunar. Kilitlenen
+  section'lar birbiriyle çakışıyorsa (hangi ikilinin çakıştığı adıyla yazılır) ve
+  kesin ders sayısı ders sayısı tavanını (10) geçiyorsa bu kutu çıkar
+- **Dört kavram, tek anlam** — havuz / mavi tik / seviye / sayı aralığı birbirine
+  karışmasın diye hepsinin işi tek cümleyle yazılı (havuz listesinin başında ve
+  rehberde): **havuz** aday derslerdir, **mavi tik** o dersin şu an programda
+  olduğunu gösterir, **kesin / olsa iyi / belki** otomatik kurulumun önceliğidir,
+  **ders sayısı aralığı** ise programın büyüklüğünü sınırlar. Tikin üstüne
+  gelince "bu ders programda, tıkla çıkar" gibi bir ipucu da çıkar
+- **Ders ve kredi aralığı** — "4 ile 6 ders, 12 ile 18 kredi" dersin.
+  **Üst sınır sert ve her yerde aynı:** elle tikleme, kesin işaretleme, manuel mod
+  ve çözücü aynı sınıra uyar. Eskiden manuel modda sınır hiç işlemiyordu (2 ders
+  sınırıyla 6 ders seçilebiliyordu) ve kesin işaretleme sınırı sessizce aşıyordu.
+  Kesin ders sayısı sınırı geçerse **sınır ona yükselir** ve bu yazılır; sınır
+  tavandayken (10) hata ekranı devralır. **Alt sınır dilektir:** o kadar ders
+  çakışmasız yerleşmiyorsa SUits boş dönmez, en iyi programı kurar ve "alt sınırın
+  4 ders ama bu havuzdan en fazla 1 ders yerleşiyor" diye yazar. Eskiden bu
+  durumda "havuzda çakışmasız hiçbir ikili bile yok" diyordu, oysa tek dersli
+  program kurulabiliyordu. SU kredisi BannerWeb verisinden gelir
+- **Hiçbir ders sessizce düşmüyor** — sınır bir işi engellediğinde ekranda sarı bir
+  satır çıkar, nedenini yazar ve tek tıkla çözümü önerir ("Üst sınırı 4 yap",
+  "Kredi sınırını 6 yap"). Sınırı küçültünce önce **belki** dersleri düşer, sonra
+  **olsa iyi**; kesin ders asla düşmez, düşenler adıyla yazılır ve "sınırı 6 yapıp
+  geri al" düğmesiyle geri gelir. Eskiden seçim listenin sonundan kesiliyordu ve
+  kesin işaretlenmiş bir ders bile programdan sessizce çıkabiliyordu
+- **Aynı kural her yoldan geçerli** — elle tik, kesin işaretleme, manuel mod, sınır
+  değiştirme, kayıtlı plan, paylaşılan bağlantı ve eski `localStorage` kaydı: her
+  çizimde iki değişmez kural zorlanıyor (kesin dersler programda, seçim üst sınırı
+  aşmıyor), bozuk bir kayıt geldiğinde de düşen dersler yazılıyor
+- Otomatik kurulum **tiklerde ne değiştiğini söyler**: "Tikler yenilendi · eklendi:
+  ME 301, POLS 799 · çıkarıldı: LIT 540". Elle kurduğun programı bu düğmenin
+  sessizce değiştirmesi, karışıklığın en büyük kaynağıydı
 - Otomatik seçim aralığın içinde önce en çok dersi, aynı ders sayısında en yüksek
   krediyi hedefler; aralığa oturan çakışmasız kombinasyon yoksa bunu söyler
 - Otomatik seçim, hangi derslerin alınacağını ve her dersin hangi section'ını
@@ -126,6 +157,27 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
   piksel, aynı ekranda 5-8 ders görünüyor, hiçbir genişlikte taşma yok
 - **Overload uyarısı** — programın toplam kredisi 20'yi geçerse sonuç satırında ve
   havuz sayacında sarı bir uyarı çıkar: bu program için overload onayı gerekebilir
+- **Katlanabilir paneller** — her panelin başlığındaki ok düğmesiyle panel kapanır.
+  Soldaki panel **yatay** kapanır: sütun 352 pikselden 44 piksele iner, başlık dikey
+  durur ve kazanılan yer haftalık programa gider (program 816 pikselden 1124 piksele
+  çıkıyor). Dar ekranda tek sütuna düşüldüğü için orada dikey kapanır. Üstteki plan ve
+  tercih kutusu 135 pikselden 45'e iner. Aynısı manuel liste, haftalık program,
+  alternatifler, section listesi ve çakışma matrisi için de geçerli. Hangi panelin
+  kapalı olduğu `dk-fold` ile hatırlanır. Başlıktaki diğer düğmeler (Temizle,
+  kilitleri aç) katlamayı tetiklemez. Düğme 28 × 28 piksel, çerçeveli ve yuvarlak
+  köşeli bir kutu içinde SVG chevron: yönü hareketi gösteriyor (sağ panellerde
+  açıkken yukarı, kapalıyken aşağı; sol panelde açıkken sola, kapalıyken sağa).
+  Başlıktaki uzun ipucu metni artık düğmenin altına girmiyor (metin kısalıyor,
+  düğmenin negatif kenar boşluğu kaldırıldı); üstteki kutuda ok için satırların
+  sağında 48 piksel yer ayrıldı (eskiden `:first-child` düğmenin kendisine
+  denk geldiği için o boşluk hiç uygulanmıyordu ve ok Paylaş / Duvar kâğıdı
+  düğmelerinin üstüne biniyordu)
+- **Arama motoru için** — sayfa başlığı, açıklama, canonical ve robots etiketleri;
+  `WebApplication` JSON-LD yapısal verisi (Sabancı Üniversitesi varlığına bağlı);
+  Open Graph ve Twitter etiketleri (`og.png` ile paylaşım önizlemesi); marka
+  satırında ve footer'daki tanım metninde üniversite adı görünür metin olarak geçer.
+  Gizli metin ya da anahtar kelime doldurma yok. Depoda ayrıca `sitemap.xml` ve
+  `robots.txt` var
 - **Mobil için ayrı görünüm** — telefonda haftalık tablo yerine gün gün ajanda
   listesi; havuz paneli katlanabilir
 - **Dokunmatikte doğru geri bildirim** — fare imleciyle çalışan "havuzdaki dersin
@@ -145,6 +197,11 @@ Tek dosyalık statik site — sunucu, veritabanı, build adımı yok.
   `normalizeRanges()` her çizimde değerleri geçerli aralığa çeker ve üst bardaki
   kutuları aynı değere getirir. Önceden boş bir seçim kutusu limiti 0 yapabiliyordu:
   üst barda "1" görünüyor, hedef "0-0 ders" oluyor ve hata ekranı kapanmıyordu
+- **Çakışan bloklar üst üste binmiyor** — duvar kâğıdının **Tablo** biçiminde ve A4
+  çıktısında aynı saatte iki section varsa, o sütun şeritlere bölünür ve her blok
+  kendi şeridine oturur (`layoutDay()`, bağlı bileşen + şerit ataması). Çakışması
+  olmayan blok tam genişlikte kalır. Eskiden ikisi aynı dikdörtgene çiziliyor ve
+  yazılar okunmuyordu
 - **Türkçe / İngilizce** dil seçeneği (üstteki TR·EN düğmesi, tarayıcı diline göre otomatik başlar)
 - Açık/koyu tema, mobil uyumlu, çevrimdışı çalışır. Dosyayı indirip çift tıklayarak
   (`file://`) açtığında da her şey çalışır: veriler gömülü, rehberin çizimleri sayfanın

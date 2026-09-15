@@ -1,4 +1,35 @@
-<!doctype html><html lang='tr'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><meta name='description' content='Sabancı Üniversitesi ders programı planlayıcısı — çakışmasız kombinasyonları bulur.'><title>SUits</title>
+<!doctype html><html lang='tr'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>SUits | Sabancı Üniversitesi Ders Programı Oluşturucu</title>
+<meta name="description" content="SUits, Sabancı Üniversitesi öğrencileri için ücretsiz ders programı oluşturucu ve course scheduler. Çakışmasız ders ve section kombinasyonlarını bulur ve en uygun programı oluşturur.">
+<link rel="canonical" href="https://bozdagyusuf.github.io/SUits/">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SUits">
+<meta property="og:title" content="SUits | Sabancı Üniversitesi Ders Programı Oluşturucu">
+<meta property="og:description" content="Sabancı Üniversitesi öğrencileri için ücretsiz ders programı oluşturucu. Çakışmasız ders ve section kombinasyonlarını bulur.">
+<meta property="og:url" content="https://bozdagyusuf.github.io/SUits/">
+<meta property="og:image" content="https://bozdagyusuf.github.io/SUits/og.png">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication",
+ "name":"SUits",
+ "alternateName":["Sabancı Üniversitesi Ders Programı Oluşturucu","Sabanci University Course Scheduler"],
+ "url":"https://bozdagyusuf.github.io/SUits/",
+ "applicationCategory":"EducationalApplication",
+ "operatingSystem":"Web",
+ "browserRequirements":"JavaScript",
+ "inLanguage":["tr","en"],
+ "isAccessibleForFree":true,
+ "offers":{"@type":"Offer","price":"0","priceCurrency":"TRY"},
+ "description":"Sabancı Üniversitesi öğrencileri için ders programı oluşturucu. Seçilen derslerin bütün section kombinasyonlarını tarayıp çakışmasız haftalık ders programı kurar.",
+ "audience":{"@type":"EducationalAudience","educationalRole":"student"},
+ "about":{"@type":"CollegeOrUniversity","name":"Sabancı Üniversitesi","alternateName":"Sabanci University","url":"https://www.sabanciuniv.edu/"},
+ "author":{"@type":"Person","name":"Yusuf Bozdağ","url":"https://github.com/bozdagyusuf"},
+ "codeRepository":"https://github.com/bozdagyusuf/SUits",
+ "license":"https://www.gnu.org/licenses/agpl-3.0.html"}
+</script>
 <style>
 :root{
   --bg:#F2F2F7; --surface:#FFFFFF; --surface2:#F7F7FA; --sunken:#EDEDF2;
@@ -188,6 +219,16 @@ header.top{
 .errbox .erracts .btn{background:var(--surface)}
 .errbox .erracts .btn.primary{background:var(--bad); color:#fff}
 
+/* sınır uyarısı: sessizce hiçbir şey olmaması yerine görünür tek satır */
+.capnote{
+  margin:14px 0 0; padding:11px 14px; border-radius:14px;
+  background:var(--warn-soft); border:1px solid color-mix(in srgb, var(--warn) 34%, transparent);
+  color:var(--ink); font-size:13px; line-height:1.5;
+  display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+}
+.capnote #capText{flex:1; min-width:200px}
+.capnote .btn{background:var(--surface); flex:none}
+
 /* ---------- manuel mod ---------- */
 /* Manuel listede her dersin tüm section'ları var; liste 7000 piksele çıkıp
    sayfayı uzatıyor, program yukarıda kalıyordu. Liste kendi içinde kaysın:
@@ -284,7 +325,7 @@ header.top{
 /* ---------- controls ---------- */
 .controls{margin-top:12px; background:var(--surface); border-radius:var(--r-card); box-shadow:var(--shadow); overflow:hidden}
 .ctrow{display:flex; gap:12px; flex-wrap:wrap; align-items:center; padding:12px 18px; border-top:1px solid var(--line); min-height:50px}
-.ctrow:first-child{border-top:0}
+.ctrow:first-of-type{border-top:0}
 .ctrow .qlbl{font-size:12px; color:var(--faint); font-weight:600}
 .ctrow .q{display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--muted)}
 .planlist{display:flex; gap:6px; flex-wrap:wrap}
@@ -322,8 +363,65 @@ header.top{
   display:flex; align-items:center; gap:8px; flex-wrap:nowrap;
 }
 .panel > h2 > span:first-child{white-space:nowrap}
-.panel > h2 .hint{margin-left:auto; display:flex; align-items:center; gap:7px; font-weight:450; color:var(--faint); font-size:12px; white-space:nowrap}
+.panel > h2 .hint{margin-left:auto; display:flex; align-items:center; gap:7px; font-weight:450; color:var(--faint); font-size:12px; white-space:nowrap; min-width:0; overflow:hidden}
+.panel > h2 .hint > span{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .pbody{padding:16px 18px}
+/* ---- panelleri ok düğmesiyle katlama (her genişlikte) ----
+   Düğme her zaman başlığın en sağında, kendi çerçeveli kutusunda durur;
+   metinler onun altına girmesin diye ipucu kısalır (…), düğmeye de negatif
+   kenar boşluğu verilmez. Oku sadece SVG döner, kutu yerinde kalır. */
+.panel.foldable > h2{cursor:pointer}
+.foldbtn{
+  flex:none; padding:0; cursor:pointer;
+  border:1px solid var(--line); background:var(--surface); color:var(--muted);
+  width:26px; height:26px; margin:0; border-radius:9px;
+  display:inline-flex; align-items:center; justify-content:center;
+  box-shadow:0 1px 2px rgba(15,23,42,.05);
+  transition:background .14s, color .14s, border-color .14s, box-shadow .14s;
+}
+.foldbtn svg{display:block; transition:transform .2s ease}
+.foldbtn:active{transform:scale(.94)}
+.panel > h2 > .foldbtn{margin-left:auto}
+.panel > h2 .hint ~ .foldbtn{margin-left:10px}
+.panel.folded > *:not(h2){display:none}
+.panel.folded > h2{border-bottom:0}
+/* açıkken ok yukarı (kapat), kapalıyken aşağı (aç) */
+.panel.foldable > h2 > .foldbtn svg{transform:rotate(180deg)}
+.panel.folded > h2 > .foldbtn svg{transform:none}
+/* ---- soldaki panel yatay katlanır: sol kenara iner, program genişler ----
+   Dikey katlamada 330 piksellik sütun boş kalıyordu; kapalıyken sütun 44
+   piksele düşüyor ve kazanılan yer haftalık programa gidiyor. */
+@media (min-width:961px){
+  .cols.railfold{grid-template-columns:44px minmax(0,1fr)}
+  .cols.railfold .rail .panel.folded > h2{
+    writing-mode:vertical-rl; text-orientation:mixed;
+    height:auto; padding:14px 10px; gap:12px; justify-content:flex-start;
+    border-bottom:0; white-space:nowrap;
+  }
+  .cols.railfold .rail .panel.folded > h2 > span:first-child{white-space:nowrap}
+  .cols.railfold .rail .panel.folded > h2 .hint{display:none}
+  .cols.railfold .rail .panel.folded > h2 .foldbtn{
+    writing-mode:horizontal-tb; margin:0 0 10px; align-self:center; order:-1;
+  }
+  /* sol panelde hareket yatay: açıkken ok sola (kapat), kapalıyken sağa (aç) */
+  .cols .rail .panel.foldable > h2 > .foldbtn svg{transform:rotate(90deg)}
+  .cols .rail .panel.folded > h2 > .foldbtn svg{transform:rotate(-90deg)}
+}
+/* üstteki plan/tercih kutusu: ok sağ üst köşede, ilk satır altına girmesin */
+.controls{position:relative}
+/* ok sağ üstte duruyor: satırların sağında ona yer ayrılır, yoksa Paylaş /
+   duvar kâğıdı düğmelerinin üstüne biniyor (düğme .controls'un ilk çocuğu
+   olduğu için :first-child satıra hiç uymuyordu) */
+.controls > .ctrow{padding-right:48px}
+.ctfold{position:absolute; top:9px; right:10px; z-index:2}
+.ctsum{display:none; padding:13px 16px; font-size:12.5px; color:var(--faint)}
+.controls.folded .ctrow{display:none}
+.controls.folded .ctsum{display:block}
+.ctfold svg{transform:rotate(180deg)}
+.controls.folded .ctfold svg{transform:none}
+@media (hover: hover) and (pointer: fine){
+  .foldbtn:hover{background:var(--sunken); color:var(--ink); border-color:var(--muted); box-shadow:0 2px 6px rgba(15,23,42,.08)}
+}
 
 /* ---------- search + pool ---------- */
 .searchwrap{padding:12px 14px; border-bottom:1px solid var(--line)}
@@ -568,6 +666,7 @@ table.matrix td{width:26px; height:26px; text-align:center; border:2px solid var
 
 footer.foot{max-width:1300px; margin:0 auto; padding:26px 20px 44px; display:flex; gap:8px 20px; flex-wrap:wrap; font-size:12px; color:var(--faint); line-height:1.6}
 footer.foot a{color:var(--muted); text-decoration:none; border-bottom:1px solid var(--line2)}
+footer.foot .ftabout{flex-basis:100%; margin:0 0 4px; max-width:760px; color:var(--muted)}
 footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
 
 /* tek sütuna düşen genişlikler: yapışkan panel alttaki içeriğin üstüne biniyordu */
@@ -610,16 +709,6 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
   .secgrid{grid-template-columns:1fr}
   .alts{display:grid; grid-template-columns:1fr 1fr}
   .altbtn{min-width:0}
-  #poolHead2{cursor:pointer; position:relative; padding-right:34px}
-  #poolHead2::after{content:"▾"; position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--faint); font-size:11px; transition:transform .15s}
-  #poolPanel.collapsed #poolHead2::after{transform:translateY(-50%) rotate(-90deg)}
-  #poolPanel.collapsed .searchwrap,
-  #poolPanel.collapsed .results,
-  #poolPanel.collapsed .takenbox,
-  #poolPanel.collapsed .bulkbox,
-  #poolPanel.collapsed .curbox,
-  #poolPanel.collapsed .poolhead,
-  #poolPanel.collapsed .clist{display:none}
   .sheetbox{padding:16px; border-radius:16px}
 }
 @media (max-width:360px){
@@ -732,15 +821,9 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
   .sheetbox{ border-radius:26px; padding:26px 28px }
   footer.foot{ padding:32px 24px 52px }
 
-  /* ---- katlanabilir panel (alternatif kombinasyonlar) ---- */
+  /* ---- katlanabilir panel düğmesi (tüm paneller) ---- */
   .panel.foldable > h2{ cursor:pointer }
-  .foldbtn{
-    border:0; background:var(--sunken); color:var(--muted); width:26px; height:26px;
-    border-radius:999px; font-size:11px; line-height:1; display:flex; align-items:center;
-    justify-content:center; flex:none; transition:transform .18s ease, background .14s
-  }
-  .panel.folded .foldbtn{ transform:rotate(-90deg) }
-  .panel.folded > .pbody{ display:none }
+  .foldbtn{ width:28px; height:28px; border-radius:10px }
 
   /* ---- mobil alt sekme çubuğu ---- */
   .tabbar{ display:none }
@@ -823,7 +906,7 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
   <div class="top-in">
     <div class="brand">
       <h1>SUits</h1>
-      <span class="sub" id="brandSub"></span>
+      <span class="sub" id="brandSub">Sabancı Üniversitesi ders programı oluşturucu</span>
     </div>
     <span class="langsw" id="langsw">
       <button data-lang="tr">TR</button><button data-lang="en">EN</button>
@@ -876,6 +959,12 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
     <div class="erracts" id="errActs"></div>
   </div>
 
+  <!-- sınır uyarıları: tıklama boşa gitti sanılmasın, ne olduğu yazsın -->
+  <div class="capnote" id="capNote" hidden>
+    <span id="capText"></span>
+    <button class="btn tiny" id="capAct" hidden></button>
+  </div>
+
   <div class="verdict idle" id="verdict">
     <div class="v-main">
       <div class="v-title" id="vTitle"></div>
@@ -885,9 +974,11 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
     <div class="v-stats" id="vStats"></div>
   </div>
 
-  <div class="controls">
+  <div class="controls" id="controls">
+    <button type="button" class="foldbtn ctfold" id="ctFold" aria-controls="controls" aria-label="Paneli aç / kapat"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></button>
     <div class="ctrow" id="planBar"></div>
     <div class="ctrow" id="prefBar"></div>
+    <div class="ctsum" id="ctSum"></div>
   </div>
 
 
@@ -927,7 +1018,7 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
     </div>
 
     <div class="stack">
-      <div class="panel">
+      <div class="panel" id="gridPanel">
         <h2><span id="lblGrid"></span> <span class="hint" id="gridHint">—</span></h2>
         <div class="gridwrap"><table class="sched" id="sched"></table></div>
         <div class="agenda" id="agenda"></div>
@@ -997,6 +1088,7 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
 </div>
 
 <footer class="foot">
+  <p class="ftabout" id="ftAbout"></p>
   <span><span id="ftData"></span>: <a href="https://omerrifat.github.io/bannerweb-fetch/" target="_blank" rel="noopener">bannerweb-fetch</a> (AGPL-3.0) · <a href="https://github.com/mustafacani/suchedule" target="_blank" rel="noopener">SUchedule</a> (MIT) · <span id="ftCur"></span>: <a href="https://beficent.github.io/surriculum/" target="_blank" rel="noopener">SUrriculum</a> (GPL-3.0)</span>
   <span><a href="https://github.com/bozdagyusuf/SUits" target="_blank" rel="noopener" id="ftSrc">Kaynak kodu</a> · AGPL-3.0</span>
 </footer>
@@ -1105,9 +1197,12 @@ const NSLOT = 14;                 // 0 => 08:40 … 13 => 21:40
 
 const PALETTE = ["--c1","--c2","--c3","--c4","--c5","--c6","--c7","--c8","--c9","--c10"];
 /* Programın hedefi: ders sayısı ve SU kredisi için alt-üst sınır.
-   Maksimumlar seçimi kısıtlar (üstüne çıkılamaz), minimumlar
-   "En iyi kombinasyonu bul" için hedeftir. */
+   Üst sınırlar SERT: ne elle tikleyerek, ne kesin işaretleyerek, ne manuel
+   modda, ne de çözücüyle aşılabilir. Alt sınırlar DİLEK: "En iyi kombinasyonu
+   bul" önce onları hedefler, tutmuyorsa en iyi programı kurar ve nedenini
+   yazar (eskiden hiç sonuç döndürmüyordu). */
 let MINSEL = 3,  MAXSEL = 6;
+let BOOT_TRIM = [];              // bozuk kayıttan dolayı açılışta düşen dersler
 let MINCR  = 0,  MAXCR  = 30;
 const SEL_HI = 10, CRED_HI = 40;
 /* Normal ders yükü sınırı: üstüne çıkan program overload onayı ister */
@@ -1145,12 +1240,28 @@ const BUILD_ISO = "2026-08-23";
 /* ================= dil ================= */
 const STR = {
   tr: {
+    uni:"Sabancı Üniversitesi",
+    foldTip:"Paneli aç / kapat", ctSum:"Planlar ve tercihler",
+    about:"SUits, Sabancı Üniversitesi öğrencileri için bir ders programı oluşturucudur. Almayı düşündüğün Sabancı derslerini seçersin, SUits bütün section kombinasyonlarını tarayıp çakışmasız bir haftalık ders programı kurar. Ders seçimi döneminde program yapmayı kolaylaştırmak için yazıldı; ücretsiz ve açık kaynak.",
     tagline:n=>`programına oturan dersler · ${n} ders`,
     limit:"Ders", limitCred:"Kredi", courseWord:"ders",
     clear:"Seçimi temizle", auto:"En iyi kombinasyonu bul", calc:"Hesaplanıyor…",
     overCount:m=>`En fazla ${m} ders seçebilirsin. Üstteki aralığı büyüt.`,
     overCred:m=>`Kredi üst sınırın ${m}. Üstteki aralığı büyüt.`,
     rangeHint:(a,b,c,d)=>`Hedef: ${a}-${b} ders, ${c}-${d} kredi`,
+    /* ---- sınırlar ve tikler: ne olduğunu her seferinde açıkça yaz ---- */
+    capCount:(m)=>`Üst sınır ${m} ders: programa bir ders daha eklemek için sınırı büyütmen gerekiyor.`,
+    capCountAct:(m)=>`Üst sınırı ${m} yap`,
+    capCred:(m,c)=>`Kredi üst sınırı ${m}: bu ders eklenince ${c} kredi olur.`,
+    capCredAct:(c)=>`Kredi sınırını ${c} yap`,
+    capMustUp:(n)=>`Kesin ders sayısı ${n} oldu, ders üst sınırı da ${n}'e çıkarıldı: kesin dersler her programa girmek zorunda.`,
+    capTrim:(list,m)=>`Üst sınır ${m} ders olduğu için programdan çıkarıldı: ${list}. Havuzda duruyor.`,
+    capTrimAct:(m)=>`Sınırı ${m} yapıp geri al`,
+    capUndo:"Geri alındı.",
+    capManual:(m)=>`Üst sınır ${m} ders: yeni bir ders eklemek için önce sınırı büyüt ya da programdan bir ders çıkar.`,
+    tickTitle:(on)=>on ? "Bu ders şu an programda. Tıkla: programdan çıkar." : "Bu ders havuzda ama programda değil. Tıkla: programa ekle.",
+    autoBelowMin:(lo,n)=>`Alt sınırın ${lo} ders ama bu havuzdan çakışmasız en fazla ${n} ders yerleşiyor; ${n} dersle en iyi program kuruldu.`,
+    autoChanged:(add,rem)=>`Tikler yenilendi${add ? " · eklendi: " + add : ""}${rem ? " · çıkarıldı: " + rem : ""}.`,
     autoNoRange:(a,b,c,d)=>`${a}-${b} ders ve ${c}-${d} kredi aralığına oturan çakışmasız bir kombinasyon yok. Aralığı genişlet ya da havuza ders ekle.`,
     poolTitle:"1 · Ders havuzu", poolEmpty:"boş", poolCount:n=>`${n} ders`,
     poolHead:"2 · Kesin / olsa iyi / belki", searchPh:"Ders kodu veya adı ara…", all:"Tümü",
@@ -1160,7 +1271,7 @@ const STR = {
     gPref:"Olsa iyi", gPrefSub:"eşit ders sayısında öne geçer",
     gMaybe:"Belki", gMaybeSub:"sığarsa eklenir",
     gIn:n=>`${n} tanesi programda`, gAllIn:"hepsi programda", gNoneIn:"programa girmedi",
-    poolLaw:"<b>Kesin</b> dersler her programa girer. <b>Olsa iyi</b> dersleri, aynı sayıda ders veren programlar arasında öne geçer ama program küçülecekse düşebilir. <b>Belki</b> dersleri yalnız yer kalırsa eklenir.",
+    poolLaw:"<b>Havuz</b> aday dersler, <b>mavi tik</b> şu an programda olanlar. Seviyeler otomatik kurulumda işe yarar: <b>kesin</b> dersler her programa girer, <b>olsa iyi</b> dersleri aynı sayıda ders veren programlar arasında öne geçer ama program küçülecekse düşebilir, <b>belki</b> dersleri yalnız yer kalırsa eklenir. Üstteki <b>ders sayısı</b> aralığında üst sınır serttir (ne elle ne otomatik aşılır), alt sınır dilektir: ulaşılamazsa en iyi program kurulur ve nedeni yazılır.",
     autoTip:"Kesin dersleri olduğu gibi tutar, en çok dersi hedefler, eşitlikte olsa iyi derslerini kayırır ve her ders için en iyi section'ı seçer.",
     inSched:(n,c)=>`Programda: ${n} ders · ${c} kredi`,
     mixMust:n=>`${n} kesin`, mixPref:n=>`${n} olsa iyi`, mixMaybe:n=>`${n} belki`,
@@ -1185,7 +1296,7 @@ const STR = {
     altClash:c=>`${c} saat çakışma`, altFree:n=>`${n} boş gün`, altGaps:n=>`${n} saat boşluk`,
     mtxOk:(a,b)=>`${a} + ${b}: uyumlu`, mtxBad:(a,b,n)=>`${a} + ${b}: en az ${n} saat çakışma`,
     pairIntro:n=>`<b>${n} çift</b> hiçbir section kombinasyonunda birlikte alınamaz:`,
-    pairNone:"${T().pairNone}",
+    pairNone:"Havuzundaki hiçbir ders çifti kalıcı olarak çakışmıyor — doğru section'larla hepsi bir arada alınabilir.",
     pairWhen:n=>`${n} saat`,
     autoNone:"Havuzda çakışmasız hiçbir ikili bile yok — havuza başka dersler ekle.",
     autoQuota:"Kotaları sağlayan çakışmasız bir kombinasyon yok — kotaları düşür ya da havuza o kategoriden ders ekle.",
@@ -1265,6 +1376,7 @@ const STR = {
     psTitle:"Ders Programı", psCourses:"ders", psHours:"saat/hafta",
     psCode:"Kod", psName:"Ders", psSection:"Grup", psTime:"Saat", psRoom:"Derslik", psInst:"Öğretim üyesi",
     share:"Bağlantıyı kopyala", shareOk:"Kopyalandı ✓", print:"Yazdır",
+    shot:"Tabloyu indir",
     allLevels:"Tüm seviyeler",
     unpin:"sabitlemeyi kaldır", unpinAll:"Sabitleri temizle", pinned:"sabit",
     majorPh:"Bölüm seç", admitPh:"Giriş dönemi",
@@ -1290,11 +1402,11 @@ const STR = {
       {t:"SUits ne yapıyor?",
        d:"Almayı düşündüğün dersleri söylüyorsun, SUits hangilerinin birlikte çakışmadan alınabileceğini ve her ders için hangi section'ın en iyi programı verdiğini hesaplıyor. Bütün kombinasyonlar tarayıcında deneniyor."},
       {t:"1. Dersleri havuza ekle",
-       d:"Soldaki kutudan ders ara ve ekle. Bölümünü seçersen dersler Required / Core / Area / University olarak etiketlenir. Havuz bir kısa listedir; hepsini almak zorunda değilsin."},
+       d:"Soldaki kutudan ders ara ve ekle. Bölümünü seçersen dersler Required / Core / Area / University olarak etiketlenir. Havuz bir kısa listedir; hepsini almak zorunda değilsin. Satırdaki <b>mavi tik</b> ayrı bir şey: o dersin şu an programda olduğunu gösterir. Tik koyup kaldırarak programı elle de kurabilirsin, “En iyi kombinasyonu bul” ise tikleri baştan kurar ve neyi eklediğini/çıkardığını yazar."},
       {t:"2. Kesin, olsa iyi, belki",
        d:"Her ders satırındaki üç bölmeli anahtardan seviyeyi seçersin, tek dokunuş yeter. <b>Kesin</b> dersler her programa girer, çıkarılamaz. <b>Olsa iyi</b> dersleri, aynı sayıda ders veren programlar arasında öne geçer ama program küçülecekse düşebilir. <b>Belki</b> dersleri yalnız yer kalırsa eklenir."},
       {t:"3. Ders ve kredi aralığı",
-       d:"Üst bardan kaç ders ve kaç kredi istediğini alt–üst sınır olarak veriyorsun. Üst sınır seçimi kısıtlar, alt sınır otomatik seçimin hedefidir."},
+       d:"Üst bardan kaç ders ve kaç kredi istediğini alt–üst sınır olarak veriyorsun. <b>Üst sınır sert</b>: elle tiklerken de, manuel modda da, otomatik kurulumda da aşılmaz; engellediğinde nedenini yazar ve tek tıkla sınırı büyütmeyi önerir. Kesin ders sayısı üst sınırı geçerse sınır kendiliğinden ona yükselir. <b>Alt sınır dilektir</b>: o kadar ders çakışmasız yerleşmiyorsa SUits boş dönmez, en iyi programı kurar ve en fazla kaç dersin yerleştiğini söyler."},
       {t:"4. En iyi kombinasyonu bul",
        d:"Bu düğme hem dersleri hem section'ları birlikte seçer. Sıralama şu: kesinler hiç düşmez, sonra en çok ders, eşitlikte olsa iyi dersleri, sonra kredi, en son program kalitesi. Çakışma kaçınılmazsa SUits denenmiş çözüm düğmeleri sunar."},
       {t:"5. Tercihlerini söyle",
@@ -1308,6 +1420,9 @@ const STR = {
     ]
   },
   en: {
+    uni:"Sabancı University",
+    foldTip:"Collapse or expand", ctSum:"Plans and preferences",
+    about:"SUits is a course scheduler for Sabancı University students. You pick the Sabancı courses you are considering and SUits searches every section combination to build a clash-free weekly class schedule. Written to make course registration easier; free and open source.",
     tagline:n=>`courses that fit your schedule · ${n} courses`,
     limit:"Courses", limitCred:"Credits", courseWord:"courses",
     clear:"Clear selection", auto:"Find the best combination", calc:"Working…",
@@ -1315,6 +1430,18 @@ const STR = {
     overCred:m=>`Your credit ceiling is ${m}. Widen the range up top.`,
     rangeHint:(a,b,c,d)=>`Target: ${a}-${b} courses, ${c}-${d} credits`,
     autoNoRange:(a,b,c,d)=>`No conflict-free combination fits ${a}-${b} courses and ${c}-${d} credits. Widen the range or add more courses to the pool.`,
+    capCount:(m)=>`Course ceiling is ${m}: raise it to put one more course in the schedule.`,
+    capCountAct:(m)=>`Raise the ceiling to ${m}`,
+    capCred:(m,c)=>`Credit ceiling is ${m}: adding this course makes ${c} credits.`,
+    capCredAct:(c)=>`Raise the credit ceiling to ${c}`,
+    capMustUp:(n)=>`You now have ${n} must-take courses, so the course ceiling was raised to ${n}: must-take courses have to be in every schedule.`,
+    capTrim:(list,m)=>`Removed from the schedule because the ceiling is ${m} courses: ${list}. They stay in the pool.`,
+    capTrimAct:(m)=>`Set the ceiling to ${m} and undo`,
+    capUndo:"Undone.",
+    capManual:(m)=>`Course ceiling is ${m}: raise it or drop a course from the schedule before adding a new one.`,
+    tickTitle:(on)=>on ? "This course is in the schedule. Click to remove it." : "In your pool but not in the schedule. Click to add it.",
+    autoBelowMin:(lo,n)=>`Your lower bound is ${lo} courses, but at most ${n} fit together in this pool; the best ${n}-course schedule is loaded.`,
+    autoChanged:(add,rem)=>`Ticks refreshed${add ? " · added: " + add : ""}${rem ? " · removed: " + rem : ""}.`,
     poolTitle:"1 · Course pool", poolEmpty:"empty", poolCount:n=>`${n} course${n===1?"":"s"}`,
     poolHead:"2 · Must / preferred / maybe", searchPh:"Search course code or name…", all:"All",
     noMatch:"No matching course.", tooMany:(a,b)=>`${a} results — showing the first ${b}, narrow your search.`,
@@ -1323,7 +1450,7 @@ const STR = {
     gPref:"Preferred", gPrefSub:"wins ties at the same course count",
     gMaybe:"Maybe", gMaybeSub:"added if it fits",
     gIn:n=>`${n} in the schedule`, gAllIn:"all in the schedule", gNoneIn:"none made it in",
-    poolLaw:"<b>Must-take</b> courses are in every schedule. <b>Preferred</b> ones win between schedules with the same number of courses, but can still drop if keeping them would mean fewer courses. <b>Maybe</b> ones are added only if there is room.",
+    poolLaw:"The <b>pool</b> holds candidates, the <b>blue tick</b> marks what is in the schedule right now. Tiers matter to the solver: <b>must-take</b> courses are in every schedule, <b>preferred</b> ones win between schedules with the same number of courses but can still drop if keeping them would mean fewer courses, <b>maybe</b> ones are added only if there is room. In the <b>course count</b> range up top the ceiling is hard (neither you nor the solver can pass it) and the floor is a wish: if it cannot be reached, the best schedule is built and the reason is spelled out.",
     autoTip:"Keeps every must-take course, aims for the most courses, favours the preferred ones on a tie, and picks the best section for each.",
     inSched:(n,c)=>`In schedule: ${n} courses · ${c} credits`,
     mixMust:n=>`${n} must`, mixPref:n=>`${n} preferred`, mixMaybe:n=>`${n} maybe`,
@@ -1428,6 +1555,7 @@ const STR = {
     psTitle:"Class Schedule", psCourses:"courses", psHours:"h/week",
     psCode:"Code", psName:"Course", psSection:"Sec", psTime:"Time", psRoom:"Room", psInst:"Instructor",
     share:"Copy link", shareOk:"Copied ✓", print:"Print",
+    shot:"Download table",
     allLevels:"All levels",
     unpin:"unpin this section", unpinAll:"Clear pins", pinned:"pinned",
     majorPh:"Pick your major", admitPh:"Admit term",
@@ -1453,11 +1581,11 @@ const STR = {
       {t:"What SUits does",
        d:"You tell it which courses you are considering. SUits works out which of them fit together without a clash, and which section of each one gives the best schedule. Every combination is tried in your browser."},
       {t:"1. Add courses to the pool",
-       d:"Search and add from the panel on the left. Pick your major and courses get tagged Required / Core / Area / University. The pool is a shortlist, you do not have to take all of it."},
+       d:"Search and add from the panel on the left. Pick your major and courses get tagged Required / Core / Area / University. The pool is a shortlist, you do not have to take all of it. The <b>blue tick</b> on a row is a separate thing: it means that course is in the schedule right now. You can build the schedule by hand with those ticks, and \"Find the best combination\" rebuilds them for you, saying what it added and removed."},
       {t:"2. Must, preferred, maybe",
        d:"Each course row has a three-way switch; one tap sets its tier. <b>Must-take</b> courses are in every schedule and cannot be dropped. <b>Preferred</b> ones win between schedules with the same number of courses, but can still drop if keeping them would mean fewer courses. <b>Maybe</b> ones are added only if there is room."},
       {t:"3. Course and credit range",
-       d:"Set how many courses and credits you want as a low–high range in the top bar. The high end caps your picks, the low end is the target for auto-pick."},
+       d:"Set how many courses and credits you want as a low–high range in the top bar. The <b>ceiling is hard</b>: ticking by hand, manual mode and the solver all respect it, and when it blocks something it says so and offers to raise it in one click. If you mark more must-take courses than the ceiling, the ceiling follows them. The <b>floor is a wish</b>: if that many courses cannot fit, SUits does not come back empty, it builds the best schedule and tells you how many actually fit."},
       {t:"4. Find the best combination",
        d:"This button picks the courses and their sections together. The order is: must-take courses never drop, then the most courses, then preferred ones on a tie, then credits, then schedule quality. If a clash is unavoidable, SUits offers tested one-click fixes."},
       {t:"5. Set your preferences",
@@ -2172,6 +2300,11 @@ function setMust(code, on){
     if (!MUST.includes(code)) MUST.push(code);
     PREF = PREF.filter(c => c !== code);                 // iki seviyede birden olamaz
     if (!selected.includes(code)) selected.push(code);   // kesin ders daima programda
+    /* Kesin ders sınırı aşıyorsa sınır yükselir; aşmıyorsa ama tikli belki
+       dersleri yüzünden taşıyorsa en düşük seviyeden yer açılır. */
+    const raised = raiseCapForMust();
+    const cut = trimToCap();
+    if (cut.length && !raised) capNote(T().capTrim(cut.join(", "), MAXSEL));
   } else {
     MUST = MUST.filter(c => c !== code);
   }
@@ -2220,6 +2353,59 @@ function removeFromPool(code){
   PREF = PREF.filter(c => c !== code);
   altIndex = 0; render();
 }
+/* ================= sınırlar: tek anlam, görünür gerekçe =================
+   Ders sayısı üst sınırı her yerde aynı şekilde geçerli: elle tik, kesin
+   işaretleme, manuel mod ve çözücü. Sınır bir işi engellediğinde sessizce
+   hiçbir şey olmuyormuş gibi durmuyor; ne olduğunu ve tek tıkla nasıl
+   düzelteceğini yazıyor. */
+let CAP_TIMER = 0;
+function capNote(msg, actLabel, actFn){
+  const box = document.getElementById("capNote");
+  if (!box) return;
+  document.getElementById("capText").textContent = msg;
+  const btn = document.getElementById("capAct");
+  btn.hidden = !actLabel;
+  if (actLabel){
+    btn.textContent = actLabel;
+    btn.onclick = () => { hideCapNote(); if (actFn) actFn(); };
+  } else btn.onclick = null;
+  box.hidden = false;
+  clearTimeout(CAP_TIMER);
+  CAP_TIMER = setTimeout(hideCapNote, 12000);
+}
+function hideCapNote(){
+  const box = document.getElementById("capNote");
+  if (box) box.hidden = true;
+  clearTimeout(CAP_TIMER);
+}
+/* Üst sınırın altına inerken önce en düşük seviye düşer; kesin ders asla
+   çıkarılmaz. Çıkarılanların listesi geri döner ki kullanıcıya yazılabilsin. */
+function trimToCap(){
+  const out = [];
+  const rank = c => isMust(c) ? 2 : (isPref(c) ? 1 : 0);
+  while (selected.length > MAXSEL){
+    let idx = -1, low = 3;
+    for (let i = selected.length - 1; i >= 0; i--){
+      const r = rank(selected[i]);
+      if (r < low){ low = r; idx = i; if (r === 0) break; }
+    }
+    if (idx < 0 || low === 2) break;            // hepsi kesin: sınırı zorlamıyoruz
+    out.push(selected.splice(idx,1)[0]);
+  }
+  return out;
+}
+/* Kesin ders sayısı üst sınırı geçerse sınır ona yükselir: "kesin" sözü
+   sınırdan güçlü, ama bu sessizce olmuyor. */
+function raiseCapForMust(){
+  if (MUST.length <= MAXSEL) return false;
+  const target = Math.min(SEL_HI, MUST.length);
+  if (target === MAXSEL) return false;      // zaten tavanda: hata ekranı devralır
+  MAXSEL = target;
+  if (MINSEL > MAXSEL) MINSEL = MAXSEL;
+  normalizeRanges(); syncRangeUI(); saveRanges();
+  capNote(T().capMustUp(MAXSEL));
+  return true;
+}
 function toggle(code){
   const i = selected.indexOf(code);
   if (i >= 0){
@@ -2229,15 +2415,30 @@ function toggle(code){
   else {
     /* maksimumlar sert sınır: ne ders sayısı ne kredi üstüne çıkabilir */
     const overCount = selected.length >= effMax();
-    const overCred  = MAXCR < CRED_HI && selCred() + credOf(code) > MAXCR;
+    const cr = selCred() + credOf(code);
+    const overCred  = MAXCR < CRED_HI && cr > MAXCR;
     if (overCount || overCred){
       const el = document.getElementById("counter");
       el.classList.add("over"); setTimeout(()=>el.classList.remove("over"), 900);
       el.title = overCount ? T().overCount(MAXSEL) : T().overCred(MAXCR);
+      if (overCount)
+        capNote(T().capCount(MAXSEL), MAXSEL < SEL_HI ? T().capCountAct(MAXSEL+1) : null,
+                MAXSEL < SEL_HI ? () => { setCap(MAXSEL+1); toggle(code); } : null);
+      else
+        capNote(T().capCred(MAXCR, cr), cr <= CRED_HI ? T().capCredAct(cr) : null,
+                cr <= CRED_HI ? () => { MAXCR = cr; normalizeRanges(); syncRangeUI(); saveRanges(); toggle(code); } : null);
       return;
     }
     selected.push(code);
   }
+  hideCapNote();
+  altIndex = 0; render();
+}
+/* ders sayısı üst sınırını tek yerden değiştir */
+function setCap(n){
+  MAXSEL = clampInt(n, 1, SEL_HI, MAXSEL);
+  if (MINSEL > MAXSEL) MINSEL = MAXSEL;
+  normalizeRanges(); syncRangeUI(); saveRanges();
   altIndex = 0; render();
 }
 const colorOf = code => `var(${PALETTE[Math.max(0,selected.indexOf(code)) % PALETTE.length]})`;
@@ -2509,7 +2710,8 @@ function renderPool(){
       ? `<span class="mi">${S.prereq}: ${c.pre.join(", ")}</span>` : "";
     row.innerHTML =
       `<span class="swatch" style="background:${on?colorOf(code):"transparent"}"></span>
-       <input type="checkbox" ${on?"checked":""} ${must?"disabled":""} aria-label="${c.code}">
+       <input type="checkbox" ${on?"checked":""} ${must?"disabled":""} aria-label="${c.code}"
+              title="${must ? S.gMust + ": " + S.gMustSub : S.tickTitle(on)}">
        <span class="txt">
          <div class="hd">
            <span class="code">${c.code}</span>
@@ -2978,6 +3180,13 @@ function setMode(m){
 }
 
 function manualPick(code, type, crn){
+  /* Üst sınır manuel modda da geçerli: aynı sayı iki modda iki şey demesin. */
+  if (!selected.includes(code) && selected.length >= effMax()){
+    capNote(T().capManual(MAXSEL), MAXSEL < SEL_HI ? T().capCountAct(MAXSEL+1) : null,
+            MAXSEL < SEL_HI ? () => { setCap(MAXSEL+1); manualPick(code, type, crn); } : null);
+    return;
+  }
+  hideCapNote();
   MANUAL[code] = MANUAL[code] || {};
   MANUAL[code][type] = crn;
   if (!selected.includes(code)) selected.push(code);
@@ -3139,6 +3348,15 @@ function render(){
   /* hiçbir yol geçersiz bir sınırla buraya gelmesin; düzeltme olduysa
      üst bardaki seçim kutuları ve kayıt da aynı değere getirilsin */
   if (normalizeRanges()){ try{ syncRangeUI(); saveRanges(); }catch(e){} }
+  /* Tek değişmez kural: kesin dersler her zaman programda ve seçim üst sınırı
+     asla aşmıyor. Hangi yoldan gelinirse gelinsin (plan, link, eski kayıt,
+     kod) burada garanti altına alınıyor; düşen ders olursa yazılıyor. */
+  try{
+    MUST.forEach(c => { if (pool.includes(c) && !selected.includes(c)) selected.push(c); });
+    raiseCapForMust();
+    const _cut = trimToCap();
+    if (_cut.length) capNote(T().capTrim(_cut.join(", "), MAXSEL));
+  }catch(e){}
   syncOffEff();          // çözücüye girmeden önce: hangi boş günler gerçekten tutulabiliyor
   renderPlans();
   renderPrefs();
@@ -3166,6 +3384,7 @@ function render(){
     renderAlts();
     checkErrors(sol);
     save();
+    syncRail();
     syncRailTop();   // manuel mod üst barı kısaltıyor: yapışma noktası da düşsün
     return;
   }
@@ -3179,6 +3398,7 @@ function render(){
   renderAlts();
   checkErrors(sol);
   save();
+  syncRail();
   syncRailTop();     // panel yerleşimi bittikten sonra ölç
 }
 
@@ -3245,7 +3465,14 @@ function applyState(s){
   if (Number.isInteger(s.clo) && s.clo >= 0 && s.clo <= CRED_HI) MINCR  = s.clo;
   if (Number.isInteger(s.chi) && s.chi >= 0 && s.chi <= CRED_HI) MAXCR  = s.chi;
   normalizeRanges();
+  /* Plan ya da paylaşılan bağlantı da aynı kurala uyar: kesin dersler garanti,
+     üst sınır sert; gerekiyorsa sınır kesin derslere göre yükselir. */
+  if (MUST.length > MAXSEL) MAXSEL = Math.min(SEL_HI, MUST.length);
+  if (MINSEL > MAXSEL) MINSEL = MAXSEL;
+  normalizeRanges();
+  const cut = trimToCap();
   syncRangeUI();
+  if (cut.length) capNote(T().capTrim(cut.join(", "), MAXSEL));
   if (s.k && typeof s.k === "object"){ Object.keys(PINNED).forEach(k => delete PINNED[k]); Object.assign(PINNED, s.k); }
   if (s.i && typeof s.i === "object"){ Object.keys(INSTREQ).forEach(k => delete INSTREQ[k]); Object.assign(INSTREQ, s.i); }
   if (Number.isInteger(s.e)) PREFS.early = s.e;
@@ -3424,6 +3651,39 @@ function hexA(hex, a){
   const r = parseInt(n.slice(0,2),16), g2 = parseInt(n.slice(2,4),16), b2 = parseInt(n.slice(4,6),16);
   return `rgba(${r},${g2},${b2},${a})`;
 }
+/* Aynı gün içinde çakışan bloklar üst üste binmesin: çakışan öbeğe (bağlı
+   bileşen) kaç eşzamanlı ders varsa sütun o kadar şeride bölünür ve her blok
+   kendi şeridine oturur. Çakışması olmayan blok tam genişlikte kalır. */
+function layoutDay(items){
+  const list = items.map((it,i) => ({...it, _i:i, lane:0, lanes:1}));
+  const hits = (a,b) => a.s < b.s + b.du && b.s < a.s + a.du;
+  /* bağlı bileşenler */
+  const comp = new Array(list.length).fill(-1);
+  let nc = 0;
+  for (let i = 0; i < list.length; i++){
+    if (comp[i] >= 0) continue;
+    const stack = [i]; comp[i] = nc;
+    while (stack.length){
+      const k = stack.pop();
+      for (let j = 0; j < list.length; j++)
+        if (comp[j] < 0 && hits(list[k], list[j])){ comp[j] = nc; stack.push(j); }
+    }
+    nc++;
+  }
+  for (let c = 0; c < nc; c++){
+    const grp = list.filter((_,i) => comp[i] === c)
+                    .sort((a,b) => a.s - b.s || b.du - a.du);
+    const laneEnd = [];
+    grp.forEach(it => {
+      let l = 0;
+      while (l < laneEnd.length && laneEnd[l] > it.s) l++;
+      it.lane = l; laneEnd[l] = it.s + it.du;
+    });
+    grp.forEach(it => { it.lanes = laneEnd.length; });
+  }
+  return list;
+}
+
 function drawWallpaperGrid(g, W, H, th, S){
   const SANS = '-apple-system, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
   const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
@@ -3483,10 +3743,11 @@ function drawWallpaperGrid(g, W, H, th, S){
   // bloklar
   g.textAlign = "left";
   for (let d=0; d<nD; d++){
-    for (const it of (occ[d] || [])){
-      const x = M + gut + colW*d + 4;
+    for (const it of layoutDay(occ[d] || [])){
+      const lw = (colW - 8) / it.lanes;              // çakışanlar şeridi paylaşır
+      const x = M + gut + colW*d + 4 + it.lane*lw;
       const y = gridTop + (it.s - minS)*rowH + 3;
-      const w = colW - 8, h = it.du*rowH - 6;
+      const w = lw - (it.lanes > 1 ? 4 : 0), h = it.du*rowH - 6;
       const col = cssVar(PALETTE[Math.max(0, selected.indexOf(it.code)) % PALETTE.length]);
       g.fillStyle = WP.accent ? hexA(col, th.id === "ink" || th.id === "night" ? .26 : .16) : th.card;
       rr(x, y, w, h, Math.round(14)); g.fill();
@@ -3496,14 +3757,15 @@ function drawWallpaperGrid(g, W, H, th, S){
       }
       g.fillStyle = th.ink;
       g.font = `680 ${Math.round(23)}px ${SANS}`;
-      g.fillText(it.code + (it.type ? " " + it.type : ""), x + 16, y + Math.round(30));
+      const pad = it.lanes > 1 ? 10 : 16;
+      g.fillText(fitText(g, it.code + (it.type ? " " + it.type : ""), w - pad - 6), x + pad, y + Math.round(30));
       const kat = WP.cat ? wpCatOf(it.code, true) : "";   // tablo sütunu dar: kısa etiket
       const sub = [WP.room && it.p ? it.p : "", kat].filter(Boolean).join(" · ");
       if (sub && h > 58){
         g.fillStyle = th.sub;
         g.font = `500 ${Math.round(18)}px ${SANS}`;
         /* sütunlar dar: sığmayan alt satırı kısalt, komşu güne taşmasın */
-        g.fillText(fitText(g, sub, w - 26), x + 16, y + Math.round(56));
+        g.fillText(fitText(g, sub, w - (it.lanes > 1 ? 16 : 26)), x + (it.lanes > 1 ? 10 : 16), y + Math.round(56));
       }
     }
   }
@@ -3516,6 +3778,194 @@ function drawWallpaperGrid(g, W, H, th, S){
   g.globalAlpha = 1;
 }
 function spaced(s){ return s.split("").join(" "); }
+/* ================= yatay A4 tablosu =================
+   "Tabloyu indir": sayfayı yazıcıya göndermek yerine programın A4 yatay
+   (2339×1654 px, 200 dpi) PNG'sini üretir. Bloklar layoutDay ile yerleşir,
+   yani aynı saatte iki section varsa sütun şeritlere bölünür, üst üste
+   binmez. Sağ sütunda CRN listesi var: kayıtta okumak için. */
+const A4 = {w:2339, h:1654};
+const a4Sol = () => MODE === "manual" ? manualSol() : (solutions ? solutions[altIndex] : null);
+
+function drawA4(cv){
+  const S = T();
+  const W = A4.w, H = A4.h;
+  cv.width = W; cv.height = H;
+  const g = cv.getContext("2d");
+  const SANS = '-apple-system, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+  const MONO = 'ui-monospace, SFMono-Regular, Menlo, monospace';
+  const INK = "#0f172a", SUB = "#5b6472", LINE = "#dbe0e8", HEADBG = "#f4f6f9";
+  const used = [];
+
+  g.fillStyle = "#ffffff"; g.fillRect(0,0,W,H);
+  const sol = a4Sol();
+
+  const rr = (x,y,w,h,r) => {
+    g.beginPath();
+    if (g.roundRect) g.roundRect(x,y,w,h,r);
+    else { g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
+  };
+
+  /* ---- başlık ---- */
+  const M = 78;
+  g.textAlign = "left"; g.textBaseline = "alphabetic";
+  g.fillStyle = INK; g.font = `700 52px ${SANS}`;
+  g.fillText("SUits", M, 84);
+  const brandW = g.measureText("SUits").width;
+  g.fillStyle = SUB; g.font = `500 26px ${SANS}`;
+  g.fillText(`${S.uni}${TERM ? "  ·  " + TERM : ""}`, M + brandW + 20, 82);
+  if (sol){
+    g.textAlign = "right"; g.fillStyle = INK; g.font = `600 27px ${SANS}`;
+    const meta = `${sol.codes.length} ${S.psCourses}  ·  ${S.credits(credSum(sol.codes))}  ·  ${sol.mask.size} ${S.psHours}`;
+    g.fillText(meta, W - M, 80);
+  }
+  g.strokeStyle = LINE; g.lineWidth = 2;
+  g.beginPath(); g.moveTo(M, 112); g.lineTo(W - M, 112); g.stroke();
+
+  if (!sol){
+    g.textAlign = "center"; g.fillStyle = SUB; g.font = `500 40px ${SANS}`;
+    g.fillText(S.wpEmpty, W/2, H/2);
+    return {used, W, H};
+  }
+
+  /* ---- hücreleri topla ---- */
+  const occ = {}; let minS = NSLOT, maxS = 0, maxD = 4;
+  sol.picks.forEach((opt,i) => opt.picks.forEach(({cls,sec}) => sec.mt.forEach(m => {
+    if (m.d > maxD) maxD = m.d;
+    if (m.s < minS) minS = m.s;
+    if (m.s + m.du > maxS) maxS = m.s + m.du;
+    (occ[m.d] = occ[m.d] || []).push({code:sol.codes[i], type:cls.type, s:m.s, du:m.du, p:m.p, inst:sec.inst||"", crn:sec.crn});
+  })));
+  if (!Object.keys(occ).length){ minS = 0; maxS = 1; }
+  minS = Math.max(0, minS); maxS = Math.min(NSLOT, Math.max(minS+1, maxS));
+  const nD = maxD + 1, nS = maxS - minS;
+
+  /* ---- ölçüler: solda tablo, sağda CRN sütunu ---- */
+  const SIDE = 470, GAP = 34;
+  const gutter = 116;                              // saat sütunu
+  const gLeft = M + gutter, gRight = W - M - SIDE - GAP;
+  const colW = (gRight - gLeft) / nD;
+  const headY = 150, headH = 52;
+  const gTop = headY + headH, gBottom = H - 96;
+  const rowH = (gBottom - gTop) / nS;
+
+  /* gün başlıkları */
+  g.fillStyle = HEADBG; rr(M, headY, gRight - M, headH, 12); g.fill();
+  g.textAlign = "center"; g.fillStyle = INK; g.font = `700 27px ${SANS}`;
+  for (let d=0; d<nD; d++) g.fillText(S.days[d], gLeft + colW*(d+0.5), headY + 35);
+
+  /* saat satırları */
+  for (let s=0; s<=nS; s++){
+    const y = gTop + s*rowH;
+    g.strokeStyle = (s === 0 || s === nS) ? "#c3cad6" : LINE;
+    g.lineWidth = (s === 0 || s === nS) ? 2 : 1.4;
+    g.beginPath(); g.moveTo(M, y); g.lineTo(gRight, y); g.stroke();
+    if (s < nS){
+      g.textAlign = "right"; g.fillStyle = SUB; g.font = `500 24px ${MONO}`;
+      g.fillText(slotStart(minS+s), gLeft - 22, y + rowH*0.42);
+    }
+  }
+  /* gün ayırıcıları */
+  for (let d=0; d<=nD; d++){
+    const x = gLeft + colW*d;
+    g.strokeStyle = LINE; g.lineWidth = 1.4;
+    g.beginPath(); g.moveTo(x, gTop); g.lineTo(x, gBottom); g.stroke();
+  }
+
+  /* ---- bloklar ---- */
+  for (let d=0; d<nD; d++){
+    for (const it of layoutDay(occ[d] || [])){
+      const lw = (colW - 10) / it.lanes;
+      const x = gLeft + colW*d + 5 + it.lane*lw;
+      const y = gTop + (it.s - minS)*rowH + 4;
+      const w = lw - (it.lanes > 1 ? 5 : 0), h = it.du*rowH - 8;
+      const col = cssVar(PALETTE[Math.max(0, selected.indexOf(it.code)) % PALETTE.length]);
+      used.push({d, x:Math.round(x), y:Math.round(y), w:Math.round(w), h:Math.round(h),
+                 code:it.code, lane:it.lane, lanes:it.lanes});
+      g.fillStyle = hexA(col, .15); rr(x, y, w, h, 12); g.fill();
+      g.strokeStyle = hexA(col, .5); g.lineWidth = 1.5; rr(x, y, w, h, 12); g.stroke();
+      g.fillStyle = col; rr(x, y, 7, h, 3.5); g.fill();
+
+      const pad = it.lanes > 1 ? 16 : 22;
+      const tx = x + pad, tw = w - pad - 12;
+      g.textAlign = "left"; g.fillStyle = INK; g.font = `700 27px ${SANS}`;
+      g.fillText(fitText(g, it.code + (it.type ? " " + it.type : ""), tw), tx, y + 38);
+      g.fillStyle = SUB; g.font = `500 21px ${MONO}`;
+      g.fillText(fitText(g, rangeLabel(it.s, it.du), tw), tx, y + 68);
+      if (h > 108 && it.p){
+        g.font = `500 21px ${SANS}`;
+        g.fillText(fitText(g, it.p, tw), tx, y + 96);
+      }
+      if (h > 140 && it.inst){
+        g.font = `500 20px ${SANS}`;
+        g.fillText(fitText(g, it.inst, tw), tx, y + 122);
+      }
+    }
+  }
+
+  /* ---- sağ sütun: ders + CRN listesi ---- */
+  const sx = W - M - SIDE;
+  g.fillStyle = HEADBG; rr(sx, headY, SIDE, headH, 12); g.fill();
+  g.textAlign = "left"; g.fillStyle = INK; g.font = `700 25px ${SANS}`;
+  g.fillText(`${S.psCode}  ·  CRN`, sx + 20, headY + 35);
+
+  const lines = [];
+  const order = sol.codes.map((c,i)=>i)
+    .sort((a,b) => selected.indexOf(sol.codes[a]) - selected.indexOf(sol.codes[b]));
+  order.forEach(i => {
+    const code = sol.codes[i];
+    sol.picks[i].picks.forEach(({cls,sec}) => {
+      const t = sec.mt.map(m => `${S.daysS[m.d]} ${rangeLabel(m.s,m.du)}`).join(", ") || "TBA";
+      const pl = [...new Set(sec.mt.map(m=>m.p).filter(Boolean))].join(", ");
+      lines.push({code: code + (cls.type ? " " + cls.type : ""), crn: sec.crn,
+                  sub: [t, pl].filter(Boolean).join("  ·  "),
+                  col: cssVar(PALETTE[Math.max(0, selected.indexOf(code)) % PALETTE.length])});
+    });
+  });
+  const availH = gBottom - (gTop + 14);
+  const lineH = Math.max(40, Math.min(84, availH / Math.max(1, lines.length)));
+  const fTop = Math.min(25, lineH*0.36), fSub = Math.min(20, lineH*0.29);
+  let ly = gTop + 14;
+  lines.forEach(L => {
+    g.fillStyle = L.col; rr(sx + 2, ly + 6, 6, Math.max(6, lineH - 16), 3); g.fill();
+    g.textAlign = "left"; g.fillStyle = INK; g.font = `650 ${fTop}px ${SANS}`;
+    g.fillText(fitText(g, L.code, SIDE - 170), sx + 22, ly + fTop + 8);
+    g.textAlign = "right"; g.font = `600 ${fTop}px ${MONO}`;
+    g.fillText(L.crn, sx + SIDE - 8, ly + fTop + 8);
+    if (lineH > 52){
+      g.textAlign = "left"; g.fillStyle = SUB; g.font = `500 ${fSub}px ${SANS}`;
+      g.fillText(fitText(g, L.sub, SIDE - 30), sx + 22, ly + fTop + fSub + 16);
+    }
+    g.strokeStyle = LINE; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(sx, ly + lineH); g.lineTo(sx + SIDE, ly + lineH); g.stroke();
+    ly += lineH;
+  });
+
+  /* ---- alt şerit ---- */
+  g.textAlign = "left"; g.fillStyle = SUB; g.font = `500 22px ${MONO}`;
+  g.fillText(fitText(g, "CRN  " + lines.map(L => L.crn).join("   "), gRight - M), M, H - 46);
+  g.textAlign = "right"; g.font = `500 21px ${SANS}`;
+  g.fillText("bozdagyusuf.github.io/SUits", W - M, H - 46);
+  return {used, W, H};
+}
+
+function downloadA4(){
+  const cv = document.createElement("canvas");
+  drawA4(cv);
+  const name = "suits-program" +
+    (TERM ? "-" + TERM.replace(/[^0-9A-Za-z]+/g, "-").toLowerCase().replace(/^-+|-+$/g, "") : "") + ".png";
+  const save = url => {
+    const a = document.createElement("a");
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+  if (cv.toBlob) cv.toBlob(b => {
+    if (!b) return save(cv.toDataURL("image/png"));
+    const u = URL.createObjectURL(b); save(u);
+    setTimeout(() => URL.revokeObjectURL(u), 8000);
+  }, "image/png");
+  else save(cv.toDataURL("image/png"));
+}
+
 /* verilen genişliğe sığmayan metni kısaltır */
 function fitText(g, text, maxW){
   if (g.measureText(text).width <= maxW) return text;
@@ -3623,7 +4073,10 @@ function buildPrintSheet(){
      </tr></thead><tbody>${rows}</tbody></table>
      <div class="ps-crns"><b>CRN</b> &nbsp; <span>${crns.join("  ")}</span></div>`;
 }
-function doPrint(){ buildPrintSheet(); setTimeout(()=>window.print(), 60); }
+/* Artık düğmeyle sayfa yazdırılmıyor (onun yerine "Tabloyu indir" A4 PNG
+   üretiyor). Kullanıcı kendi isteğiyle Ctrl+P yaparsa yazdırma sayfası yine
+   düzgün çıksın diye tarayıcının kendi olayına bağlandı. */
+window.addEventListener("beforeprint", buildPrintSheet);
 
 /* ================= kayıtlı planlar ================= */
 let PLANS = [];
@@ -3678,7 +4131,7 @@ function renderPlans(){
      <span class="planacts">
        <button class="btn tiny" id="btnShare">${S.share}</button>
        <button class="btn tiny" id="btnWall">${S.wallpaper}</button>
-       <button class="btn tiny" id="btnPrint">${S.print}</button>
+       <button class="btn tiny" id="btnShot">${S.shot}</button>
      </span>`;
   bar.querySelectorAll(".planch").forEach(el => el.onclick = e => {
     if (e.target.dataset.del) deletePlan(el.dataset.name);
@@ -3690,7 +4143,7 @@ function renderPlans(){
     e.target.textContent = T().shareOk;
     setTimeout(()=>e.target.textContent = T().share, 1800);
   };
-  bar.querySelector("#btnPrint").onclick = doPrint;
+  bar.querySelector("#btnShot").onclick = downloadA4;
   bar.querySelector("#btnWall").onclick = openWallpaper;
   bar.querySelector("#planName").addEventListener("keydown", e => { if (e.key === "Enter") savePlan(); });
 }
@@ -3780,7 +4233,12 @@ function planRun(optsOfCode, budgetMs){
   if (mustCount < MUST.filter(c => allowedOpts(c).length).length)
     return {best:null, capped:false, credMiss:false, mustCount, hiN:0};
   const hiN = Math.min(effMax(), items.length);
-  const loN = Math.max(1, Math.min(MINSEL, hiN), mustCount);
+  /* Alt sınır bir dilek: hedeflenen en küçük sayı wantN, ama oraya
+     ulaşılamıyorsa arama daha aşağı devam eder. Eskiden burada duruyordu ve
+     "havuzda çakışmasız hiçbir ikili bile yok" gibi yanlış bir cevap
+     dönüyordu; oysa daha az dersle program kurulabiliyordu. */
+  const wantN = Math.max(1, Math.min(MINSEL, hiN), mustCount);
+  const loN = Math.max(1, mustCount);
 
   /* Her hedefe kendi süre dilimi veriliyor. Üstteki hedefin "olmuyor" ispatı
      pahalı olabiliyor; tüm bütçeyi orada harcayıp alttaki hedeflere hiç sıra
@@ -3796,7 +4254,8 @@ function planRun(optsOfCode, budgetMs){
     if (r){ best = r; break; }                 // hedef tuttu, daha büyüğü zaten denendi
     if (st.stopped) higherCut = true;          // bu hedef taranamadı, mümkün olabilirdi
   }
-  return {best, capped:higherCut, credMiss:st.credMiss, mustCount, hiN};
+  return {best, capped:higherCut, credMiss:st.credMiss, mustCount, hiN, wantN,
+          belowMin: !!best && best.n < wantN};
 }
 
 /* Önce tercihlere birebir uyan bir plan aranır. Aynı ders sayısına ulaşabiliyorsa
@@ -3824,11 +4283,16 @@ function autoSuggest(){
     }
     return {n:0, credMiss:r.credMiss, capped:r.capped};
   }
+  /* Otomatik kurulum tikleri baştan yazar: ne eklendi ne çıkarıldı, söylenir.
+     "Mavi tik" = programda olan ders; bu düğme o kümeyi yeniden kuruyor. */
+  const was = selected.slice();
   selected = r.best.codes.slice().sort((a,b)=>pool.indexOf(a)-pool.indexOf(b));
   altIndex = 0; render();
   const dropped = pool.filter(c => !selected.includes(c));
   return {n:r.best.n, cred:r.best.cr, capped:r.capped,
-          short: r.best.n < r.hiN, dropped};
+          short: r.best.n < r.hiN, belowMin:r.belowMin, wantN:r.wantN, dropped,
+          added: selected.filter(c => !was.includes(c)),
+          removed: was.filter(c => !selected.includes(c))};
 }
 
 /* ================= olaylar ================= */
@@ -3844,10 +4308,17 @@ document.getElementById("btnAuto").onclick = e => {
                     : r.credMiss  ? T().autoNoRange(MINSEL, effMax(), MINCR, MAXCR)
                                   : T().autoNone;
       if (r.mustClash) paintFix(r.mustClash);
-    } else if (r.short){
-      /* neden daha az ders: hangi dersler dışarıda kaldı, açıkça yaz */
-      S.textContent = T().autoShort(effMax(), r.n);
-      if (r.dropped && r.dropped.length) S.textContent += " " + T().autoDropped(r.dropped.join(", "));
+    } else {
+      /* Neden bu program: kaç ders oldu, alt sınır tutmadıysa niye, hangi
+         dersler dışarıda kaldı ve tiklerde ne değişti. Hepsi tek satırda. */
+      const parts = [];
+      if (r.belowMin) parts.push(T().autoBelowMin(r.wantN, r.n));
+      else if (r.short) parts.push(T().autoShort(effMax(), r.n));
+      if ((r.short || r.belowMin) && r.dropped && r.dropped.length)
+        parts.push(T().autoDropped(r.dropped.join(", ")));
+      if ((r.added && r.added.length) || (r.removed && r.removed.length))
+        parts.push(T().autoChanged((r.added||[]).join(", "), (r.removed||[]).join(", ")));
+      if (parts.length) S.textContent = parts.join(" ");
     }
     if (r.capped) S.textContent += T().autoCapped;
   }, 20);
@@ -3855,11 +4326,7 @@ document.getElementById("btnAuto").onclick = e => {
 /* kesin dersler seçimde kalır */
 document.getElementById("btnClear").onclick = () => { selected = MUST.slice(); altIndex = 0; render(); };
 const mobileQ = window.matchMedia("(max-width:760px)");
-document.getElementById("poolHead2").addEventListener("click", e => {
-  if (!mobileQ.matches) return;
-  if (e.target.closest("button")) return;
-  document.getElementById("poolPanel").classList.toggle("collapsed");
-});
+
 document.getElementById("wpClose").onclick = () => document.getElementById("wpSheet").classList.remove("open");
 document.getElementById("wpSheet").addEventListener("click", e => {
   if (e.target.id === "wpSheet") e.currentTarget.classList.remove("open");
@@ -3902,6 +4369,7 @@ function saveRanges(){
 }
 /* bir uç değişince diğerini geçmesin: min büyürse max onu takip eder, tersi de */
 function onRangeChange(which){
+  const before = {a:MINSEL, b:MAXSEL, c:MINCR, d:MAXCR};
   /* Boş ya da listede olmayan bir değer okunursa (+"" === 0) sınırı
      bozmak yerine mevcut değeri koru. */
   MINSEL = clampInt(selMinSel.value, 1, SEL_HI, MINSEL);
@@ -3913,9 +4381,23 @@ function onRangeChange(which){
   if (which === "crMin"  && MAXCR  < MINCR)  MAXCR  = MINCR;
   if (which === "crMax"  && MINCR  > MAXCR)  MINCR  = MAXCR;
   normalizeRanges();
-  if (selected.length > MAXSEL) selected = selected.slice(0, MAXSEL);
+  /* Eskiden sınır düşünce seçim sondan kesiliyordu: kesin bir ders bile
+     sessizce programdan düşebiliyordu. Artık önce sınır kesin derslere göre
+     yükselir, sonra en düşük seviyeden yer açılır ve çıkarılanlar yazılır. */
+  const oldMax = before.b;
+  raiseCapForMust();
+  const cut = trimToCap();
   syncRangeUI(); saveRanges();
   altIndex = 0; render();
+  if (cut.length)
+    capNote(T().capTrim(cut.join(", "), MAXSEL), T().capTrimAct(oldMax), () => {
+      MAXSEL = clampInt(oldMax, 1, SEL_HI, MAXSEL);
+      if (MINSEL > MAXSEL) MINSEL = MAXSEL;
+      cut.forEach(c => { if (pool.includes(c) && !selected.includes(c)) selected.push(c); });
+      normalizeRanges(); syncRangeUI(); saveRanges();
+      altIndex = 0; render();
+      capNote(T().capUndo);
+    });
 }
 selMinSel.onchange = () => onRangeChange("selMin");
 selMaxSel.onchange = () => onRangeChange("selMax");
@@ -3944,8 +4426,12 @@ try{
   const PF = JSON.parse(localStorage.getItem("dk-pref") || "[]");
   if (Array.isArray(PF)) PREF = PF.filter(c => pool.includes(c) && !MUST.includes(c));
   const S = JSON.parse(localStorage.getItem("dk-sel") || "[]");
-  if (Array.isArray(S)) selected = S.filter(c => pool.includes(c)).slice(0, effMax());
+  /* Kayıttan geleni sondan kesmiyoruz: önce kesin dersler garanti, sonra
+     gerekiyorsa en düşük seviyeden yer açılır (bozuk kayda karşı koruma). */
+  if (Array.isArray(S)) selected = S.filter(c => pool.includes(c));
   MUST.forEach(c => { if (!selected.includes(c)) selected.push(c); });   // kesin ders daima seçili
+  if (MUST.length > MAXSEL) MAXSEL = Math.min(SEL_HI, MUST.length);
+  BOOT_TRIM = trimToCap();
   const M = localStorage.getItem("dk-major"); if (MAJORS.includes(M)) MAJOR = M;
   const A = localStorage.getItem("dk-admit"); if (ADMITS.includes(A)) ADMIT = A;
   const PR = JSON.parse(localStorage.getItem("dk-prefs") || "null");
@@ -4008,6 +4494,11 @@ function applyStatic(){
   set("btnUnpinAll", S.unpinAll); set("btnClearPool", S.clearPool);
   document.getElementById("q").placeholder = S.searchPh;
   set("ftSrc", S.srcLink); set("ftData", S.dataFrom); set("ftCur", S.curData);
+  set("ftAbout", S.about);
+  set("ctSum", S.ctSum);
+  document.querySelectorAll(".foldbtn").forEach(b => {
+    b.title = S.foldTip; b.setAttribute("aria-label", S.foldTip);
+  });
   document.querySelectorAll("#langsw button").forEach(btn =>
     btn.classList.toggle("on", btn.dataset.lang === LANG));
   const hb = document.getElementById("btnHelp");
@@ -4226,13 +4717,84 @@ function syncRailTop(){
 }
 window.addEventListener("resize", syncRailTop);
 
+/* ================= panelleri katlama =================
+   Program kurulduktan sonra sol havuz paneli yer kaplıyor; her panelin
+   başlığındaki ok düğmesiyle içeri kapanabiliyor ve tercih hatırlanıyor. */
+const FOLDABLE = ["poolPanel","manualPanel","gridPanel","altPanel","secPanel","mtxPanel"];
+/* katlama oku: yönü CSS döndürüyor, ikon hep aynı */
+const CHEV = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>';
+let FOLDED = {};
+try{ FOLDED = JSON.parse(localStorage.getItem("dk-fold") || "{}") || {}; }catch(e){}
+function setFold(id, on){
+  const p = document.getElementById(id);
+  if (!p) return;
+  p.classList.toggle("folded", on);
+  FOLDED[id] = on;
+  const b = p.querySelector(":scope > h2 > .foldbtn");
+  if (b){ b.setAttribute("aria-expanded", String(!on)); b.title = T().foldTip; }
+  syncRail();
+  try{ localStorage.setItem("dk-fold", JSON.stringify(FOLDED)); }catch(e){}
+}
+/* soldaki panel kapaliysa sutunu daralt: kazanilan yer programa gitsin */
+function syncRail(){
+  const cols = document.querySelector(".cols");
+  if (!cols) return;
+  const p = document.getElementById(MODE === "manual" ? "manualPanel" : "poolPanel");
+  cols.classList.toggle("railfold", !!p && p.classList.contains("folded"));
+}
+function setFoldCtl(on){
+  const c = document.getElementById("controls");
+  if (!c) return;
+  c.classList.toggle("folded", on);
+  FOLDED.controls = on;
+  const b = document.getElementById("ctFold");
+  if (b){ b.setAttribute("aria-expanded", String(!on)); b.title = T().foldTip; }
+  try{ localStorage.setItem("dk-fold", JSON.stringify(FOLDED)); }catch(e){}
+}
+function setupFolds(){
+  const cb = document.getElementById("ctFold");
+  if (cb && !cb.dataset.on){
+    cb.dataset.on = "1";
+    cb.onclick = () => setFoldCtl(!document.getElementById("controls").classList.contains("folded"));
+    document.getElementById("ctSum").onclick = () => setFoldCtl(false);
+  }
+  setFoldCtl(!!FOLDED.controls);
+  FOLDABLE.forEach(id => {
+    const p = document.getElementById(id);
+    if (!p) return;
+    p.classList.add("foldable");
+    const h = p.querySelector(":scope > h2");
+    if (!h) return;
+    if (!h.querySelector(".foldbtn")){
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "foldbtn"; b.innerHTML = CHEV;
+      b.setAttribute("aria-controls", id);
+      b.setAttribute("aria-label", T().foldTip);
+      h.appendChild(b);
+      h.addEventListener("click", e => {
+        /* başlıktaki diğer düğmeler (Temizle, kilitleri aç) kendi işini yapsın */
+        if (e.target.closest("button") && !e.target.closest(".foldbtn")) return;
+        setFold(id, !p.classList.contains("folded"));
+      });
+    }
+    setFold(id, !!FOLDED[id]);
+  });
+}
+
 function refreshBrand(){
-  document.getElementById("brandSub").textContent = TERM ? `${TERM} · ${T().poolCount(DATA.length)}` : T().tagline(DATA.length);
+  /* Üniversite adı her dilde ve her durumda görünür kalsın: SUits'in hangi
+     okula ait olduğu sayfanın kendi metninden okunabilsin (arama motorları
+     bunu meta etiketten değil, görünen içerikten çıkarıyor). */
+  const S = T();
+  const rest = TERM ? `${TERM} · ${S.poolCount(DATA.length)}` : S.tagline(DATA.length);
+  document.getElementById("brandSub").textContent = `${S.uni} · ${rest}`;
 }
 applyStatic();
+setupFolds();
 refreshBrand();
 syncRangeUI();
 render();
+if (BOOT_TRIM.length) capNote(T().capTrim(BOOT_TRIM.join(", "), MAXSEL));
 buildLvl();
 buildCurSelectors();
 loadCurriculum();
