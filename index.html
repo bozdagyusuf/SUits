@@ -192,12 +192,15 @@ header.top{
 .limitbox{display:flex; align-items:center; gap:4px; font-size:13px; color:var(--muted)}
 .limitbox .rng{color:var(--faint); font-size:12px; margin:0 -1px}
 .limitbox .sep{width:1px; height:15px; background:var(--line); margin:0 3px}
+/* dönem seçici: veri rozetinin hemen solunda, aynı yükseklikte */
+.termbox{display:flex; align-items:center; gap:5px; font-size:13px; color:var(--muted)}
+#termSel{font-weight:650; padding-top:5px; padding-bottom:5px}
 /* üst barda dört seçim var, dar tutulmazsa başlık ikinci satıra kaçıyor */
 .limitbox select{
   padding:6px 5px; padding-right:18px;
   background-position:calc(100% - 10px) 52%, calc(100% - 6px) 52%;
 }
-.limitbox select, .ctrow select, .currow select, #subj, #lvl, #cat, .instsel, .secsel{
+.limitbox select, .ctrow select, .currow select, #subj, #lvl, #cat, #termSel, .instsel, .secsel{
   border:0; background:var(--sunken); color:var(--ink);
   border-radius:9px; padding:6px 9px; font-size:13px; cursor:pointer;
   appearance:none; -webkit-appearance:none;
@@ -911,6 +914,9 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
     <span class="langsw" id="langsw">
       <button data-lang="tr">TR</button><button data-lang="en">EN</button>
     </span>
+    <span class="termbox">
+      <span id="lblTerm"></span><select id="termSel"></select>
+    </span>
     <button class="srcchip embedded" id="srcChip">
       <span class="dot"></span><span id="srcTxt"></span>
     </button>
@@ -1089,7 +1095,7 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
 
 <footer class="foot">
   <p class="ftabout" id="ftAbout"></p>
-  <span><span id="ftData"></span>: <a href="https://omerrifat.github.io/bannerweb-fetch/" target="_blank" rel="noopener">bannerweb-fetch</a> (AGPL-3.0) · <a href="https://github.com/mustafacani/suchedule" target="_blank" rel="noopener">SUchedule</a> (MIT) · <span id="ftCur"></span>: <a href="https://beficent.github.io/surriculum/" target="_blank" rel="noopener">SUrriculum</a> (GPL-3.0)</span>
+  <span><span id="ftData"></span>: <a href="https://github.com/bozdagyusuf/suis-fetch" target="_blank" rel="noopener">suis-fetch</a> (AGPL-3.0, <a href="https://github.com/omerrifat/bannerweb-fetch" target="_blank" rel="noopener">bannerweb-fetch</a> portu) · <span id="ftCur"></span>: <a href="https://beficent.github.io/surriculum/" target="_blank" rel="noopener">SUrriculum</a> (GPL-3.0)</span>
   <span><a href="https://github.com/bozdagyusuf/SUits" target="_blank" rel="noopener" id="ftSrc">Kaynak kodu</a> · AGPL-3.0</span>
 </footer>
 
@@ -1129,6 +1135,7 @@ function normalize(json){
   // B) bannerweb-fetch
   if (Array.isArray(json) && json.length && json[0] && json[0].crn !== undefined && json[0].subject !== undefined){
     const map = new Map();
+    TERM = "";                       // dönem değişince adı da yenilensin
     for (const r of json){
       const code = r.subject + " " + r.code;
       if (!TERM && r.term) TERM = r.term;
@@ -1302,10 +1309,14 @@ const STR = {
     autoQuota:"Kotaları sağlayan çakışmasız bir kombinasyon yok — kotaları düşür ya da havuza o kategoriden ders ekle.",
     autoShort:(m,n)=>`${m} ders birlikte çakışmasız alınamıyor — bu havuzda en fazla ${n} ders mümkün, en iyisi yüklendi.`,
     autoCapped:" (Havuz büyük olduğu için arama kısaltıldı.)",
-    chipEmb:d=>`gömülü veri · ${d}`, chipLoading:"veri aranıyor…", chipSelf:"kendi verin",
+    chipEmb:d=>`gömülü veri · ${d}`, chipLoading:"veri aranıyor…",
     chipTitle:"Veri kaynağı — tıklayınca yeniden dener",
     chipLiveTitle:w=>`Canlı veri${w?" · "+w:""} — tıklayınca yeniden dener`,
     chipEmbTitle:"Canlı veriye ulaşılamadı — sayfaya gömülü kopya kullanılıyor. Tıklayınca yeniden dener.",
+    termLabel:"Dönem",
+    termTitle:"Dönem seç — her dönemin havuzu ve planları ayrı saklanır",
+    chipErr:t=>`${t} verisi yüklenemedi`,
+    chipErrTitle:"Seçilen dönemin verisine ulaşılamadı; ekranda gömülü kopya var. Tıklayınca yeniden dener.",
     agEmpty:"Program boş.",
     prefTitle:"Tercihler", prefFrom:"başlangıç", prefTo:"bitiş", prefOff:"boş kalsın",
     prefAny:"fark etmez", prefReset:"sıfırla",
@@ -1481,10 +1492,14 @@ const STR = {
     autoQuota:"No conflict-free combination meets your quotas — lower them or add courses from that category.",
     autoShort:(m,n)=>`${m} courses cannot fit without overlap — at most ${n} are possible in this pool, and the best one is loaded.`,
     autoCapped:" (The pool is large, so the search was cut short.)",
-    chipEmb:d=>`built-in data · ${d}`, chipLoading:"looking for data…", chipSelf:"your own data",
+    chipEmb:d=>`built-in data · ${d}`, chipLoading:"looking for data…",
     chipTitle:"Data source — click to retry",
     chipLiveTitle:w=>`Live data${w?" · "+w:""} — click to retry`,
     chipEmbTitle:"Could not reach live data — using the copy built into this page. Click to retry.",
+    termLabel:"Term",
+    termTitle:"Pick a term — each term keeps its own pool and plans",
+    chipErr:t=>`couldn't load ${t} data`,
+    chipErrTitle:"The selected term's data is unreachable; the built-in copy is shown. Click to retry.",
     agEmpty:"Nothing scheduled yet.",
     prefTitle:"Preferences", prefFrom:"start", prefTo:"end", prefOff:"keep free",
     prefAny:"any", prefReset:"reset",
@@ -4488,6 +4503,8 @@ function applyStatic(){
   set("lblMtx", S.mtxTitle); set("hintMtx", S.mtxHint);
   set("lgOk", S.lgOk); set("lgBad", S.lgBad);
   document.getElementById("srcChip").title = S.chipTitle;
+  set("lblTerm", S.termLabel);
+  document.getElementById("termSel").title = S.termTitle;
   set("wpTitle", S.wpTitle); set("wpLblFormat", S.wpFormat); set("wpLblColor", S.wpColor); set("wpLblSize", S.wpSize);
   set("wpLblShow", S.wpShow); set("wpLblRoom", S.wpRoom); set("wpLblAccent", S.wpAccent); set("wpLblCat", S.wpCat);
   set("wpSave", S.wpSave); set("wpHint", S.wpHint);
@@ -4800,21 +4817,81 @@ buildCurSelectors();
 loadCurriculum();
 document.getElementById("srcTxt").textContent = embeddedLabel();
 
-/* ================= canlı veri: dene, olmazsa gömülüye düş =================
-   Sıra:
-   1) ./data.json      — kendi sitenin yanındaki dosya (kendi güncelleme işin buraya yazabilir)
-   2) SUchedule deposundaki güncel data-vXX.min.json (sürümü GitHub API ile bulur)
-   Hiçbiri olmazsa sayfa zaten gömülü veriyle açılmış durumda kalır. */
-const SELF_SRC   = new URL("data.json", location.href).href;
-/* 1. tercih: bannerweb-fetch — Sabancı BannerWeb'den her gün otomatik çekilir (AGPL-3.0) */
-const BW_TERM    = "202601";
-const BW_SRC     = `https://omerrifat.github.io/bannerweb-fetch/dist/${BW_TERM}-pretty.json`;
-/* 2. tercih: SUchedule */
-const GH_REPO    = "mustafacani/suchedule";
-const GH_API     = `https://api.github.com/repos/${GH_REPO}/contents/`;
-const GH_FALLBACK= `https://raw.githubusercontent.com/${GH_REPO}/master/data-v93.min.json`;
-const CACHE_KEY  = "dk-data-cache";
+/* ================= canlı veri =================
+   Kaynak: suis-fetch — SUIS/BannerWeb'den her gün otomatik çekilir (AGPL-3.0).
+   Seçili döneme göre <BW_BASE>/<dönem>-pretty.json indirilir.
+   Ulaşılamazsa sayfaya gömülü kopya ekranda kalır. */
+const BW_BASE    = "https://bozdagyusuf.github.io/suis-fetch";
+const BW_INDEX   = `${BW_BASE}/index.json`;
+const bwSrc      = t => `${BW_BASE}/${t}-pretty.json`;
+/* Sayfaya gömülü kopyanın dönemi — canlı veri gelmezse ekranda bu duruyor. */
+const EMB_TERM   = "202601";
+/* index.json okunamazsa seçici boş kalmasın */
+const TERM_FALLBACK = [
+  {term:"202602", name:"Spring 2026-2027"},
+  {term:"202601", name:"Fall 2026-2027"}
+];
 const MAX_AGE_MS = 12 * 60 * 60 * 1000;
+const cacheKeyFor = t => "dk-data-cache-" + t;
+
+/* ---- dönem durumu ----
+   Havuz, seçimler ve kayıtlı planlar derse/CRN'e bağlı olduğu için dönem
+   başına ayrı tutulur. Kod her yerde düz anahtarları (dk-pool, dk-sel …)
+   kullanmaya devam eder; dönem değişince o anki değerler "dk-st-<dönem>"
+   altına toplanır, yenisi geri yazılır ve sayfa tazelenir. */
+const TERM_KEYS = ["dk-pool","dk-sel","dk-must","dk-pref","dk-manual",
+                   "dk-mode","dk-range","dk-pins","dk-inst","dk-plans"];
+let TERMCODE = localStorage.getItem("dk-term") || EMB_TERM;
+let TERMLIST = TERM_FALLBACK;
+
+function stashTermState(term){
+  try{
+    const bundle = {};
+    for (const k of TERM_KEYS){
+      const v = localStorage.getItem(k);
+      if (v !== null) bundle[k] = v;
+    }
+    localStorage.setItem("dk-st-" + term, JSON.stringify(bundle));
+  }catch(e){}
+}
+function restoreTermState(term){
+  try{
+    let bundle = null;
+    try{ bundle = JSON.parse(localStorage.getItem("dk-st-" + term) || "null"); }catch(e){}
+    for (const k of TERM_KEYS){
+      if (bundle && typeof bundle[k] === "string") localStorage.setItem(k, bundle[k]);
+      else localStorage.removeItem(k);          // o dönem ilk kez açılıyor
+    }
+  }catch(e){}
+}
+function switchTerm(term){
+  if (term === TERMCODE) return;
+  stashTermState(TERMCODE);
+  try{ localStorage.setItem("dk-term", term); }catch(e){}
+  restoreTermState(term);
+  location.reload();   // havuz, çözücü ve müfredat temiz kurulsun
+}
+
+function buildTermSel(){
+  const sel = document.getElementById("termSel");
+  if (!TERMLIST.some(t => t.term === TERMCODE))
+    TERMLIST = TERMLIST.concat([{term:TERMCODE, name:TERMCODE}]);
+  sel.replaceChildren(...TERMLIST.map(t => new Option(t.name, t.term)));
+  sel.value = TERMCODE;
+}
+document.getElementById("termSel").onchange = e => switchTerm(e.target.value);
+buildTermSel();
+
+/* Yayınlanmış dönemleri öğren; sadece verisi gerçekten olanlar listelenir. */
+async function loadTermList(){
+  try{
+    const j = await getJSON(BW_INDEX, 6000);
+    if (j && Array.isArray(j.terms) && j.terms.length){
+      TERMLIST = j.terms.filter(t => t && typeof t.term === "string");
+      buildTermSel();
+    }
+  }catch(e){}
+}
 
 let chipInfo = {state:"embedded", key:"emb", when:""};
 function setChip(state, text, title){
@@ -4827,8 +4904,8 @@ function setChip(state, text, title){
 function repaintChip(){
   const S = T();
   if (chipInfo.key === "loading") setChip("loading", S.chipLoading, S.chipTitle);
-  else if (chipInfo.key === "self") setChip("live", S.chipSelf, S.chipLiveTitle(chipInfo.when));
   else if (chipInfo.key === "live") setChip("live", chipInfo.label, S.chipLiveTitle(chipInfo.when));
+  else if (chipInfo.key === "err") setChip("embedded", S.chipErr(TERMCODE), S.chipErrTitle);
   else setChip("embedded", embeddedLabel(), S.chipEmbTitle);
 }
 async function getJSON(url, ms=8000){
@@ -4849,74 +4926,53 @@ function applyData(list, label, stamp){
   altIndex = 0;
   rebuildSubjects(); refreshBrand(); render();
   const when = stamp ? new Date(stamp).toLocaleDateString(T().locale) : "";
-  chipInfo = (label === T().chipSelf) ? {key:"self", when} : {key:"live", label, when};
+  chipInfo = {key:"live", label, when};
   setChip("live", label, T().chipLiveTitle(when));
 }
 
 async function loadLive(force){
+  const CK = cacheKeyFor(TERMCODE);
+
   // önbellek
   if (!force) try{
-    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+    const c = JSON.parse(localStorage.getItem(CK) || "null");
     if (c && Date.now() - c.t < MAX_AGE_MS){
       const list = normalize(c.d);
-      if (sane(list)){ applyData(list, c.label === "__SELF__" ? T().chipSelf : c.label, c.t); return; }
+      if (sane(list)){ applyData(list, c.label, c.t); return; }
     }
   }catch(e){}
 
   chipInfo = {key:"loading"};
   setChip("loading", T().chipLoading, T().chipTitle);
 
-  // 1) kendi sitendeki data.json — file:// ile açıldığında fetch bu şemayı
-  //    desteklemiyor, boşuna denenip konsola hata basmasın
+  // seçili dönemin verisi — suis-fetch tarafından günlük güncellenir
   try{
-    if (location.protocol === "file:") throw 0;
-    const j = await getJSON(SELF_SRC, 4000);
-    const list = normalize(j);
-    if (sane(list)){
-      applyData(list, T().chipSelf, Date.now());
-      try{ localStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), d:j, label:"__SELF__"})); }catch(e){}
-      return;
-    }
-  }catch(e){}
-
-  // 2) bannerweb-fetch — Sabancı'nın kendi verisi, günlük güncel
-  try{
-    const j = await getJSON(BW_SRC, 9000);
+    const j = await getJSON(bwSrc(TERMCODE), 9000);
     const list = normalize(j);
     if (sane(list)){
       applyData(list, "BannerWeb", Date.now());
-      try{ localStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), d:j, label:"BannerWeb"})); }catch(e){}
+      try{ localStorage.setItem(CK, JSON.stringify({t:Date.now(), d:j, label:"BannerWeb"})); }catch(e){}
       return;
     }
   }catch(e){}
 
-  // 3) SUchedule — önce güncel dosya adını bul, bulamazsan bilinen sürümü dene
-  let url = GH_FALLBACK, label = "SUchedule";
-  try{
-    const files = await getJSON(GH_API, 4000);
-    const cand = files
-      .filter(f => /^data-v\d+\.min\.json$/.test(f.name))
-      .sort((a,b) => (+b.name.match(/\d+/)[0]) - (+a.name.match(/\d+/)[0]))[0];
-    if (cand){ url = cand.download_url; label = "SUchedule · " + cand.name.match(/v\d+/)[0]; }
-  }catch(e){}
-  try{
-    const j = await getJSON(url, 6000);
-    const list = normalize(j);
-    if (sane(list)){
-      applyData(list, label, Date.now());
-      try{ localStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), d:j, label})); }catch(e){}
-      return;
-    }
-  }catch(e){}
-
-  chipInfo = {key:"emb"};
-  setChip("embedded", embeddedLabel(), T().chipEmbTitle);
+  /* Ulaşılamadı. Gömülü kopya yalnızca kendi dönemi için doğru veri;
+     başka bir dönem seçiliyse yanlış dönemi doğruymuş gibi göstermemek
+     için rozet açıkça hata der. */
+  if (TERMCODE === EMB_TERM){
+    chipInfo = {key:"emb"};
+    setChip("embedded", embeddedLabel(), T().chipEmbTitle);
+  } else {
+    chipInfo = {key:"err"};
+    setChip("embedded", T().chipErr(TERMCODE), T().chipErrTitle);
+  }
 }
 
 document.getElementById("srcChip").onclick = () => {
-  try{ localStorage.removeItem(CACHE_KEY); }catch(e){}
+  try{ localStorage.removeItem(cacheKeyFor(TERMCODE)); }catch(e){}
   loadLive(true);
 };
 loadLive(false);
+loadTermList();
 </script>
 </body></html>
