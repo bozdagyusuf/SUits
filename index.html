@@ -2,7 +2,9 @@
 <title>SUits | Sabancı Üniversitesi Ders Programı Oluşturucu</title>
 <meta name="description" content="SUits, Sabancı Üniversitesi öğrencileri için ücretsiz ders programı oluşturucu ve course scheduler. Çakışmasız ders ve section kombinasyonlarını bulur ve en uygun programı oluşturur.">
 <link rel="canonical" href="https://bozdagyusuf.github.io/SUits/">
-<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A7CFF'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-family='system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif' font-size='44' font-weight='700' fill='%23fff'%3ES%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADOUlEQVR4AbyWWUhVURSGv3OgsNugNM8D0UhFYSD0lEQPYkE00eCLkGkS9BAVps1pKD4UoZH6ElQERQVF0UuRSAUFRWYKgmYTJgWFYlrmaa1zPZ17wdvdV7we7rp777X2+f9/rz0dm5AnId+ZNSLfKQ4cceoCBY4zqCaYiq0cIZT8EyCku2yLd5bFQRwWM9iPYCq2cDQrlwfvCnAdDpWeM86lJQOsdDmFyHZT4lAh9aH9OVQqt2SEXGG2xIb8J6S5tmWzbsiZ+wiV25b5GPCC0/T1YQ2skIXpLsJY3t6+HKpz4HM+tJ+EDrFPh6FmD2xeGgtSsG9MAi5thapNkDwNEhOCALK1SBoBK6aCxis2Bv2m/8YCyjaYjXDnCshLNaXHP4iivZK+0O/R0wvZN2H0UUg6DvkPoNfx4xkiwm/9v2aUgXEBmDDSB3rSApdfBkl//4GzNXCjFhwRoTY90e8brWYkoONXENwDWzkdlk3xWsEy8zqMkoyoJR4L+kz+jQR098CXDh8uMAyeyvH1Pk9GngF7Vwn5cD8eS81IgALqCHXute6ZTk3aAihOg9YCeLUP1i/yomalsYDqZlgj11Xj1/6BdTvOGw/XdkBOSv99+vMaC9CXX3yE5edgWhEUPQJdjD+6NBJupemyvaxwX6RWTAI8kO8/ofAhrK2CqYWQfB7au70oaDZS52L0GAnIlpQ2HgC1+v0wNhCO3dAGF56F++aNC29HahkJqG2VkY4J2swkuJ8JYxJ8SD2K9Y7wPbIWXoe2IteNBOhch6Z4yWTQC6j5EDSJfciDGSGHj25ZnabItH7ESIB2z7kFeuppXU2v4omjYJKY1tWn1iVnhm5ZrZuYsYDbdTC/FN7IdIQK8Uj0sHouu2RuCTxu8rzRS2MBCtUmp2FKGe4FNPMMbLsKW67A5NOyME/A6otgmnrFU4tJgL7g2bdOuFMP9xoI24Je3LQcsABTgmj9bCzeRusUt7hw204vd+NGEAVYuW35hiiP0i9eYf12Kbe7Cq0WmYaseLFExLXYrdy2dug8ZVX1iZCEqCfOZpHlcgqNK0BK1CEflnMkLyUiZtAWpmK7JgtOsYVjtnK5PuAvAAAA///Z2TTcAAAABklEQVQDAMqtELD/kQriAAAAAElFTkSuQmCC">
+<link rel="apple-touch-icon" href="data:image/png;base64,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"><meta name="robots" content="index, follow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SUits">
 <meta property="og:title" content="SUits | Sabancı Üniversitesi Ders Programı Oluşturucu">
@@ -233,10 +235,9 @@ header.top{
 .capnote .btn{background:var(--surface); flex:none}
 
 /* ---------- manuel mod ---------- */
-/* Manuel listede her dersin tüm section'ları var; liste 7000 piksele çıkıp
-   sayfayı uzatıyor, program yukarıda kalıyordu. Liste kendi içinde kaysın:
-   sağdaki program ekranda kalır. */
-.mbody{max-height:calc(100dvh - var(--railtop, 74px) - 92px); overflow-y:auto; overscroll-behavior:contain}
+/* Manuel listede her dersin tüm section'ları var; liste 7000 piksele çıkıyor.
+   Kaydırmayı ray üstleniyor (bkz. .rail), burada boy serbest. */
+.mbody{min-height:0}
 .mcourse{border-bottom:1px solid var(--line)}
 .mcourse:last-child{border-bottom:0}
 .mhead{display:flex; align-items:center; gap:8px; padding:11px 16px; cursor:pointer; background:var(--surface)}
@@ -357,7 +358,16 @@ header.top{
 @media (max-width:960px){ .cols{grid-template-columns:minmax(0,1fr)} }
 /* Üst bar sabit ve yüksekliği içeriğe göre değişiyor; sol panelin yapışma
    noktası da ona göre ayarlanıyor, yoksa panelin üstü barın altında kalıyor. */
-.rail{position:sticky; top:var(--railtop, 74px); min-width:0; z-index:1}
+/* Ray ekrana sığdırılıp kendi içinde kayıyor: eskiden panel ekrandan taşıyordu
+   ve havuzun kaydırma çubuğuna ulaşmak için önce sayfayı dibe indirmek
+   gerekiyordu. Tek kaydırma çubuğu rayın kendisinde. */
+.rail{position:sticky; top:var(--railtop, 74px); min-width:0; z-index:1;
+  display:flex; flex-direction:column; gap:18px;
+  max-height:calc(100dvh - var(--railtop, 74px) - 18px);
+  overflow-y:auto; overscroll-behavior:contain}
+/* Paneller ezilmesin: boyları içeriklerinden gelsin, taşan kısmı ray kaydırsın
+   (panel overflow:hidden olduğu için ezilirse liste görünmez oluyordu). */
+.rail > .panel{flex:0 0 auto}
 .stack{display:flex; flex-direction:column; gap:18px; min-width:0; position:relative; z-index:0}
 .panel{background:var(--surface); border-radius:var(--r-card); box-shadow:var(--shadow); overflow:hidden}
 .panel > h2{
@@ -464,6 +474,7 @@ header.top #btnAuto{margin-left:auto}
 .resnote{padding:10px 16px; font-size:12.5px; color:var(--faint); border-bottom:1px solid var(--line)}
 .curbox{padding:12px 14px; border-bottom:1px solid var(--line)}
 .currow{display:flex; gap:8px}
+.currow + .currow{margin-top:8px}
 .currow select{flex:1; min-width:0; font-size:13px}
 .curnote{font-size:12px; color:var(--faint); line-height:1.4; margin-top:8px}
 .poolhead{padding:12px 18px 2px; font-size:12px; color:var(--faint); font-weight:600;
@@ -478,7 +489,8 @@ header.top #btnAuto{margin-left:auto}
 .gsep b{font-size:12px; font-weight:700; letter-spacing:-.01em}
 .gsep span{font-size:11.5px; color:var(--faint)}
 .gsep i{margin-left:auto; font-style:normal; font-size:11.5px; color:var(--muted); font-variant-numeric:tabular-nums}
-.clist{max-height:min(58vh,600px); overflow-y:auto; display:flex; flex-direction:column}
+/* Liste kendi boyunca uzar; kaydırma işini ray yapıyor. */
+.clist{min-height:0}
 .crow{display:flex; gap:10px; padding:10px 16px; border-bottom:1px solid var(--line); cursor:pointer; align-items:flex-start}
 .crow:last-child{border-bottom:0}
 .crow.on{background:var(--accent-soft)}
@@ -499,6 +511,16 @@ header.top #btnAuto{margin-left:auto}
 /* hoca menüsü metnin bir parçası gibi akar */
 .crow .meta .instwrap{white-space:nowrap}
 .crow .code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; font-weight:650; flex:none}
+/* SUIS bağlantısı kodun kendisi değil, kodun yanındaki ayrı kutucuk: kod
+   tıklanabilir olduğunda bağlantı olduğu anlaşılmıyordu. */
+.suis{display:inline-flex; align-items:center; gap:3px; flex:none;
+  font-size:9.5px; font-weight:700; letter-spacing:.03em; line-height:1;
+  padding:3px 6px; border-radius:var(--r-chip); text-decoration:none;
+  border:1px solid var(--line); background:var(--sunken); color:var(--muted);
+  transition:background .14s, color .14s, border-color .14s}
+.suis:hover{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.suis i{font-style:normal; font-size:10.5px; line-height:1}
+.crow .meta .inst{font-style:italic}
 /* 2. katman: ders adı, tek satır — tamamı title'da duruyor */
 .crow .nm{font-size:12.5px; color:var(--muted); line-height:1.35; margin-top:2px;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
@@ -525,6 +547,27 @@ header.top #btnAuto{margin-left:auto}
 .crow.must .swatch{background:var(--accent) !important}
 .crow.pref{background:color-mix(in srgb, var(--accent-soft) 28%, transparent)}
 .gsep.pref b{color:var(--accent)}
+/* "biri yeter" grubu: üyeler ortak bir rozet taşır, rozete basınca ders gruptan çıkar */
+.gchip{flex:none; border:0; cursor:pointer; font-family:inherit; font-size:10px; font-weight:750;
+  letter-spacing:.02em; padding:2px 7px; border-radius:999px;
+  background:var(--accent-soft); color:var(--accent); display:inline-flex; gap:3px; align-items:center}
+.gchip i{font-style:normal; opacity:.5}
+.gsum{font-size:11.5px; color:var(--muted); padding:8px 16px; border-bottom:1px solid var(--line);
+  background:var(--sunken)}
+.gsum b{color:var(--accent); font-weight:700}
+.grpbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:10px 16px;
+  border-bottom:1px solid var(--line); background:var(--accent-soft);
+  font-size:12.5px; color:var(--ink)}
+.grpbar .gtx{flex:1; min-width:140px}
+.crow input[type=checkbox].gpick{accent-color:var(--warn)}
+/* çakışması onaylanmış ders çifti: kırmızı yerine sarı */
+.okp{font-family:inherit; font-size:12px; font-weight:600; border:0; cursor:pointer;
+  border-radius:999px; padding:3px 10px; margin:2px 4px 0 0;
+  background:var(--bad-soft); color:var(--bad)}
+.okp.on{background:var(--warn-soft); color:var(--warn)}
+td.clash.okc{background:repeating-linear-gradient(45deg, var(--warn-soft) 0 7px, transparent 7px 14px)}
+td.clash.okc::after{border-color:var(--warn)}
+.agit.clash.okc{background:var(--warn-soft); border-left-color:var(--warn)}
 /* önizleme: seçilecek section soluk ve kesik çerçeveli, geri kalan program soluklaşır */
 table.sched.previewing .blk:not(.ghost){opacity:.38}
 .blk.ghost{
@@ -562,6 +605,10 @@ table.sched.previewing .blk:not(.ghost){opacity:.38}
 .cat.university{background:#22A06B22; color:#1B825A}
 .cat.free{background:var(--sunken); color:var(--muted)}
 .cat.out{background:var(--bad-soft); color:var(--bad)}
+/* Etiket anadaldan değil, çift anadal / yandal müfredatından geliyorsa hangi
+   programdan geldiği rozetin içinde yazar; yoksa yanlış programa ait sanılıyor. */
+.cat i{font-style:normal; font-weight:650; opacity:.72; margin-left:4px}
+.cat i::before{content:"·"; margin-right:4px; opacity:.6}
 :root:not([data-theme="light"]) .cat.required, :root[data-theme="dark"] .cat.required{background:#F0A05022; color:#F0A050}
 :root:not([data-theme="light"]) .cat.core, :root[data-theme="dark"] .cat.core{background:#4FA3FF22; color:#4FA3FF}
 :root:not([data-theme="light"]) .cat.area, :root[data-theme="dark"] .cat.area{background:#B98CE822; color:#B98CE8}
@@ -609,6 +656,13 @@ td.clash::after{content:""; position:absolute; inset:0; border:2px solid var(--b
 .sec .row:first-of-type{border-top:0}
 .sec .k{font-size:10px; font-weight:700; color:var(--faint); width:34px; flex:none}
 .sec .v{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11.5px; flex:none; font-variant-numeric:tabular-nums}
+/* CRN de SUIS'e gider; bağlantı olduğu belli olsun diye kendi kutucuğunda. */
+a.v{display:inline-flex; align-items:center; gap:3px; text-decoration:none;
+  padding:2px 6px; border-radius:var(--r-chip);
+  border:1px solid var(--line); background:var(--sunken); color:var(--muted);
+  transition:background .14s, color .14s, border-color .14s}
+a.v:hover{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+a.v i{font-style:normal; font-family:inherit; font-size:10px; line-height:1}
 .sec .pl{color:var(--muted); font-size:12px; min-width:0}
 .secsel{flex:1; min-width:0; font-size:12px; padding:4px 8px; padding-right:24px; background-color:var(--surface); color:var(--muted)}
 .secsel:hover{color:var(--ink)}
@@ -659,6 +713,11 @@ table.matrix td{width:26px; height:26px; text-align:center; border:2px solid var
 .wpwrap{display:grid; grid-template-columns:minmax(0,240px) minmax(0,1fr); gap:22px; align-items:start}
 @media (max-width:640px){ .wpwrap{grid-template-columns:1fr} }
 #wpCanvas{width:100%; max-width:240px; border-radius:18px; box-shadow:var(--shadow); display:block; margin:0 auto}
+/* A4 önizlemesi: inecek görselin birebir kendisi, sayfaya sığdırılmış. */
+#a4Canvas{display:block; width:100%; height:auto; border:1px solid var(--line);
+  border-radius:12px; background:#fff}
+.a4foot{display:flex; align-items:center; gap:14px; margin-top:16px; flex-wrap:wrap}
+.a4foot .note{flex:1; min-width:180px; margin:0}
 .wpopts{display:flex; flex-direction:column; gap:16px}
 .wpgroup .glbl{font-size:12px; color:var(--faint); font-weight:600; margin-bottom:8px}
 .swatches{display:flex; gap:9px; flex-wrap:wrap}
@@ -674,10 +733,11 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
 
 /* tek sütuna düşen genişlikler: yapışkan panel alttaki içeriğin üstüne biniyordu */
 @media (max-width:960px){
-  .rail{position:static; top:auto; z-index:auto}
-  /* tek sütunlu düzende program zaten listenin altında: liste kendi içinde
+  /* tek sütunlu düzende program zaten listenin altında: ray kendi içinde
      kaymasın, sayfayla birlikte aksın */
-  .mbody{max-height:none; overflow:visible}
+  .rail{position:static; top:auto; z-index:auto; display:block;
+    max-height:none; overflow:visible}
+  .clist, .mbody{max-height:min(70vh,640px); overflow-y:auto; overscroll-behavior:contain}
   header.top{position:static}
 }
 
@@ -781,7 +841,6 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
   .res .nm{ font-size:13.5px }
   .curbox, .takenbox, .bulkbox{ padding:16px 18px }
   .poolhead{ padding:16px 22px 4px; font-size:12.5px }
-  .clist{ max-height:min(60vh,680px) }
   .crow{ padding:11px 18px; gap:13px }
   .crow .code{ font-size:14px }
   .crow .nm{ font-size:13px; margin-top:3px }
@@ -1009,10 +1068,14 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
             <select id="major"><option value=""></option></select>
             <select id="admit"></select>
           </div>
+          <div class="currow" id="curRow2" hidden>
+            <select id="major2"></select>
+            <select id="admit2"></select>
+          </div>
           <div class="curnote" id="curNote"></div>
         </div>
 
-        <div class="poolhead" id="poolHead" hidden><span id="poolHeadLbl"></span><span class="counter" id="counter">0</span></div>
+        <div class="poolhead" id="poolHead" hidden><span id="poolHeadLbl"></span><button class="btn tiny" id="btnGroup"></button><span class="counter" id="counter">0</span></div>
         <div class="poollaw" id="poolLaw" hidden></div>
         <div class="clist" id="clist"></div>
       </div>
@@ -1089,6 +1152,20 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
         <div class="wprow"><button class="btn primary" id="wpSave"></button></div>
         <div class="note" id="wpHint"></div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="a4Sheet">
+  <div class="sheetbox">
+    <div class="sheethead">
+      <h3 id="a4Title"></h3>
+      <button class="close" id="a4Close">×</button>
+    </div>
+    <canvas id="a4Canvas"></canvas>
+    <div class="a4foot">
+      <div class="note" id="a4Hint"></div>
+      <button class="btn primary" id="a4Save"></button>
     </div>
   </div>
 </div>
@@ -1278,6 +1355,19 @@ const STR = {
     gPref:"Olsa iyi", gPrefSub:"eşit ders sayısında öne geçer",
     gMaybe:"Belki", gMaybeSub:"sığarsa eklenir",
     gIn:n=>`${n} tanesi programda`, gAllIn:"hepsi programda", gNoneIn:"programa girmedi",
+    grpNew:"biri yeter grubu", grpMake:"Grupla", grpCancel:"Vazgeç",
+    grpPick:"Birbirinin yerine sayılan dersleri işaretle (HUM 202 / HUM 207 gibi). Bu gruptan programa yalnız biri girer, hangisinin sığdığına SUits karar verir.",
+    grpNeed2:"Grup için en az iki ders işaretle.",
+    grpChipTip:(n,list)=>`G${n} · biri yeter: ${list}. Tıklarsan bu ders gruptan çıkar.`,
+    grpSum:(n,list)=>`<b>G${n}</b> — ${list} derslerinden yalnız biri programa girer.`,
+    grpMustNo:"Grup üyesi ayrıca kesin işaretlenemez: grup zaten bir tanesini garanti ediyor.",
+    grpSwap:(a,b)=>`Aynı gruptan ${a} çıktı, ${b} girdi — bu gruptan yalnız biri alınır.`,
+    grpFail:"Kurduğun gruplardan birini karşılayacak ders bu koşullarda yerleşmiyor. Gruba başka bir ders ekle ya da grubu boz.",
+    okpAsk:"onay aldım", okpOn:"onay alındı ✓",
+    okpTip:"Hocalardan bu çakışma için onay aldıysan işaretle — uyarı kırmızıdan sarıya döner.",
+    okpOnTip:"Onayı kaldır, uyarı yine kırmızı olsun",
+    manualOkT:n=>`${n} saat çakışma var — onayını aldın`,
+    okpNote:"Bu çakışmayı onayladığını işaretledin. Otomatik kurulum yine çakışmasız programı tercih eder.",
     poolLaw:"<b>Havuz</b> aday dersler, <b>mavi tik</b> şu an programda olanlar. Seviyeler otomatik kurulumda işe yarar: <b>kesin</b> dersler her programa girer, <b>olsa iyi</b> dersleri aynı sayıda ders veren programlar arasında öne geçer ama program küçülecekse düşebilir, <b>belki</b> dersleri yalnız yer kalırsa eklenir. Üstteki <b>ders sayısı</b> aralığında üst sınır serttir (ne elle ne otomatik aşılır), alt sınır dilektir: ulaşılamazsa en iyi program kurulur ve nedeni yazılır.",
     autoTip:"Kesin dersleri olduğu gibi tutar, en çok dersi hedefler, eşitlikte olsa iyi derslerini kayırır ve her ders için en iyi section'ı seçer.",
     inSched:(n,c)=>`Programda: ${n} ders · ${c} kredi`,
@@ -1339,6 +1429,7 @@ const STR = {
     prefBlockT:"Tercihlerin bu programı imkânsız kılıyor",
     prefBlockS:"Şu dersin hiçbir section'ı koyduğun kısıtlara uymuyor:",
     instWant:"hoca", instAny:"fark etmez",
+    suisTip:"SUIS'te aç", suisCrnTip:"Bu section'ı SUIS'te aç",
     mustOff:"belki", mustOn:"kesin", prefOn:"olsa iyi",
     modeAuto:"Otomatik", modeManual:"Manuel",
     manualBadT:(n)=>`Programında ${n} saat çakışma var`,
@@ -1388,11 +1479,17 @@ const STR = {
     psCode:"Kod", psName:"Ders", psSection:"Grup", psTime:"Saat", psRoom:"Derslik", psInst:"Öğretim üyesi",
     share:"Bağlantıyı kopyala", shareOk:"Kopyalandı ✓", print:"Yazdır",
     shot:"Tabloyu indir",
+    a4Title:"Tablo görseli", a4Save:"PNG indir",
+    a4Hint:"A4 yatay (2339×1654 px, 200 dpi) PNG. Aşağıda göreceğin görselin aynısı iner.",
     allLevels:"Tüm seviyeler",
     unpin:"sabitlemeyi kaldır", unpinAll:"Sabitleri temizle", pinned:"sabit",
     majorPh:"Bölüm seç", admitPh:"Giriş dönemi",
+    major2Ph:"Çift anadal yok",
+    viaMajor2:(p,c)=>`${p} çift anadal müfredatında ${c}`,
+    curPartial:m=>`(${m} yüklenemedi)`,
     curLoading:"müfredat yükleniyor…", curFail:"Müfredat yüklenemedi (çevrimdışı olabilirsin).",
     curOk:(m,t)=>`${m} · ${t} müfredatı yüklü — dersler kategorilere ayrıldı.`,
+    curOkMulti:m=>`${m} müfredatları yüklü — dersler kategorilere ayrıldı.`,
     curBuilt:(m,t)=>`${m} müfredatı sayfaya gömülü ${t} sürümünden yüklendi.`,
     curHint:"Bölümünü seçersen dersler zorunlu / core / area / free olarak etiketlenir.",
     cats:{university:"Üniversite", required:"Zorunlu", core:"Core", area:"Area", free:"Free"},
@@ -1461,6 +1558,19 @@ const STR = {
     gPref:"Preferred", gPrefSub:"wins ties at the same course count",
     gMaybe:"Maybe", gMaybeSub:"added if it fits",
     gIn:n=>`${n} in the schedule`, gAllIn:"all in the schedule", gNoneIn:"none made it in",
+    grpNew:"one-of group", grpMake:"Group them", grpCancel:"Cancel",
+    grpPick:"Tick the courses that count for each other (HUM 202 / HUM 207). Exactly one of them goes into the schedule, and SUits picks whichever fits.",
+    grpNeed2:"Tick at least two courses for a group.",
+    grpChipTip:(n,list)=>`G${n} · one of: ${list}. Click to drop this course from the group.`,
+    grpSum:(n,list)=>`<b>G${n}</b> — only one of ${list} goes into the schedule.`,
+    grpMustNo:"A group member cannot also be must-take: the group already guarantees one of them.",
+    grpSwap:(a,b)=>`${a} left and ${b} came in — only one course from that group is taken.`,
+    grpFail:"None of the courses in one of your groups fits under these constraints. Add another course to the group or dissolve it.",
+    okpAsk:"I have approval", okpOn:"approved ✓",
+    okpTip:"If your instructors approved this overlap, mark it — the warning turns from red to amber.",
+    okpOnTip:"Remove the approval and make the warning red again",
+    manualOkT:n=>`${n} hours of overlap — you have approval`,
+    okpNote:"You marked this overlap as approved. The solver still prefers a conflict-free schedule.",
     poolLaw:"The <b>pool</b> holds candidates, the <b>blue tick</b> marks what is in the schedule right now. Tiers matter to the solver: <b>must-take</b> courses are in every schedule, <b>preferred</b> ones win between schedules with the same number of courses but can still drop if keeping them would mean fewer courses, <b>maybe</b> ones are added only if there is room. In the <b>course count</b> range up top the ceiling is hard (neither you nor the solver can pass it) and the floor is a wish: if it cannot be reached, the best schedule is built and the reason is spelled out.",
     autoTip:"Keeps every must-take course, aims for the most courses, favours the preferred ones on a tie, and picks the best section for each.",
     inSched:(n,c)=>`In schedule: ${n} courses · ${c} credits`,
@@ -1522,6 +1632,7 @@ const STR = {
     prefBlockT:"Your preferences make this schedule impossible",
     prefBlockS:"No section of this course satisfies your constraints:",
     instWant:"instructor", instAny:"any",
+    suisTip:"Open on SUIS", suisCrnTip:"Open this section on SUIS",
     mustOff:"maybe", mustOn:"must", prefOn:"preferred",
     modeAuto:"Auto", modeManual:"Manual",
     manualBadT:(n)=>`${n} hours of overlap in your schedule`,
@@ -1571,11 +1682,17 @@ const STR = {
     psCode:"Code", psName:"Course", psSection:"Sec", psTime:"Time", psRoom:"Room", psInst:"Instructor",
     share:"Copy link", shareOk:"Copied ✓", print:"Print",
     shot:"Download table",
+    a4Title:"Table image", a4Save:"Download PNG",
+    a4Hint:"A4 landscape (2339×1654 px, 200 dpi) PNG. What you see below is exactly what downloads.",
     allLevels:"All levels",
     unpin:"unpin this section", unpinAll:"Clear pins", pinned:"pinned",
     majorPh:"Pick your major", admitPh:"Admit term",
+    major2Ph:"No double major",
+    viaMajor2:(p,c)=>`${c} in the ${p} double-major curriculum`,
+    curPartial:m=>`(${m} could not be loaded)`,
     curLoading:"loading curriculum…", curFail:"Could not load the curriculum (you may be offline).",
     curOk:(m,t)=>`${m} · ${t} curriculum loaded — courses are now categorised.`,
+    curOkMulti:m=>`${m} curricula loaded — courses are now categorised.`,
     curBuilt:(m,t)=>`${m} curriculum loaded from the built-in ${t} copy.`,
     curHint:"Pick your major and courses get tagged as required / core / area / free.",
     cats:{university:"University", required:"Required", core:"Core", area:"Area", free:"Free"},
@@ -1904,6 +2021,25 @@ function instructorsOf(code){
   if (!c) return [];
   return [...new Set(c.classes[0].sections.map(s => (s.inst||"").trim()).filter(Boolean))].sort();
 }
+/* Sayfaya gömülü kopyanın dönemi — canlı veri gelmezse ekranda bu duruyor. */
+const EMB_TERM = "202601";
+/* Seçili dönem; bağlantılar da bunu kullandığı için burada, erken tanımlı. */
+let TERMCODE = (() => { try{ return localStorage.getItem("dk-term") || EMB_TERM; }catch(e){ return EMB_TERM; } })();
+
+/* ---- SUIS bağlantıları ----
+   Ders kodu katalog sayfasına, CRN o section'ın ayrıntı sayfasına gider;
+   ikisi de SUIS'in giriş istemeyen genel sayfaları. */
+const SUIS = "https://suis.sabanciuniv.edu/prod/";
+const suisCourseURL = code => {
+  const m = /^([A-Za-z]+)\s*(\d+)/.exec(code || "");
+  return m ? `${SUIS}bwckctlg.p_disp_course_detail?cat_term_in=${TERMCODE}`
+           + `&subj_code_in=${m[1].toUpperCase()}&crse_numb_in=${m[2]}` : "";
+};
+const suisCrnURL = crn => `${SUIS}bwckschd.p_disp_detail_sched?term_in=${TERMCODE}&crn_in=${crn}`;
+/* Metni HTML'e gömerken: ders adları ve hoca adları dış kaynaktan geliyor. */
+const esc = s => String(s == null ? "" : s)
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
 function setInstReq(code, name){
   if (name) INSTREQ[code] = name; else delete INSTREQ[code];
   _allow.clear();
@@ -2283,7 +2419,26 @@ let selected = [];      // havuzdan programa katılanlar
 let MUST = [];          // "bu dönem kesin alacağım" — otomatik seçim bunları asla elemez
 let PREF = [];          // "olsa iyi" — kesinin yumuşak hâli: eşit ders sayısında kayrılır,
                         //             ama program küçülecekse düşebilir
+/* "biri yeter" grupları: her grup birbirinin yerine sayılan derslerin listesi
+   (HUM 202 / HUM 207 gibi). Programa gruptan tam olarak bir ders girer; hangisi
+   olacağına çözücü karar verir. Ham liste bozulmadan saklanıyor — yanlış dönemin
+   verisi yüklüyken üyeler geçici olarak havuzdan düşebiliyor. */
+let GROUPS = [];
+const groupIdx = code => GROUPS.findIndex(g => g.includes(code));
+const groupOf  = code => { const i = groupIdx(code); return i < 0 ? null : GROUPS[i]; };
+const inGroup  = code => groupIdx(code) >= 0;
+/* çözücünün ve ekranın gördüğü hâl: yalnız havuzda duran üyeler */
+const liveGroups = () => GROUPS.map(g => g.filter(c => pool.includes(c))).filter(g => g.length);
+/* Çakışması onaylanmış ders çiftleri ("A|B"): hocalardan onay alınmışsa
+   çakışma hata değil, bilinen bir durum — kırmızı yerine sarı uyarı. */
+let OKPAIR = [];
+const pairKey = (a,b) => a < b ? a + "|" + b : b + "|" + a;
+const pairOK  = (a,b) => OKPAIR.includes(pairKey(a,b));
+
 let solutions = null, altIndex = 0;
+/* Açılışta gömülü dönemin verisiyle süzülüp eksilen kayıt; doğru dönemin
+   verisi gelince yeniden uygulanır (bkz. applyData). */
+let PENDING = null;
 
 const isMust = code => MUST.includes(code);
 const isPref = code => PREF.includes(code);
@@ -2334,8 +2489,40 @@ function setPref(code, on){
   }
   altIndex = 0; save(); render();
 }
+/* ---- "biri yeter" grupları ----
+   Grup, kesin işaretinin küme hâli: "şunlardan biri kesin". Bu yüzden üyesi
+   ayrıca kesin olamaz; olursa grup anlamsızlaşır ve ikisi birden programa girer. */
+function makeGroup(codes){
+  const list = codes.filter(c => pool.includes(c));
+  if (list.length < 2) return false;
+  /* bir ders yalnız bir gruba ait olabilir: eskisinden çıkar */
+  GROUPS = GROUPS.map(g => g.filter(c => !list.includes(c))).filter(g => g.length >= 2);
+  MUST = MUST.filter(c => !list.includes(c));
+  PREF = PREF.filter(c => !list.includes(c));
+  GROUPS.push(list);
+  /* gruptan bir ders girmek zorunda: tavan buna yer bırakmalı */
+  const need = MUST.length + GROUPS.length;
+  if (need > MAXSEL) setCap(Math.min(SEL_HI, need));
+  /* aynı gruptan birden çok ders tikliyse ilki kalsın */
+  const on = list.filter(c => selected.includes(c));
+  on.slice(1).forEach(c => { selected = selected.filter(x => x !== c); });
+  altIndex = 0; save(); render();
+  return true;
+}
+function leaveGroup(code){
+  GROUPS = GROUPS.map(g => g.filter(c => c !== code)).filter(g => g.length >= 2);
+  altIndex = 0; save(); render();
+}
+/* ---- onaylı çakışma ---- */
+function toggleOkPair(a, b){
+  const k = pairKey(a, b);
+  OKPAIR = OKPAIR.includes(k) ? OKPAIR.filter(x => x !== k) : OKPAIR.concat(k);
+  save(); render();
+}
+
 /* Üç bölmeli anahtar: hangi seviyeye basılırsa doğrudan oraya geçer */
 function setTier(code, tier){
+  if (tier === "must" && inGroup(code)){ capNote(T().grpMustNo); return; }
   if (tierOf(code) === tier) return;
   if (tier === "must") return setMust(code, true);
   if (tier === "pref") return setPref(code, true);
@@ -2346,10 +2533,21 @@ function setTier(code, tier){
 
 
 const save = () => { try{
-  localStorage.setItem("dk-pool", JSON.stringify(pool));
-  localStorage.setItem("dk-sel", JSON.stringify(selected));
-  localStorage.setItem("dk-must", JSON.stringify(MUST));
-  localStorage.setItem("dk-pref", JSON.stringify(PREF));
+  /* Doğru dönemin verisi henüz gelmediyse, o veride bulunmayan dersler ekranda
+     hiç görünmedi — kullanıcı atmadı, süzgeç düşürdü. Kayda geri konuyor ki
+     dönem değişiminde program eksilmesin. */
+  if (PENDING){
+    const keep = (raw, cur) => cur.concat(raw.filter(c => !BY[c]));
+    PENDING = {p:keep(PENDING.p, pool), q:keep(PENDING.q, MUST),
+               w:keep(PENDING.w, PREF), s:keep(PENDING.s, selected)};
+  }
+  const K = PENDING || {p:pool, q:MUST, w:PREF, s:selected};
+  localStorage.setItem("dk-pool", JSON.stringify(K.p));
+  localStorage.setItem("dk-sel", JSON.stringify(K.s));
+  localStorage.setItem("dk-must", JSON.stringify(K.q));
+  localStorage.setItem("dk-pref", JSON.stringify(K.w));
+  localStorage.setItem("dk-groups", JSON.stringify(GROUPS));
+  localStorage.setItem("dk-okpair", JSON.stringify(OKPAIR));
   localStorage.setItem("dk-manual", JSON.stringify(MANUAL));
   localStorage.setItem("dk-mode", MODE);
   localStorage.setItem("dk-range", JSON.stringify({a:MINSEL, b:MAXSEL, c:MINCR, d:MAXCR}));
@@ -2366,6 +2564,8 @@ function removeFromPool(code){
   selected = selected.filter(c => c !== code);
   MUST = MUST.filter(c => c !== code);
   PREF = PREF.filter(c => c !== code);
+  GROUPS = GROUPS.map(g => g.filter(c => c !== code)).filter(g => g.length >= 2);
+  OKPAIR = OKPAIR.filter(k => !k.split("|").includes(code));
   altIndex = 0; render();
 }
 /* ================= sınırlar: tek anlam, görünür gerekçe =================
@@ -2428,6 +2628,18 @@ function toggle(code){
     selected.splice(i,1);
   }
   else {
+    /* Aynı gruptan ikinci dersi tiklemek öbürünü çıkarır: grubun sözü "biri". */
+    const g = groupOf(code);
+    if (g){
+      const other = selected.find(c => c !== code && g.includes(c));
+      if (other){
+        selected.splice(selected.indexOf(other), 1);
+        selected.push(code);
+        capNote(T().grpSwap(other, code));
+        altIndex = 0; render();
+        return;
+      }
+    }
     /* maksimumlar sert sınır: ne ders sayısı ne kredi üstüne çıkabilir */
     const overCount = selected.length >= effMax();
     const cr = selCred() + credOf(code);
@@ -2466,9 +2678,16 @@ const ADMITS = ["202601","202503","202502","202501","202403","202402","202401","
                 "201903","201902","201901"];
 const CUR_BASE = "https://beficent.github.io/surriculum/courses";
 const CAT_ORDER = ["required","core","area","university","free"];
-let MAJOR = "", ADMIT = ADMITS[0];
-let CURMAP = null;              // "EE 303" -> {t:"core", c:3}
+/* Aynı ders iki programda farklı kategoride olabilir (anadalda free, çift
+   anadalda core gibi). Birleştirirken güçlü olan kazanır; eşitlikte anadal. */
+const CAT_RANK = {required:0, core:1, area:2, university:3, free:4};
+/* Çift anadala çoğu zaman anadaldan sonra başlanır, yani müfredat yılı da
+   farklıdır: her programın kendi ilk kayıt dönemi var. */
+let MAJOR = "", MAJOR2 = "", ADMIT = ADMITS[0], ADMIT2 = ADMITS[0];
+let CURMAP = null;              // "EE 303" -> {t:"core", c:3, p:"EE", k:"major"}
 let REQ = null;                 // {university:41, required:33, core:25, area:9, free:15, total:125}
+/* Etkin programlar: [kod, tür, ilk kayıt dönemi] */
+const curProgs = () => [[MAJOR,"major",ADMIT], [MAJOR2,"major2",ADMIT2]].filter(p => p[0]);
 /* CURMAP girdisi {t,c} nesnesi; eski sürüm düz metin ("core") yazıyordu — ikisini de oku */
 const catOf = code => {
   const v = CURMAP && CURMAP[code];
@@ -2490,8 +2709,10 @@ const credSum = list => list.reduce((s,c) => s + credOf(c), 0);
 
 
 
-const majorSel = document.getElementById("major");
-const admitSel = document.getElementById("admit");
+const majorSel  = document.getElementById("major");
+const major2Sel = document.getElementById("major2");
+const admitSel  = document.getElementById("admit");
+const admit2Sel = document.getElementById("admit2");
 const catSel   = document.getElementById("cat");
 const lvlSel   = document.getElementById("lvl");
 const admitLabel = t => `${t.slice(0,4)}-${(+t.slice(0,4)+1)} ${({ "01":"Güz","02":"Bahar","03":"Yaz" })[t.slice(4)] || t.slice(4)}`;
@@ -2500,9 +2721,21 @@ const admitLabelEN = t => `${t.slice(0,4)}-${(+t.slice(0,4)+1)} ${({ "01":"Fall"
 function buildCurSelectors(){
   majorSel.innerHTML = `<option value="">${T().majorPh}</option>` +
     MAJORS.map(m => `<option value="${m}"${m===MAJOR?" selected":""}>${m}</option>`).join("");
-  admitSel.innerHTML = ADMITS.map(t =>
-    `<option value="${t}"${t===ADMIT?" selected":""}>${LANG==="tr"?admitLabel(t):admitLabelEN(t)}</option>`).join("");
+  const admitOpts = (sel, val) => {
+    sel.innerHTML = ADMITS.map(t =>
+      `<option value="${t}"${t===val?" selected":""}>${LANG==="tr"?admitLabel(t):admitLabelEN(t)}</option>`).join("");
+  };
+  admitOpts(admitSel, ADMIT);
   admitSel.hidden = !MAJOR;
+  /* İkinci satır ancak anadal seçiliyken bir anlam taşıyor; aynı program iki
+     kez seçilemesin diye anadal listeden düşürülür. Çift anadala genelde sonra
+     başlanır, o yüzden kendi ilk kayıt dönemi yanında duruyor. */
+  major2Sel.innerHTML = `<option value="">${T().major2Ph}</option>` +
+    MAJORS.filter(m => m !== MAJOR)
+          .map(m => `<option value="${m}"${m===MAJOR2?" selected":""}>${m}</option>`).join("");
+  admitOpts(admit2Sel, ADMIT2);
+  admit2Sel.hidden = !MAJOR2;
+  document.getElementById("curRow2").hidden = !MAJOR;
   catSel.hidden = !CURMAP;
   const keep = catSel.value;
   catSel.innerHTML = `<option value="">${T().catAll}</option>` +
@@ -2523,48 +2756,32 @@ function builtCurriculum(major){
   return {map, req: CURBUILT.q[major] ? {major, ...CURBUILT.q[major]} : null};
 }
 
-async function loadReq(){
+async function loadReq(prog, admit){
   try{
-    const r = await fetch(`https://beficent.github.io/surriculum/requirements/${ADMIT}.jsonl`, {cache:"no-store"});
+    const r = await fetch(`https://beficent.github.io/surriculum/requirements/${admit}.jsonl`, {cache:"no-store"});
     if (!r.ok) return null;
     for (const line of (await r.text()).split("\n")){
       const s = line.trim(); if (!s) continue;
-      try{ const o = JSON.parse(s); if (o.major === MAJOR) return o; }catch(e){}
+      try{ const o = JSON.parse(s); if (o.major === prog) return o; }catch(e){}
     }
   }catch(e){}
   return null;
 }
-async function loadCurriculum(){
-  const note = document.getElementById("curNote");
-  if (!MAJOR){ CURMAP = null; REQ = null; note.textContent = T().curHint; buildCurSelectors(); render(); return; }
-  const key = `dk-cur2-${ADMIT}-${MAJOR}`;
-  let usedBuilt = false;
-
-  // 1) önbellek
+const curCacheOK = c => {
+  if (!c || !c.m || typeof c.m !== "object") return false;
+  const k = Object.keys(c.m)[0];
+  return !!k && typeof c.m[k] === "object" && !!c.m[k].t;   // yeni biçim mi?
+};
+/* Tek bir programın müfredatı: önbellek → canlı → sayfaya gömülü kopya.
+   `built` alanı "gömülü kopyaya düşüldü" demek; not satırı ona göre yazılır. */
+async function loadProgram(prog, admit){
+  const key = `dk-cur2-${admit}-${prog}`;
   let cached = null;
   try{ cached = JSON.parse(localStorage.getItem(key) || "null"); }catch(e){}
-  const cacheOK = c => {
-    if (!c || !c.m || typeof c.m !== "object") return false;
-    const k = Object.keys(c.m)[0];
-    return !!k && typeof c.m[k] === "object" && !!c.m[k].t;   // yeni biçim mi?
-  };
-  if (cached && cacheOK(cached) && Date.now() - cached.t < 7*24*3600*1000){
-    CURMAP = cached.m; REQ = cached.r || null;
-    note.textContent = T().curOk(MAJOR, ADMIT); buildCurSelectors(); render(); return;
-  }
-
-  // 2) gömülü kopya — anında göster, sonra canlıyı denemeye devam et
-  const built = builtCurriculum(MAJOR);
-  if (built && typeof CURBUILT !== "undefined" && ADMIT === CURBUILT.t){
-    CURMAP = built.map; REQ = built.req;
-    usedBuilt = true;
-    note.textContent = T().curOk(MAJOR, ADMIT);
-    buildCurSelectors(); render();
-  } else {
-    note.textContent = T().curLoading;
-  }
+  if (curCacheOK(cached) && Date.now() - cached.t < 7*24*3600*1000)
+    return {map: cached.m, req: cached.r || null, built:false};
   try{
-    const r = await fetch(`${CUR_BASE}/${ADMIT}/${MAJOR}.jsonl`, {cache:"no-store"});
+    const r = await fetch(`${CUR_BASE}/${admit}/${prog}.jsonl`, {cache:"no-store"});
     if (!r.ok) throw new Error("HTTP " + r.status);
     const map = {};
     for (const line of (await r.text()).split("\n")){
@@ -2576,31 +2793,104 @@ async function loadCurriculum(){
       }catch(e){}
     }
     if (Object.keys(map).length < 20) throw new Error("boş müfredat");
-    CURMAP = map;
-    REQ = await loadReq();
-    try{ localStorage.setItem(key, JSON.stringify({t:Date.now(), m:map, r:REQ})); }catch(e){}
-    note.textContent = T().curOk(MAJOR, ADMIT);
-  }catch(e){
-    if (usedBuilt) return;                      // gömülü kopya zaten yüklü
-    const fb = builtCurriculum(MAJOR);          // farklı giriş dönemi + ağ yok
-    if (fb){
-      CURMAP = fb.map; REQ = fb.req;
-      note.textContent = T().curBuilt(MAJOR, CURBUILT.t);
-    } else {
-      CURMAP = null; REQ = null;
-      note.textContent = T().curFail;
+    const req = await loadReq(prog, admit);
+    try{ localStorage.setItem(key, JSON.stringify({t:Date.now(), m:map, r:req})); }catch(e){}
+    return {map, req, built:false};
+  }catch(e){}
+  const fb = builtCurriculum(prog);             // farklı giriş dönemi + ağ yok
+  return fb ? {map: fb.map, req: fb.req, built:true} : null;
+}
+/* Programların haritalarını tek haritada topla; her girdi hangi programdan
+   geldiğini taşır, böylece rozette anadal dışı etiketler işaretlenebilir. */
+function mergeCur(progs, results){
+  const map = {};
+  progs.forEach(([prog, kind], i) => {
+    const r = results[i];
+    if (!r) return;
+    for (const code in r.map){
+      const v = r.map[code];
+      const t = typeof v === "string" ? v : v.t;
+      const c = typeof v === "string" ? 0 : (v.c || 0);
+      const old = map[code];
+      if (!old){ map[code] = {t, c, p:prog, k:kind}; continue; }
+      if ((CAT_RANK[t] ?? 9) < (CAT_RANK[old.t] ?? 9)) map[code] = {t, c: c || old.c, p:prog, k:kind};
+      else if (!old.c && c) old.c = c;           // kredi hangi programdan gelirse gelsin
     }
+  });
+  return map;
+}
+/* Programlar ayrı ayrı indiriliyor; arka arkaya seçim yapılırsa eski isteğin
+   geç gelen cevabı yenisini ezmesin diye her çağrı numaralanıyor. */
+let CUR_GEN = 0;
+async function loadCurriculum(){
+  const gen = ++CUR_GEN;
+  const note = document.getElementById("curNote");
+  if (!MAJOR){
+    MAJOR2 = "";
+    CURMAP = null; REQ = null;
+    note.textContent = T().curHint; buildCurSelectors(); render(); return;
+  }
+  const progs = curProgs();
+
+  // gömülü kopya varsa anında göster, canlı veri arkadan gelsin
+  const built = builtCurriculum(MAJOR);
+  if (built && typeof CURBUILT !== "undefined" && ADMIT === CURBUILT.t && progs.length === 1){
+    CURMAP = mergeCur(progs, [{map:built.map, req:built.req}]); REQ = built.req;
+    note.textContent = T().curOk(MAJOR, ADMIT);
+    buildCurSelectors(); render();
+  } else {
+    note.textContent = T().curLoading;
+  }
+
+  const res = await Promise.all(progs.map(p => loadProgram(p[0], p[2])));
+  if (gen !== CUR_GEN) return;                 // bu arada yeni seçim yapıldı
+  const ok = progs.filter((p,i) => res[i]);
+  if (!ok.length){
+    CURMAP = null; REQ = null;
+    note.textContent = T().curFail;
+  } else {
+    CURMAP = mergeCur(progs, res);
+    REQ = res[0] ? res[0].req : null;
+    /* İki programın giriş dönemi farklı olabildiği için hangi müfredatın
+       hangi dönemden geldiği not satırında tek tek yazıyor. */
+    const names = ok.map(p => p[0]).join(" + ");
+    note.textContent = res.some(r => r && r.built)
+      ? T().curBuilt(names, CURBUILT.t)
+      : (ok.length > 1
+          ? T().curOkMulti(ok.map(p => `${p[0]} · ${p[2]}`).join(" + "))
+          : T().curOk(names, ok[0][2]));
+    const missed = progs.filter((p,i) => !res[i]).map(p => p[0]);
+    if (missed.length) note.textContent += " " + T().curPartial(missed.join(", "));
   }
   buildCurSelectors(); render();
 }
 majorSel.addEventListener("change", () => {
   MAJOR = majorSel.value;
-  try{ localStorage.setItem("dk-major", MAJOR); }catch(e){}
+  if (MAJOR2 === MAJOR) MAJOR2 = "";      // aynı program iki kez seçilemez
+  saveCurSel();
+  loadCurriculum();
+});
+function saveCurSel(){
+  try{
+    localStorage.setItem("dk-major", MAJOR);
+    localStorage.setItem("dk-major2", MAJOR2);
+    localStorage.setItem("dk-admit", ADMIT);
+    localStorage.setItem("dk-admit2", ADMIT2);
+  }catch(e){}
+}
+major2Sel.addEventListener("change", () => {
+  MAJOR2 = major2Sel.value;
+  saveCurSel();
   loadCurriculum();
 });
 admitSel.addEventListener("change", () => {
   ADMIT = admitSel.value;
-  try{ localStorage.setItem("dk-admit", ADMIT); }catch(e){}
+  saveCurSel();
+  loadCurriculum();
+});
+admit2Sel.addEventListener("change", () => {
+  ADMIT2 = admit2Sel.value;
+  saveCurSel();
   loadCurriculum();
 });
 catSel.addEventListener("change", renderResults);
@@ -2614,7 +2904,13 @@ lvlSel.addEventListener("change", renderResults);
 function catChip(code){
   const c = catOf(code);
   const label = c && T().cats[c];
-  return label ? `<span class="cat ${c}">${label}</span>` : "";
+  if (!label) return "";
+  /* Etiket anadaldan gelmiyorsa hangi programdan geldiğini rozetin içine yaz. */
+  const v = CURMAP && CURMAP[code];
+  const alt = v && v.k && v.k !== "major" ? v : null;
+  if (!alt) return `<span class="cat ${c}">${label}</span>`;
+  const via = T().viaMajor2(alt.p, label);
+  return `<span class="cat ${c}" title="${via}">${label}<i>${alt.p}</i></span>`;
 }
 
 /* ================= arama ================= */
@@ -2671,10 +2967,20 @@ subjSel.addEventListener("change", renderResults);
 
 
 /* ================= havuz listesi ================= */
+/* Grup kurma modu: satırlardaki tik geçici olarak "gruba al" anlamına gelir,
+   böylece programa girenlerle grup üyeliği aynı kutuyu paylaşmak zorunda kalmaz. */
+let GRPMODE = false, GRPSEL = [];
+function setGrpMode(on){
+  GRPMODE = on; GRPSEL = [];
+  renderPool();
+}
 function renderPool(){
   const el = document.getElementById("clist"); el.innerHTML = "";
   document.getElementById("poolHead").hidden = !pool.length;
   document.getElementById("btnClearPool").hidden = !pool.length;
+  const gbtn = document.getElementById("btnGroup");
+  if (gbtn){ gbtn.hidden = pool.length < 2; gbtn.textContent = GRPMODE ? T().grpCancel : "+ " + T().grpNew; }
+  if (GRPMODE && pool.length < 2) GRPMODE = false;
   document.getElementById("poolHint").textContent = pool.length ? T().poolCount(pool.length) : T().poolEmpty;
   if (!pool.length){
     el.innerHTML = `<div class="empty">${T().emptyPool}</div>`;
@@ -2701,14 +3007,33 @@ function renderPool(){
   const heads = {};
   let at = 0;
   for (const g of GT){ if (g.list.length) heads[at] = g; at += g.list.length; }
+  if (GRPMODE){
+    el.insertAdjacentHTML("beforeend",
+      `<div class="grpbar"><span class="gtx">${T().grpPick}</span>
+         <button class="btn tiny primary" id="grpMake">${T().grpMake}</button>
+         <button class="btn tiny" id="grpCancel">${T().grpCancel}</button></div>`);
+    el.querySelector("#grpMake").onclick = () => {
+      if (GRPSEL.length < 2){ capNote(T().grpNeed2); return; }
+      const picked = GRPSEL.slice();
+      GRPMODE = false; GRPSEL = [];
+      makeGroup(picked);
+    };
+    el.querySelector("#grpCancel").onclick = () => setGrpMode(false);
+  } else if (GROUPS.length){
+    el.insertAdjacentHTML("beforeend", GROUPS.map((g,n) =>
+      `<div class="gsum">${T().grpSum(n+1, g.join(" / "))}</div>`).join(""));
+  }
   order.forEach((code, idx) => {
     if (heads[idx]) el.insertAdjacentHTML("beforeend", groupHead(heads[idx].kind, heads[idx].list));
     const c = BY[code];
     const on = selected.includes(code);
-    const blocked = !on && selected.some(s => pairOf(s, code).n > 0);
+    /* onayladığın çakışma dersi sönükleştirmez: artık engel değil, bilinen durum */
+    const blocked = !on && selected.some(s => pairOf(s, code).n > 0 && !pairOK(s, code));
     const extras = c.classes.filter(cl => cl.type !== "");
     const selfClash = optsOf(code)[0].selfClash;
     const must = isMust(code), pref = isPref(code), tier = tierOf(code);
+    const gno = groupIdx(code);
+    const gpick = GRPMODE && GRPSEL.includes(code);
     const row = document.createElement("div");
     row.className = "crow" + (on?" on":"") + (blocked?" dim":"")
                   + (must?" must":"") + (pref?" pref":"");
@@ -2722,14 +3047,23 @@ function renderPool(){
       extras.map(cl => `<span title="${S.types[cl.type]||cl.type}">${cl.type||"?"}×${cl.sections.length}</span>`));
     const cntHTML = cnt.map(x => `<span class="mi">${x}</span>`).join(" · ");
     const preHTML = (c.pre && c.pre.length)
-      ? `<span class="mi">${S.prereq}: ${c.pre.join(", ")}</span>` : "";
+      ? `<span class="mi">${S.prereq}: ${esc(c.pre.join(", "))}</span>` : "";
+    /* Tek hocası olan derste açılır menü anlamsız; adı doğrudan yazıyor.
+       Birden çoksa aşağıdaki menü zaten geliyor. */
+    const teachers = instructorsOf(code);
+    const instHTML = teachers.length === 1
+      ? `<span class="mi inst" title="${esc(S.instWant)}: ${esc(teachers[0])}">${esc(teachers[0])}</span>` : "";
     row.innerHTML =
       `<span class="swatch" style="background:${on?colorOf(code):"transparent"}"></span>
-       <input type="checkbox" ${on?"checked":""} ${must?"disabled":""} aria-label="${c.code}"
-              title="${must ? S.gMust + ": " + S.gMustSub : S.tickTitle(on)}">
+       <input type="checkbox" ${GRPMODE ? `class="gpick" ${gpick?"checked":""}` : `${on?"checked":""} ${must?"disabled":""}`}
+              aria-label="${c.code}"
+              title="${GRPMODE ? S.grpNew : must ? S.gMust + ": " + S.gMustSub : S.tickTitle(on)}">
        <span class="txt">
          <div class="hd">
            <span class="code">${c.code}</span>
+           ${gno >= 0 ? `<button class="gchip" title="${esc(S.grpChipTip(gno+1, GROUPS[gno].join(" / ")))}">G${gno+1}<i>×</i></button>` : ""}
+           <a class="suis" href="${suisCourseURL(c.code)}" target="_blank" rel="noopener"
+              title="${S.suisTip}">SUIS<i>↗</i></a>
            ${catChip(c.code)}
            ${selfClash?`<span class="tag r">${S.selfClash}</span>`:""}
            <span class="cnt">${cntHTML}</span>
@@ -2737,7 +3071,7 @@ function renderPool(){
          </div>
          <div class="nm" title="${c.name.replace(/"/g,"&quot;")}">${c.name}</div>
          <div class="meta">
-           <span class="mtx">${preHTML}</span>
+           <span class="mtx">${[instHTML, preHTML].filter(Boolean).join(" · ")}</span>
            <span class="tiersw" role="group" aria-label="${S.tierLabel}">
              ${["must","pref","maybe"].map(k =>
                `<button class="tb${tier===k?" on":""}" data-tier="${k}" data-code="${c.code}"
@@ -2746,7 +3080,6 @@ function renderPool(){
            </span>
          </div>
        </span>`;
-    const teachers = instructorsOf(code);
     if (teachers.length > 1){
       /* hoca seçimi kendi satırını kaplamasın: ayrıntı satırının içinde,
          çerçevesiz bir açılır menü olarak dursun */
@@ -2760,8 +3093,22 @@ function renderPool(){
       wrap.querySelector("select").onchange = e => setInstReq(code, e.target.value);
       row.querySelector(".meta").insertBefore(wrap, row.querySelector(".tiersw"));
     }
-    row.querySelector("input").addEventListener("change", () => toggle(code));
-    row.querySelector(".txt").addEventListener("click", () => toggle(code));
+    /* Grup kurarken tik "gruba al" demek; normalde "programa al". */
+    const hit = () => {
+      if (GRPMODE){
+        GRPSEL = GRPSEL.includes(code) ? GRPSEL.filter(x => x !== code) : GRPSEL.concat(code);
+        renderPool();
+      } else toggle(code);
+    };
+    row.querySelector("input").addEventListener("change", hit);
+    /* Satıra tıklamak dersi seçer; kod bağlantısı ise SUIS'e gider — ikisi
+       aynı anda olmasın. */
+    row.querySelector(".txt").addEventListener("click", e => {
+      if (e.target.closest("a")) { e.stopPropagation(); return; }
+      hit();
+    });
+    const gc = row.querySelector(".gchip");
+    if (gc) gc.addEventListener("click", e => { e.stopPropagation(); leaveGroup(code); });
     row.querySelector(".tiersw").addEventListener("click", e => {
       const btn = e.target.closest("button[data-tier]");
       if (!btn) return;
@@ -2784,6 +3131,16 @@ function renderPool(){
 }
 
 /* ================= program tablosu ================= */
+/* Hücredeki bütün ders çiftleri onaylıysa çakışma sarı gösterilir. Aynı dersin
+   kendi bileşenleri üst üste biniyorsa (tek kod) bu bir onay meselesi değil. */
+function cellApproved(items){
+  const codes = [...new Set(items.map(x => x.code))];
+  if (codes.length < 2) return false;
+  for (let a = 0; a < codes.length; a++)
+    for (let b = a+1; b < codes.length; b++)
+      if (!pairOK(codes[a], codes[b])) return false;
+  return true;
+}
 function renderGrid(sol, ghostCrn){
   const t = document.getElementById("sched");
   const occ = {};
@@ -2817,7 +3174,8 @@ function renderGrid(sol, ghostCrn){
             ${it.first?`<span class="bm">${it.place||""}</span>`:""}
           </div>`;
       });
-      html += `<td class="${items.length>1?"clash":""}">${inner}</td>`;
+      const cls = items.length > 1 ? (cellApproved(items) ? "clash okc" : "clash") : "";
+      html += `<td class="${cls}">${inner}</td>`;
     }
     html += "</tr>";
   }
@@ -2835,14 +3193,14 @@ function renderAgenda(occ, nDays){
     for (let s = 0; s < NSLOT; s++){
       const list = occ[d*NSLOT+s] || [];
       for (const it of list){
-        if (it.first) items.push({...it, s, clash: list.length > 1});
+        if (it.first) items.push({...it, s, clash: list.length > 1, okc: cellApproved(list)});
       }
     }
     if (!items.length) continue;
     items.sort((a,b) => a.s - b.s);
     out += `<div class="agday"><div class="agd">${S.days[d]}</div>` + items.map(it => {
       const du = durationOf(it, d);
-      return `<div class="agit${it.clash?" clash":""}" style="--ac:${colorOf(it.code)}">
+      return `<div class="agit${it.clash?(it.okc?" clash okc":" clash"):""}" style="--ac:${colorOf(it.code)}">
         <span class="agtime">${slotStart(it.s)}<i>${slotEnd(it.s + du - 1)}</i></span>
         <span class="agmain"><b>${it.code}${it.type?" "+(S.types[it.type]||it.type):""}</b>
           <span>${it.place||"—"}${it.inst?" · "+it.inst:""}</span></span>
@@ -2899,7 +3257,8 @@ function renderSections(sol){
       const locked = pins[cls.type] === sec.crn;
       return `<div class="row">
         <span class="k">${(T().types[cls.type]||cls.type).slice(0,4).toUpperCase()}</span>
-        <span class="v">${sec.crn}</span>
+        <a class="v" href="${suisCrnURL(sec.crn)}" target="_blank" rel="noopener"
+           title="${T().suisCrnTip}">${sec.crn}<i>↗</i></a>
         ${picker}
         <button class="seclock${locked?" on":""}" data-code="${code}" data-type="${cls.type}" data-crn="${sec.crn}"
           title="${locked?T().unlockTip:T().lockTip}">${locked?"🔒":"🔓"}</button>
@@ -3042,30 +3401,40 @@ function renderVerdict(sol){
     const pr = pairOf(selected[i], selected[j]);
     if (pr.n > 0) hard.push([selected[i], selected[j]]);
   }
+  /* Programda gerçekten üst üste binen ders çiftleri. Her biri tıklanabilir:
+     hocalardan onay alındıysa işaretlenir ve uyarı kırmızıdan sarıya döner —
+     çakışma hâlâ görünür, ama "hata" değil "bilerek yapıldı" diye durur. */
+  const over = [];
+  for (let i=0;i<sol.codes.length;i++) for (let j=i+1;j<sol.codes.length;j++){
+    const A = sol.picks[i].mask, B = sol.picks[j].mask;
+    for (const k of A) if (B.has(k)){ over.push([sol.codes[i], sol.codes[j]]); break; }
+  }
+  const allOK = over.length > 0 && over.every(([a,b]) => pairOK(a,b));
+  const okChips = over.map(([a,b]) => {
+    const on = pairOK(a,b);
+    return `<button class="okp${on?" on":""}" data-a="${a}" data-b="${b}"
+              title="${on?TX().okpOnTip:TX().okpTip}">${a} ↔ ${b} · ${on?TX().okpOn:TX().okpAsk}</button>`;
+  }).join("");
   if (sol.c === 0){
     v.classList.add("ok");
     T.textContent = TX().okT(selected.length);
     S.textContent = TX().okS;
   } else if (sol.manual){
     /* elle modda çakışmayı kullanıcı kendi kurdu: "en iyi ihtimalle" demek yanlış olur */
-    v.classList.add(sol.c <= 1 ? "warn" : "bad");
-    T.textContent = TX().manualBadT(sol.c);
-    const over = [];
-    for (let i=0;i<sol.codes.length;i++) for (let j=i+1;j<sol.codes.length;j++){
-      const A = sol.picks[i].mask, B = sol.picks[j].mask;
-      for (const k of A) if (B.has(k)){ over.push([sol.codes[i], sol.codes[j]]); break; }
-    }
+    v.classList.add(allOK || sol.c <= 1 ? "warn" : "bad");
+    T.textContent = allOK ? TX().manualOkT(sol.c) : TX().manualBadT(sol.c);
     S.innerHTML = over.length
-      ? TX().manualBadS + " " + over.map(([a,b])=>`<b class="mono">${a} ↔ ${b}</b>`).join(", ") + "."
+      ? (allOK ? TX().okpNote : TX().manualBadS) + " " + okChips
       : TX().manualBadS;
   } else {
-    v.classList.add(sol.c <= 1 ? "warn" : "bad");
-    T.textContent = TX().badT(sol.c);
-    S.innerHTML = LOCK_CLASH ? TX().lockCause
+    v.classList.add(allOK || sol.c <= 1 ? "warn" : "bad");
+    T.textContent = allOK ? TX().manualOkT(sol.c) : TX().badT(sol.c);
+    S.innerHTML = allOK ? TX().okpNote + " " + okChips
+      : LOCK_CLASH ? TX().lockCause
       : hard.length
-      ? TX().hardPairs + hard.map(([a,b])=>`<b class="mono">${a} ↔ ${b}</b>`).join(", ") + "."
-      : TX().noPairClash;
-    paintFix(selected);          // "ne yaparsam düzelir": doğrulanmış hamleler
+      ? TX().hardPairs + okChips
+      : TX().noPairClash + " " + okChips;
+    if (!allOK) paintFix(selected);   // "ne yaparsam düzelir": doğrulanmış hamleler
   }
   const cred = credSum(selected);
   const parts = [];
@@ -3099,6 +3468,9 @@ function renderVerdict(sol){
     sol.c === 0 ? TX().gridOk : TX().gridBad(sol.c);
   if (solutions && solutions.capped && sol.c > 0)
     S.innerHTML += ` <span style="color:var(--warn)">${TX().capped}</span>`;
+  /* dinleyiciler en sonda: yukarıdaki innerHTML += 'ler düğümleri yeniliyor */
+  S.querySelectorAll(".okp").forEach(b =>
+    b.onclick = () => toggleOkPair(b.dataset.a, b.dataset.b));
 }
 
 /* ================= çakışma matrisi ================= */
@@ -3253,6 +3625,8 @@ function renderManual(sol){
     wrap.innerHTML = `<div class="mhead">
         <span class="swatch" style="background:${selected.includes(code)?colorOf(code):"transparent"}"></span>
         <span class="code">${code}</span>
+        <a class="suis" href="${suisCourseURL(code)}" target="_blank" rel="noopener"
+           title="${S.suisTip}">SUIS<i>↗</i></a>
         <span class="cnt">${nPick}/${c.classes.length}</span>
         <span class="car">▸</span>
       </div>` +
@@ -3273,7 +3647,10 @@ function renderManual(sol){
             </button>`;
           }).join("") + `</div>`;
       }).join("");
-    wrap.querySelector(".mhead").onclick = () => wrap.classList.toggle("open");
+    wrap.querySelector(".mhead").onclick = e => {
+      if (e.target.closest("a")) { e.stopPropagation(); return; }   // SUIS bağlantısı
+      wrap.classList.toggle("open");
+    };
     wrap.querySelectorAll(".msec").forEach(btn => btn.onclick = e => {
       const lk = e.target.closest(".lk");
       if (lk){
@@ -3449,11 +3826,11 @@ function checkErrors(sol){
 
 /* ================= paylaşılabilir bağlantı ================= */
 function encodeState(){
-  const s = {p:pool, s:selected, q:MUST, w:PREF, md:MODE, mn:MANUAL,
+  const s = {p:pool, s:selected, q:MUST, w:PREF, g:GROUPS, ok:OKPAIR, md:MODE, mn:MANUAL,
              n:MAXSEL, nlo:MINSEL, clo:MINCR, chi:MAXCR,
              k:PINNED, i:INSTREQ,
              e:PREFS.early, l:PREFS.late, o:PREFS.off,
-             m:MAJOR, a:ADMIT};
+             m:MAJOR, a:ADMIT, m2:MAJOR2, a2:ADMIT2};
   try{
     return btoa(unescape(encodeURIComponent(JSON.stringify(s))))
       .replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
@@ -3471,6 +3848,9 @@ function applyState(s){
   if (Array.isArray(s.s)) selected = s.s.filter(c => pool.includes(c));
   MUST = Array.isArray(s.q) ? s.q.filter(c => pool.includes(c)) : [];
   PREF = Array.isArray(s.w) ? s.w.filter(c => pool.includes(c) && !MUST.includes(c)) : [];
+  GROUPS = Array.isArray(s.g)
+    ? s.g.filter(Array.isArray).map(g => g.filter(c => pool.includes(c))).filter(g => g.length >= 2) : [];
+  OKPAIR = Array.isArray(s.ok) ? s.ok.filter(k => typeof k === "string" && k.includes("|")) : [];
   if (s.md === "manual" || s.md === "auto") MODE = s.md;
   if (s.mn && typeof s.mn === "object") MANUAL = s.mn;
   MUST.forEach(c => { if (!selected.includes(c)) selected.push(c); });
@@ -3482,7 +3862,9 @@ function applyState(s){
   normalizeRanges();
   /* Plan ya da paylaşılan bağlantı da aynı kurala uyar: kesin dersler garanti,
      üst sınır sert; gerekiyorsa sınır kesin derslere göre yükselir. */
-  if (MUST.length > MAXSEL) MAXSEL = Math.min(SEL_HI, MUST.length);
+  /* her grup da programda bir yer istiyor, tavan ikisini birden karşılamalı */
+  const needN = MUST.length + GROUPS.length;
+  if (needN > MAXSEL) MAXSEL = Math.min(SEL_HI, needN);
   if (MINSEL > MAXSEL) MINSEL = MAXSEL;
   normalizeRanges();
   const cut = trimToCap();
@@ -3493,8 +3875,15 @@ function applyState(s){
   if (Number.isInteger(s.e)) PREFS.early = s.e;
   if (Number.isInteger(s.l)) PREFS.late = s.l;
   if (Array.isArray(s.o)) PREFS.off = s.o.filter(Number.isInteger);
-  if (MAJORS.includes(s.m)) MAJOR = s.m;
+  if (MAJORS.includes(s.m)){
+    MAJOR = s.m;
+    /* Plan başka bir anadal getirdiyse çift anadal onunla çakışmasın. */
+    if (MAJOR2 === MAJOR) MAJOR2 = "";
+  }
   if (ADMITS.includes(s.a)) ADMIT = s.a;
+  /* Boş metin "çift anadal yok" demek, o yüzden ayrıca kontrol ediliyor. */
+  if (typeof s.m2 === "string") MAJOR2 = (MAJORS.includes(s.m2) && s.m2 !== MAJOR) ? s.m2 : "";
+  if (ADMITS.includes(s.a2)) ADMIT2 = s.a2;
   _allow.clear(); altIndex = 0;
   return true;
 }
@@ -3963,9 +4352,19 @@ function drawA4(cv){
   return {used, W, H};
 }
 
+/* Görsel doğrudan inmiyor: önce aynı canvas önizleme olarak gösteriliyor,
+   indirme o pencerenin düğmesiyle başlıyor. */
+function openA4(){
+  const S = T();
+  document.getElementById("a4Title").textContent = S.a4Title;
+  document.getElementById("a4Hint").textContent = S.a4Hint;
+  document.getElementById("a4Save").textContent = S.a4Save;
+  drawA4(document.getElementById("a4Canvas"));
+  document.getElementById("a4Sheet").classList.add("open");
+}
+function closeA4(){ document.getElementById("a4Sheet").classList.remove("open"); }
 function downloadA4(){
-  const cv = document.createElement("canvas");
-  drawA4(cv);
+  const cv = document.getElementById("a4Canvas");
   const name = "suits-program" +
     (TERM ? "-" + TERM.replace(/[^0-9A-Za-z]+/g, "-").toLowerCase().replace(/^-+|-+$/g, "") : "") + ".png";
   const save = url => {
@@ -3980,6 +4379,14 @@ function downloadA4(){
   }, "image/png");
   else save(cv.toDataURL("image/png"));
 }
+document.getElementById("a4Close").onclick = closeA4;
+document.getElementById("a4Save").onclick = downloadA4;
+document.getElementById("a4Sheet").addEventListener("click", e => {
+  if (e.target.id === "a4Sheet") closeA4();          // dışına tıklayınca kapansın
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && document.getElementById("a4Sheet").classList.contains("open")) closeA4();
+});
 
 /* verilen genişliğe sığmayan metni kısaltır */
 function fitText(g, text, maxW){
@@ -4098,11 +4505,14 @@ let PLANS = [];
 let ACTIVE_PLAN = "";
 function savePlans(){ try{ localStorage.setItem("dk-plans", JSON.stringify(PLANS)); }catch(e){} }
 function planState(){
-  return {p:pool.slice(), s:selected.slice(), q:MUST.slice(), w:PREF.slice(), md:MODE, mn:JSON.parse(JSON.stringify(MANUAL)),
+  return {p:pool.slice(), s:selected.slice(), q:MUST.slice(), w:PREF.slice(),
+          g:GROUPS.map(g => g.slice()), ok:OKPAIR.slice(),
+          md:MODE, mn:JSON.parse(JSON.stringify(MANUAL)),
           n:MAXSEL, nlo:MINSEL, clo:MINCR, chi:MAXCR,
           k:JSON.parse(JSON.stringify(PINNED)),
           i:JSON.parse(JSON.stringify(INSTREQ)),
-          e:PREFS.early, l:PREFS.late, o:PREFS.off.slice(), m:MAJOR, a:ADMIT};
+          e:PREFS.early, l:PREFS.late, o:PREFS.off.slice(),
+          m:MAJOR, a:ADMIT, m2:MAJOR2, a2:ADMIT2};
 }
 function planSummary(st){
   const codes = (st.s && st.s.length) ? st.s : (st.p || []);
@@ -4158,7 +4568,7 @@ function renderPlans(){
     e.target.textContent = T().shareOk;
     setTimeout(()=>e.target.textContent = T().share, 1800);
   };
-  bar.querySelector("#btnShot").onclick = downloadA4;
+  bar.querySelector("#btnShot").onclick = openA4;
   bar.querySelector("#btnWall").onclick = openWallpaper;
   bar.querySelector("#planName").addEventListener("keydown", e => { if (e.key === "Enter") savePlan(); });
 }
@@ -4190,8 +4600,18 @@ const PLAN_NODE_CAP  = 6000000;
    hiçbir zaman ders sayısından feragat ettirmez. */
 const betterPlan = (pf, cr, best) => pf > best.pf || (pf === best.pf && cr > best.cr);
 
-function searchTarget(items, target, deadline, st){
+function searchTarget(items, target, deadline, st, nGroups){
   const mask = new Set();
+  /* "biri yeter" grupları: her gruptan tam olarak bir ders. gTake bu daldaki
+     sayaç, gLeft[g][i] ise i'den sonra o gruptan kaç aday kaldığı — grubu artık
+     dolduramayacak dallar daha yaprağa varmadan kesiliyor. */
+  const gTake = new Array(nGroups || 0).fill(0);
+  const gLeft = [];
+  for (let g = 0; g < gTake.length; g++){
+    const left = new Array(items.length + 1).fill(0);
+    for (let i = items.length - 1; i >= 0; i--) left[i] = left[i+1] + (items[i].grp === g ? 1 : 0);
+    gLeft.push(left);
+  }
   let best = null, hitAt = 0;
   const walk = (i, chosen, cr, pf) => {
     if (st.stopped) return;
@@ -4202,6 +4622,7 @@ function searchTarget(items, target, deadline, st){
     }
     if (chosen.length === target){
       if (cr < MINCR){ st.credMiss = true; return; }
+      for (let g = 0; g < gTake.length; g++) if (gTake[g] !== 1) return;   // grup kotası dolmadı
       if (!best){ best = {n:target, cr, pf, codes:chosen.slice()}; hitAt = Date.now(); }
       else if (betterPlan(pf, cr, best)) best = {n:target, cr, pf, codes:chosen.slice()};
       return;
@@ -4209,20 +4630,26 @@ function searchTarget(items, target, deadline, st){
     if (i === items.length) return;
     if (chosen.length + (items.length - i) < target) return;   // hedefe ulaşılamaz
     const it = items[i];
-    if (cr + it.cr <= MAXCR){
+    /* grubundan bir ders zaten alındıysa bu ders alınamaz: gruptan yalnız biri */
+    const gFree = it.grp < 0 || gTake[it.grp] === 0;
+    if (gFree && cr + it.cr <= MAXCR){
       for (const opt of it.opts){
         let bad = false;
         for (const k of opt.mask) if (mask.has(k)){ bad = true; break; }
         if (bad) continue;
         for (const k of opt.mask) mask.add(k);
         chosen.push(it.code);
+        if (it.grp >= 0) gTake[it.grp]++;
         walk(i+1, chosen, cr + it.cr, pf + (it.pref ? 1 : 0));
+        if (it.grp >= 0) gTake[it.grp]--;
         chosen.pop();
         for (const k of opt.mask) mask.delete(k);
         if (st.stopped) return;
       }
-    } else st.credMiss = true;
-    if (!it.must) walk(i+1, chosen, cr, pf);      // kesin dersler atlanamaz
+    } else if (gFree) st.credMiss = true;
+    /* kesin dersler atlanamaz; grubun son adayı da atlanamaz */
+    const skippable = !it.must && (it.grp < 0 || gTake[it.grp] > 0 || gLeft[it.grp][i+1] > 0);
+    if (skippable) walk(i+1, chosen, cr, pf);
   };
   walk(0, [], 0, 0);
   return best;
@@ -4236,24 +4663,35 @@ function prefOpts(code){
 }
 
 function planRun(optsOfCode, budgetMs){
+  const GS = liveGroups();
+  const gOf = {};
+  GS.forEach((g, n) => g.forEach(c => { gOf[c] = n; }));
   const items = pool
-    .map(c => ({code:c, opts:optsOfCode(c), cr:credOf(c), must:isMust(c), pref:isPref(c)}))
+    .map(c => ({code:c, opts:optsOfCode(c), cr:credOf(c), must:isMust(c), pref:isPref(c),
+                grp: gOf[c] === undefined ? -1 : gOf[c]}))
     .filter(it => it.opts.length)
-    /* Sıra: kesin → olsa iyi → belki, her grupta az seçenekli önce.
+    /* Sıra: kesin → grup üyesi → olsa iyi → belki, her grupta az seçenekli önce.
        Budama erken devreye girsin diye; ayrıca ilk bulunan plan çoğunlukla
        "olsa iyi" dersleri zaten içerir, cilalama turu da onu iyileştirir. */
-    .sort((a,b) => (b.must?1:0)-(a.must?1:0) || (b.pref?1:0)-(a.pref?1:0) || a.opts.length-b.opts.length);
+    .sort((a,b) => (b.must?1:0)-(a.must?1:0) || (b.grp>=0?1:0)-(a.grp>=0?1:0)
+                || (b.pref?1:0)-(a.pref?1:0) || a.opts.length-b.opts.length);
   const mustCount = items.filter(i => i.must).length;
   /* kesin bir ders bu seçenek kümesiyle hiç yerleşemiyorsa bu tur baştan geçersiz */
   if (mustCount < MUST.filter(c => allowedOpts(c).length).length)
     return {best:null, capped:false, credMiss:false, mustCount, hiN:0};
+  /* bir grubun tek bir üyesi bile bu seçenek kümesiyle yerleşmiyorsa da öyle */
+  if (GS.some((g, n) => !items.some(it => it.grp === n)))
+    return {best:null, capped:false, credMiss:false, mustCount, hiN:0, grpFail:true};
   const hiN = Math.min(effMax(), items.length);
   /* Alt sınır bir dilek: hedeflenen en küçük sayı wantN, ama oraya
      ulaşılamıyorsa arama daha aşağı devam eder. Eskiden burada duruyordu ve
      "havuzda çakışmasız hiçbir ikili bile yok" gibi yanlış bir cevap
      dönüyordu; oysa daha az dersle program kurulabiliyordu. */
-  const wantN = Math.max(1, Math.min(MINSEL, hiN), mustCount);
-  const loN = Math.max(1, mustCount);
+  /* Kesin dersler ve her grubun bir üyesi programa girmek zorunda: arama
+     bunların altındaki ders sayılarını hiç denemez, orada çözüm yok. */
+  const reqN = mustCount + GS.length;
+  const wantN = Math.max(1, Math.min(MINSEL, hiN), reqN);
+  const loN = Math.max(1, reqN);
 
   /* Her hedefe kendi süre dilimi veriliyor. Üstteki hedefin "olmuyor" ispatı
      pahalı olabiliyor; tüm bütçeyi orada harcayıp alttaki hedeflere hiç sıra
@@ -4265,7 +4703,7 @@ function planRun(optsOfCode, budgetMs){
     const now = Date.now();
     if (now > deadline){ higherCut = true; break; }
     st.stopped = false;
-    const r = searchTarget(items, target, Math.min(deadline, now + PLAN_TARGET_MS), st);
+    const r = searchTarget(items, target, Math.min(deadline, now + PLAN_TARGET_MS), st, GS.length);
     if (r){ best = r; break; }                 // hedef tuttu, daha büyüğü zaten denendi
     if (st.stopped) higherCut = true;          // bu hedef taranamadı, mümkün olabilirdi
   }
@@ -4296,7 +4734,7 @@ function autoSuggest(){
       if (m.length && existsCF(lists, 1000000) === false)
         return {n:0, mustClash:m.slice()};
     }
-    return {n:0, credMiss:r.credMiss, capped:r.capped};
+    return {n:0, credMiss:r.credMiss, capped:r.capped, grpFail:r.grpFail};
   }
   /* Otomatik kurulum tikleri baştan yazar: ne eklendi ne çıkarıldı, söylenir.
      "Mavi tik" = programda olan ders; bu düğme o kümeyi yeniden kuruyor. */
@@ -4320,6 +4758,7 @@ document.getElementById("btnAuto").onclick = e => {
     const S = document.getElementById("vSub");
     if (!r.n){
       S.textContent = r.mustClash ? T().mustClash(r.mustClash.join(", "))
+                    : r.grpFail   ? T().grpFail
                     : r.credMiss  ? T().autoNoRange(MINSEL, effMax(), MINCR, MAXCR)
                                   : T().autoNone;
       if (r.mustClash) paintFix(r.mustClash);
@@ -4358,8 +4797,10 @@ document.getElementById("wpCat").onchange = e => { WP.cat = e.target.checked; dr
 document.getElementById("wpSave").onclick = downloadWallpaper;
 document.getElementById("btnClearPool").onclick = () => {
   if (!pool.length) return;
-  pool = []; selected = []; altIndex = 0; render();
+  pool = []; selected = []; GROUPS = []; OKPAIR = []; GRPMODE = false; GRPSEL = [];
+  altIndex = 0; render();
 };
+document.getElementById("btnGroup").onclick = () => setGrpMode(!GRPMODE);
 
 const selMinSel = document.getElementById("selMin");
 const selMaxSel = document.getElementById("selMax");
@@ -4440,7 +4881,18 @@ try{
   if (Array.isArray(MU)) MUST = MU.filter(c => pool.includes(c));
   const PF = JSON.parse(localStorage.getItem("dk-pref") || "[]");
   if (Array.isArray(PF)) PREF = PF.filter(c => pool.includes(c) && !MUST.includes(c));
+  /* Gruplar ham hâliyle geri geliyor: doğru dönemin verisi henüz yüklenmediyse
+     üyeler geçici olarak havuzda görünmüyor olabilir, silmek kalıcı kayıp olurdu. */
+  const GR = JSON.parse(localStorage.getItem("dk-groups") || "[]");
+  if (Array.isArray(GR)) GROUPS = GR.filter(g => Array.isArray(g) && g.length >= 2);
+  const OP = JSON.parse(localStorage.getItem("dk-okpair") || "[]");
+  if (Array.isArray(OP)) OKPAIR = OP.filter(k => typeof k === "string" && k.includes("|"));
   const S = JSON.parse(localStorage.getItem("dk-sel") || "[]");
+  /* Sayfa gömülü dönemin verisiyle açılıyor; seçili dönem başkaysa yukarıdaki
+     süzgeçler yalnız öbür dönemde olan dersleri havuzdan atar ve ilk kayıtla
+     temelli siler. Ham kayıt saklanıp doğru veri gelince yeniden uygulanıyor. */
+  if (Array.isArray(P) && pool.length !== P.length)
+    PENDING = {p:P, q:MU||[], w:PF||[], s:Array.isArray(S)?S:[]};
   /* Kayıttan geleni sondan kesmiyoruz: önce kesin dersler garanti, sonra
      gerekiyorsa en düşük seviyeden yer açılır (bozuk kayda karşı koruma). */
   if (Array.isArray(S)) selected = S.filter(c => pool.includes(c));
@@ -4448,7 +4900,11 @@ try{
   if (MUST.length > MAXSEL) MAXSEL = Math.min(SEL_HI, MUST.length);
   BOOT_TRIM = trimToCap();
   const M = localStorage.getItem("dk-major"); if (MAJORS.includes(M)) MAJOR = M;
+  const M2 = localStorage.getItem("dk-major2"); if (MAJORS.includes(M2) && M2 !== MAJOR) MAJOR2 = M2;
   const A = localStorage.getItem("dk-admit"); if (ADMITS.includes(A)) ADMIT = A;
+  /* Çift anadalın kendi giriş dönemi yoksa anadalınkiyle başlar. */
+  const A2 = localStorage.getItem("dk-admit2");
+  ADMIT2 = ADMITS.includes(A2) ? A2 : ADMIT;
   const PR = JSON.parse(localStorage.getItem("dk-prefs") || "null");
   if (PR && typeof PR === "object"){
     if (Number.isInteger(PR.early)) PREFS.early = PR.early;
@@ -4713,7 +5169,13 @@ function setLang(l){
   try{ localStorage.setItem("dk-lang", l); }catch(e){}
   applyStatic(); refreshBrand(); rebuildSubjects(); buildLvl(); buildCurSelectors(); render(); repaintChip();
   const note = document.getElementById("curNote");
-  if (note) note.textContent = !MAJOR ? T().curHint : (CURMAP ? T().curOk(MAJOR, ADMIT) : T().curFail);
+  if (note){
+    const ps = curProgs();
+    note.textContent = !MAJOR ? T().curHint
+      : !CURMAP ? T().curFail
+      : ps.length > 1 ? T().curOkMulti(ps.map(p => `${p[0]} · ${p[2]}`).join(" + "))
+      : T().curOk(MAJOR, ADMIT);
+  }
 }
 document.getElementById("modesw").addEventListener("click", e => {
   const btn = e.target.closest("button[data-mode]");
@@ -4824,8 +5286,6 @@ document.getElementById("srcTxt").textContent = embeddedLabel();
 const BW_BASE    = "https://bozdagyusuf.github.io/suis-fetch";
 const BW_INDEX   = `${BW_BASE}/index.json`;
 const bwSrc      = t => `${BW_BASE}/${t}-pretty.json`;
-/* Sayfaya gömülü kopyanın dönemi — canlı veri gelmezse ekranda bu duruyor. */
-const EMB_TERM   = "202601";
 /* index.json okunamazsa seçici boş kalmasın */
 const TERM_FALLBACK = [
   {term:"202602", name:"Spring 2026-2027"},
@@ -4839,9 +5299,8 @@ const cacheKeyFor = t => "dk-data-cache-" + t;
    başına ayrı tutulur. Kod her yerde düz anahtarları (dk-pool, dk-sel …)
    kullanmaya devam eder; dönem değişince o anki değerler "dk-st-<dönem>"
    altına toplanır, yenisi geri yazılır ve sayfa tazelenir. */
-const TERM_KEYS = ["dk-pool","dk-sel","dk-must","dk-pref","dk-manual",
+const TERM_KEYS = ["dk-pool","dk-sel","dk-must","dk-pref","dk-groups","dk-okpair","dk-manual",
                    "dk-mode","dk-range","dk-pins","dk-inst","dk-plans"];
-let TERMCODE = localStorage.getItem("dk-term") || EMB_TERM;
 let TERMLIST = TERM_FALLBACK;
 
 function stashTermState(term){
@@ -4921,8 +5380,22 @@ function applyData(list, label, stamp){
   DATA = list;
   BY = Object.fromEntries(DATA.map(c => [c.code, c]));
   _opts.clear(); _pair.clear(); _allow.clear(); _offRep.clear(); _winRep.clear();
-  pool = pool.filter(c => BY[c]);
-  selected = selected.filter(c => pool.includes(c));
+  /* Açılışta yanlış dönemin verisiyle süzülen kayıt vardı; doğru veri geldiğine
+     göre ham kayıttan yeniden kur, yoksa o dersler temelli kaybolur. */
+  if (PENDING){
+    pool = PENDING.p.filter(c => BY[c]);
+    pool.sort((a,b) => a.localeCompare(b,"tr"));
+    MUST = PENDING.q.filter(c => pool.includes(c));
+    PREF = PENDING.w.filter(c => pool.includes(c) && !MUST.includes(c));
+    selected = PENDING.s.filter(c => pool.includes(c));
+    MUST.forEach(c => { if (!selected.includes(c)) selected.push(c); });
+    if (MUST.length > MAXSEL) MAXSEL = Math.min(SEL_HI, MUST.length);
+    PENDING = null;
+    trimToCap();
+  } else {
+    pool = pool.filter(c => BY[c]);
+    selected = selected.filter(c => pool.includes(c));
+  }
   altIndex = 0;
   rebuildSubjects(); refreshBrand(); render();
   const when = stamp ? new Date(stamp).toLocaleDateString(T().locale) : "";
