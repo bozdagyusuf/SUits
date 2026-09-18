@@ -2434,6 +2434,9 @@ const liveGroups = () => GROUPS.map(g => g.filter(c => pool.includes(c))).filter
 let OKPAIR = [];
 const pairKey = (a,b) => a < b ? a + "|" + b : b + "|" + a;
 const pairOK  = (a,b) => OKPAIR.includes(pairKey(a,b));
+/* o an ekranda duran programın onay rozetleri: "Auto" düğmesi kendi mesajını
+   yazarken rozetleri silmesin diye son basılan hâli saklanıyor */
+let OKCHIPS = "";
 
 let solutions = null, altIndex = 0;
 /* Açılışta gömülü dönemin verisiyle süzülüp eksilen kayıt; doğru dönemin
@@ -3378,6 +3381,7 @@ function renderVerdict(sol){
   const T = document.getElementById("vTitle"), S = document.getElementById("vSub"), St = document.getElementById("vStats");
   v.className = "verdict";
   St.innerHTML = "";
+  OKCHIPS = "";
   const fixBox = document.getElementById("vFix");
   if (fixBox){ fixBox.hidden = true; fixBox.innerHTML = ""; }
   const blk = blockedByPrefs();
@@ -3410,7 +3414,7 @@ function renderVerdict(sol){
     for (const k of A) if (B.has(k)){ over.push([sol.codes[i], sol.codes[j]]); break; }
   }
   const allOK = over.length > 0 && over.every(([a,b]) => pairOK(a,b));
-  const okChips = over.map(([a,b]) => {
+  const okChips = OKCHIPS = over.map(([a,b]) => {
     const on = pairOK(a,b);
     return `<button class="okp${on?" on":""}" data-a="${a}" data-b="${b}"
               title="${on?TX().okpOnTip:TX().okpTip}">${a} ↔ ${b} · ${on?TX().okpOn:TX().okpAsk}</button>`;
@@ -3469,7 +3473,13 @@ function renderVerdict(sol){
   if (solutions && solutions.capped && sol.c > 0)
     S.innerHTML += ` <span style="color:var(--warn)">${TX().capped}</span>`;
   /* dinleyiciler en sonda: yukarıdaki innerHTML += 'ler düğümleri yeniliyor */
-  S.querySelectorAll(".okp").forEach(b =>
+  bindOkChips(S);
+}
+
+/* Onay rozetleri iki yerden basılıyor (verdict ve "Auto" düğmesinin mesajı),
+   dinleyici bağlama da ortak olsun. */
+function bindOkChips(root){
+  root.querySelectorAll(".okp").forEach(b =>
     b.onclick = () => toggleOkPair(b.dataset.a, b.dataset.b));
 }
 
@@ -4757,10 +4767,15 @@ document.getElementById("btnAuto").onclick = e => {
     e.target.textContent = label;
     const S = document.getElementById("vSub");
     if (!r.n){
-      S.textContent = r.mustClash ? T().mustClash(r.mustClash.join(", "))
-                    : r.grpFail   ? T().grpFail
-                    : r.credMiss  ? T().autoNoRange(MINSEL, effMax(), MINCR, MAXCR)
-                                  : T().autoNone;
+      /* Mesaj rozetlerin yerine geçmesin: çakışma ekranda duruyorsa onay
+         rozetleri de durmalı, yoksa onaylama düğmesi hiç görünmüyor. */
+      S.innerHTML = (r.mustClash ? T().mustClash(r.mustClash.join(", "))
+                   : r.grpFail   ? T().grpFail
+                   : r.credMiss  ? T().autoNoRange(MINSEL, effMax(), MINCR, MAXCR)
+                                 : T().autoNone)
+                  + (r.capped ? T().autoCapped : "")
+                  + (OKCHIPS ? " " + OKCHIPS : "");
+      bindOkChips(S);
       if (r.mustClash) paintFix(r.mustClash);
     } else {
       /* Neden bu program: kaç ders oldu, alt sınır tutmadıysa niye, hangi
@@ -4772,9 +4787,12 @@ document.getElementById("btnAuto").onclick = e => {
         parts.push(T().autoDropped(r.dropped.join(", ")));
       if ((r.added && r.added.length) || (r.removed && r.removed.length))
         parts.push(T().autoChanged((r.added||[]).join(", "), (r.removed||[]).join(", ")));
-      if (parts.length) S.textContent = parts.join(" ");
+      if (parts.length){
+        S.innerHTML = parts.join(" ") + (OKCHIPS ? " " + OKCHIPS : "");
+        bindOkChips(S);
+      }
+      if (r.capped) S.append(T().autoCapped);   // append: rozetleri silmeden ekler
     }
-    if (r.capped) S.textContent += T().autoCapped;
   }, 20);
 };
 /* kesin dersler seçimde kalır */
