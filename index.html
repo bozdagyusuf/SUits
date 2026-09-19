@@ -1048,6 +1048,7 @@ table.yasg .ycr{text-align:right; color:var(--faint); white-space:nowrap}
 .ynote{margin:0 16px 16px; padding:11px 14px; border-radius:11px; font-size:12.5px; line-height:1.5}
 .ynote.warn{background:var(--warn-soft); color:var(--warn)}
 .ynote.bad{background:var(--bad-soft); color:var(--bad)}
+.ynote.soft{background:var(--sunken); color:var(--muted)}
 .ynote b{font-weight:700}
 .ygrid{overflow:auto; border-top:1px solid var(--line)}
 .ygrid table.sched{font-size:10.5px; min-width:430px}
@@ -1278,6 +1279,7 @@ table.yasg .ycr{text-align:right; color:var(--faint); white-space:nowrap}
 
 <footer class="foot">
   <p class="ftabout" id="ftAbout"></p>
+  <p class="ftabout" id="ftFresh"></p>
   <span><span id="ftData"></span>: <a href="https://github.com/bozdagyusuf/suis-fetch" target="_blank" rel="noopener">suis-fetch</a> (AGPL-3.0, <a href="https://github.com/omerrifat/bannerweb-fetch" target="_blank" rel="noopener">bannerweb-fetch</a> portu) · <span id="ftCur"></span>: <a href="https://beficent.github.io/surriculum/" target="_blank" rel="noopener">SUrriculum</a> (GPL-3.0)</span>
   <span><a href="https://github.com/bozdagyusuf/SUits" target="_blank" rel="noopener" id="ftSrc">Kaynak kodu</a> · AGPL-3.0</span>
 </footer>
@@ -1635,6 +1637,8 @@ const STR = {
     breakdown:"Se\u00e7tiklerin", notInCur:"m\u00fcfredat d\u0131\u015f\u0131", credits:n=>`${n} kredi`, creditWord:"kredi",
     prereq:"Ön koşul", seatsFull:"kontenjan dolu", seatsLeft:n=>`${n} yer`,
     noSeats:"yer kalmadı", srcLink:"Kaynak kodu", dataFrom:"Ders verisi", curData:"Müfredat",
+    freshNote:"Ders verisi her gün BannerWeb'den otomatik çekiliyor; yine de section'lar ve ders saatleri kayıt dönemine kadar değişebilir. Özellikle Spring dönemi geç kesinleşiyor: saatler ilan edildikten sonra bile güncellenebiliyor. Kayıttan önce SUIS'ten doğrula.",
+    yrFresh:"Spring dönemi henüz kesinleşmiş sayılmaz: veri her gün BannerWeb'den çekiliyor ama section'lar ve ders saatleri kayıt dönemine kadar değişebilir. Yıl planını kaba bir yol haritası gibi düşün; hangi dersin hangi dönemde açıldığı genelde oturmuş olur, saatler oynayabilir.",
     days:["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"],
     daysS:["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"],
     types:{"":"Ders","R":"Recitation","D":"Discussion","L":"Lab","S":"Studio","E":"Ek","N":"Ek","M":"Ek"},
@@ -1874,6 +1878,8 @@ const STR = {
     breakdown:"Your picks", notInCur:"outside curriculum", credits:n=>`${n} credits`, creditWord:"credits",
     prereq:"Prerequisite", seatsFull:"full", seatsLeft:n=>`${n} seats`,
     noSeats:"no seats left", srcLink:"Source code", dataFrom:"Course data", curData:"Curriculum",
+    freshNote:"Course data is pulled from BannerWeb automatically every day, but sections and class hours can still change up to registration. Spring in particular settles late: hours can be updated even after they are first published. Check SUIS before you register.",
+    yrFresh:"The Spring term is not settled yet: the data is pulled from BannerWeb every day, but sections and class hours can change up to registration. Treat the year plan as a rough road map — which term a course is offered in is usually stable, the hours are the part that moves.",
     days:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
     daysS:["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
     types:{"":"Lecture","R":"Recitation","D":"Discussion","L":"Lab","S":"Studio","E":"Extra","N":"Extra","M":"Extra"},
@@ -5215,7 +5221,7 @@ function applyStatic(){
   set("btnUnpinAll", S.unpinAll); set("btnClearPool", S.clearPool);
   document.getElementById("q").placeholder = S.searchPh;
   set("ftSrc", S.srcLink); set("ftData", S.dataFrom); set("ftCur", S.curData);
-  set("ftAbout", S.about);
+  set("ftAbout", S.about); set("ftFresh", S.freshNote);
   set("ctSum", S.ctSum);
   document.querySelectorAll(".foldbtn").forEach(b => {
     b.title = S.foldTip; b.setAttribute("aria-label", S.foldTip);
@@ -6062,7 +6068,8 @@ function yPlanPaint(){
       </div>`;
   }).join("");
   el.innerHTML = alts + `<div class="yterms">${terms}</div>` +
-    (viol.length ? `<div class="ynote warn">${esc(S.yrPreWarn([...new Set(viol)].join(", ")))}</div>` : "");
+    (viol.length ? `<div class="ynote warn">${esc(S.yrPreWarn([...new Set(viol)].join(", ")))}</div>` : "") +
+    `<div class="ynote soft">${esc(S.yrFresh)}</div>`;
   el.querySelectorAll("[data-alt]").forEach(b => b.onclick = () => { YSEL = +b.dataset.alt; yPlanPaint(); });
 }
 function yWhy(code, term, at){
