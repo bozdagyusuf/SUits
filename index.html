@@ -568,6 +568,28 @@ header.top #btnAuto{margin-left:auto}
 td.clash.okc{background:repeating-linear-gradient(45deg, var(--warn-soft) 0 7px, transparent 7px 14px)}
 td.clash.okc::after{border-color:var(--warn)}
 .agit.clash.okc{background:var(--warn-soft); border-left-color:var(--warn)}
+/* arama kutusuna "seni çok seviyorum" yazıp enter'a basınca */
+.eggwrap{position:fixed; inset:0; z-index:9999; pointer-events:none; overflow:hidden}
+.eggheart{position:absolute; bottom:-10vh; color:var(--c5); line-height:1;
+  text-shadow:0 2px 12px rgba(224,69,123,.35); animation:eggrise linear forwards;
+  will-change:transform, opacity}
+@keyframes eggrise{
+  0%  {transform:translate(0,0) rotate(0deg); opacity:0}
+  14% {opacity:var(--o,.9)}
+  78% {opacity:var(--o,.9)}
+  100%{transform:translate(var(--dx,0px), -118vh) rotate(22deg); opacity:0}
+}
+.eggbig{position:absolute; left:50%; top:46%; color:var(--c5); line-height:1;
+  font-size:clamp(90px, 22vw, 210px); text-shadow:0 12px 44px rgba(224,69,123,.45);
+  transform:translate(-50%,-50%); animation:eggpop 2.8s cubic-bezier(.2,.8,.25,1) forwards}
+@keyframes eggpop{   /* iki vuruşlu kalp atışı, sonra yukarı süzülüp söner */
+  0%  {transform:translate(-50%,-50%) scale(.2);  opacity:0}
+  16% {transform:translate(-50%,-50%) scale(1.18); opacity:1}
+  28% {transform:translate(-50%,-50%) scale(.97)}
+  40% {transform:translate(-50%,-50%) scale(1.1)}
+  54% {transform:translate(-50%,-50%) scale(1)}
+  100%{transform:translate(-50%,-62%) scale(1.04); opacity:0}
+}
 /* önizleme: seçilecek section soluk ve kesik çerçeveli, geri kalan program soluklaşır */
 table.sched.previewing .blk:not(.ghost){opacity:.38}
 .blk.ghost{
@@ -962,6 +984,86 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
   .ps-crns b{letter-spacing:.04em}
   .ps-crns span{font-family:ui-monospace,Menlo,monospace; letter-spacing:.06em}
 }
+/* ================= yıl planı (?year=1) ================= */
+body.yearmode .wrap, body.yearmode .gd, body.yearmode #btnYear,
+body.yearmode .limitbox, body.yearmode .modesw, body.yearmode #btnClear,
+body.yearmode #btnAuto, body.yearmode .termbox, body.yearmode #btnHelp,
+body.yearmode .srcchip, body.yearmode footer{display:none !important}
+.ywrap{max-width:1500px; margin:0 auto; padding:18px 20px 80px}
+.ycols{display:grid; grid-template-columns:320px minmax(0,1fr); gap:18px; align-items:start}
+.ycard{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card);
+  box-shadow:var(--shadow-sm); overflow:hidden}
+.ycard > h2{font-size:14px; padding:13px 16px; border-bottom:1px solid var(--line);
+  background:var(--surface2); display:flex; align-items:center; gap:8px}
+.ycard > h2 .cnt{margin-left:auto; font-size:12px; color:var(--muted); font-weight:500}
+.ypad{padding:14px 16px}
+.yhint{font-size:12.5px; color:var(--muted); line-height:1.5}
+#ySearch{width:100%; border:0; background:var(--sunken); color:var(--ink); font-size:14px;
+  padding:10px 13px; border-radius:11px; margin-bottom:10px}
+#ySearch::placeholder{color:var(--faint)}
+.yres{max-height:280px; overflow:auto; border:1px solid var(--line); border-radius:11px}
+.yres:empty{display:none}
+.yrow{display:flex; align-items:center; gap:8px; padding:8px 11px; cursor:pointer;
+  border-bottom:1px solid var(--line); font-size:13px}
+.yrow:last-child{border-bottom:0}
+.yrow:hover{background:var(--surface2)}
+.yrow .yc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-weight:650; flex:none}
+.yrow .yn{color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1}
+.ytag{flex:none; font-size:10px; font-weight:700; letter-spacing:.02em; padding:2px 7px;
+  border-radius:999px; background:var(--sunken); color:var(--muted)}
+.ytag.f{background:var(--accent-soft); color:var(--accent)}
+.ytag.s{background:var(--ok-soft); color:var(--ok)}
+.ytag.b{background:var(--warn-soft); color:var(--warn)}
+.ypool{list-style:none; margin:0; padding:0}
+.ypool li{display:flex; align-items:center; gap:7px; padding:9px 16px; border-bottom:1px solid var(--line); font-size:13px}
+.ypool li:last-child{border-bottom:0}
+.ypool .yc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-weight:650; flex:none}
+.ypool .yn{color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; min-width:0}
+.ypool .swatch{width:3px; align-self:stretch; border-radius:999px; flex:none}
+table.yasg .swatch{display:inline-block; width:3px; height:11px; border-radius:999px; vertical-align:-1px; margin-right:4px}
+.ypool .ycr{margin-left:auto; color:var(--faint); font-size:11.5px; flex:none}
+.ypin{flex:none; border:0; cursor:pointer; font:inherit; font-size:10px; font-weight:700;
+  padding:2px 7px; border-radius:999px; background:var(--sunken); color:var(--muted)}
+.ypin.f{background:var(--accent-soft); color:var(--accent)}
+.ypin.s{background:var(--ok-soft); color:var(--ok)}
+.yx{flex:none; border:0; background:none; cursor:pointer; color:var(--faint); font-size:15px; padding:0 2px}
+.yx:hover{color:var(--bad)}
+.yalts{display:flex; gap:7px; flex-wrap:wrap; padding:12px 16px; border-bottom:1px solid var(--line);
+  background:var(--surface2)}
+.yalt{border:1px solid var(--line2); background:var(--surface); color:var(--muted); cursor:pointer;
+  font:inherit; font-size:12.5px; padding:5px 12px; border-radius:999px}
+.yalt.on{background:var(--accent); border-color:var(--accent); color:var(--accent-ink); font-weight:600}
+.yterms{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; padding:16px}
+.yterm{border:1px solid var(--line); border-radius:13px; overflow:hidden; min-width:0}
+.yterm > h3{font-size:13.5px; padding:11px 14px; background:var(--surface2); border-bottom:1px solid var(--line);
+  display:flex; align-items:center; gap:8px}
+.yterm > h3 .ysum{margin-left:auto; font-size:11.5px; color:var(--muted); font-weight:500}
+table.yasg{width:100%; border-collapse:collapse; font-size:12.5px}
+table.yasg td{padding:7px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+table.yasg tr:last-child td{border-bottom:0}
+table.yasg .yc{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-weight:650; white-space:nowrap}
+table.yasg .ywhy{color:var(--muted); font-size:11.5px}
+table.yasg .ycr{text-align:right; color:var(--faint); white-space:nowrap}
+.yempty{padding:16px; font-size:12.5px; color:var(--faint); text-align:center}
+.ynote{margin:0 16px 16px; padding:11px 14px; border-radius:11px; font-size:12.5px; line-height:1.5}
+.ynote.warn{background:var(--warn-soft); color:var(--warn)}
+.ynote.bad{background:var(--bad-soft); color:var(--bad)}
+.ynote b{font-weight:700}
+.ygrid{overflow:auto; border-top:1px solid var(--line)}
+.ygrid table.sched{font-size:10.5px; min-width:430px}
+.ygrid table.sched th{font-size:10.5px; padding:7px 4px}
+.ygrid table.sched td{height:32px}
+.ygrid table.sched td.time{font-size:9.5px; padding:3px 6px 0 0}
+.ygrid table.sched th.tcol{width:46px}
+.ygrid table.sched .bc{font-size:9.5px}
+.ygrid table.sched .bm{display:none}
+.ybar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px}
+.ybar h1{font-size:19px}
+.ybar .ysep{flex:1}
+@media (max-width:1100px){
+  .ycols{grid-template-columns:1fr}
+  .yterms{grid-template-columns:1fr}
+}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important} }
 </style>
 </head><body><header class="top">
@@ -988,10 +1090,14 @@ footer.foot a:hover{color:var(--accent); border-color:var(--accent)}
       <button data-mode="auto" class="on" id="mdAuto"></button><button data-mode="manual" id="mdManual"></button>
     </span>
     <button class="helpbtn" id="btnHelp" aria-label="?">?</button>
+    <button class="btn" id="btnYear"></button>
     <button class="btn" id="btnClear"></button>
     <button class="btn primary" id="btnAuto"></button>
   </div>
 </header>
+
+<!-- yıl planı: aynı dosya ?year=1 ile yeni sekmede açılır, ana ekran gizlenir -->
+<main class="ywrap" id="yearView" hidden></main>
 
 <!-- ilk açılışta gösterilen kısa görsel rehber; "?" ile tekrar açılır -->
 <div class="gd" id="guide" hidden>
@@ -1368,6 +1474,36 @@ const STR = {
     okpOnTip:"Onayı kaldır, uyarı yine kırmızı olsun",
     manualOkT:n=>`${n} saat çakışma var — onayını aldın`,
     okpNote:"Bu çakışmayı onayladığını işaretledin. Otomatik kurulum yine çakışmasız programı tercih eder.",
+    yrBtn:"Tüm yılı planla",
+    yrBtnTip:"Yıl boyunca alacağın dersleri seç, SUits hangisinin hangi döneme düştüğünü çıkarsın (yeni sekme).",
+    yrTitle:"Yıl planı",
+    yrBack:"← Dönem planına dön",
+    yrLoading:"İki dönemin verisi indiriliyor…",
+    yrLoadErr:"Dönem verisi indirilemedi. Bağlantını kontrol edip sayfayı yenile.",
+    yrNoYear:"Yan yana planlanacak iki dönem bulunamadı (bir Fall + bir Spring gerekiyor).",
+    yrPick:"1 · Yıl boyunca alacakların",
+    yrSearchPh:"Ders kodu ya da adı ara…",
+    yrPickHint:"Bu yıl alman gereken dersleri ekle. SUits her dersin hangi dönemde açıldığına bakıp yılı ikiye böler.",
+    yrEmpty:"Henüz ders eklemedin.",
+    yrCap:"Dönem başına en fazla",
+    yrCapU:"ders",
+    yrPlan:"2 · Dönem dağılımı",
+    yrAlt:n=>`Alternatif ${n}`,
+    yrBest:"En mantıklısı",
+    yrNone:"Bu derslerle çalışan bir dağılım bulunamadı. Bir dersi çıkar ya da dönem başına ders sınırını artır.",
+    yrTermEmpty:"Bu döneme ders düşmedi.",
+    yrSum:(n,c)=>`${n} ders · ${c} kredi`,
+    yrPinAuto:"otomatik", yrPinF:"Fall'a sabitle", yrPinS:"Spring'e sabitle",
+    yrPinTip:"Tıkladıkça değişir: otomatik → Fall → Spring",
+    yrWhyOnly:t=>`yalnız ${t} döneminde açılıyor`,
+    yrWhyPin:"sen sabitledin",
+    yrWhyPre:l=>`ön koşulu önce alınıyor: ${l}`,
+    yrWhyFree:"iki dönemde de var, denge için buraya",
+    yrPreWarn:l=>`Ön koşul sırası bozuk: ${l}. Verideki ön koşul listesi "ve/veya" ayrımını taşımadığı için bu bir uyarı, engel değil — daha önce aldıysan ya da koşullardan biri yetiyorsa görmezden gel.`,
+    yrClashWarn:t=>`${t} döneminde bu derslerin hepsi çakışmasız yerleşmiyor; ızgarada üst üste binenler var.`,
+    yrGridOf:t=>`${t} haftalık programı`,
+    yrCalc:"hesaplanıyor…",
+    yrOffF:"Fall", yrOffS:"Spring", yrOffB:"ikisi de",
     poolLaw:"<b>Havuz</b> aday dersler, <b>mavi tik</b> şu an programda olanlar. Seviyeler otomatik kurulumda işe yarar: <b>kesin</b> dersler her programa girer, <b>olsa iyi</b> dersleri aynı sayıda ders veren programlar arasında öne geçer ama program küçülecekse düşebilir, <b>belki</b> dersleri yalnız yer kalırsa eklenir. Üstteki <b>ders sayısı</b> aralığında üst sınır serttir (ne elle ne otomatik aşılır), alt sınır dilektir: ulaşılamazsa en iyi program kurulur ve nedeni yazılır.",
     autoTip:"Kesin dersleri olduğu gibi tutar, en çok dersi hedefler, eşitlikte olsa iyi derslerini kayırır ve her ders için en iyi section'ı seçer.",
     inSched:(n,c)=>`Programda: ${n} ders · ${c} kredi`,
@@ -1513,16 +1649,22 @@ const STR = {
        d:"Soldaki kutudan ders ara ve ekle. Bölümünü seçersen dersler Required / Core / Area / University olarak etiketlenir. Havuz bir kısa listedir; hepsini almak zorunda değilsin. Satırdaki <b>mavi tik</b> ayrı bir şey: o dersin şu an programda olduğunu gösterir. Tik koyup kaldırarak programı elle de kurabilirsin, “En iyi kombinasyonu bul” ise tikleri baştan kurar ve neyi eklediğini/çıkardığını yazar."},
       {t:"2. Kesin, olsa iyi, belki",
        d:"Her ders satırındaki üç bölmeli anahtardan seviyeyi seçersin, tek dokunuş yeter. <b>Kesin</b> dersler her programa girer, çıkarılamaz. <b>Olsa iyi</b> dersleri, aynı sayıda ders veren programlar arasında öne geçer ama program küçülecekse düşebilir. <b>Belki</b> dersleri yalnız yer kalırsa eklenir."},
-      {t:"3. Ders ve kredi aralığı",
+      {t:"3. Biri yeter grupları",
+       d:"Aynı şartı karşılayan derslerden hangisini aldığın fark etmiyorsa onları bir grup yap: havuzun başındaki <b>Gruplandır</b> düğmesine bas, iki ya da daha fazla dersi seç. SUits o gruptan programa <b>tam olarak bir</b> ders koyar — hangisi daha iyi oturuyorsa onu. Grup üyesi “kesin” olamaz; birini tiklediğinde gruptaki diğeri kendiliğinden düşer."},
+      {t:"4. Ders ve kredi aralığı",
        d:"Üst bardan kaç ders ve kaç kredi istediğini alt–üst sınır olarak veriyorsun. <b>Üst sınır sert</b>: elle tiklerken de, manuel modda da, otomatik kurulumda da aşılmaz; engellediğinde nedenini yazar ve tek tıkla sınırı büyütmeyi önerir. Kesin ders sayısı üst sınırı geçerse sınır kendiliğinden ona yükselir. <b>Alt sınır dilektir</b>: o kadar ders çakışmasız yerleşmiyorsa SUits boş dönmez, en iyi programı kurar ve en fazla kaç dersin yerleştiğini söyler."},
-      {t:"4. En iyi kombinasyonu bul",
+      {t:"5. En iyi kombinasyonu bul",
        d:"Bu düğme hem dersleri hem section'ları birlikte seçer. Sıralama şu: kesinler hiç düşmez, sonra en çok ders, eşitlikte olsa iyi dersleri, sonra kredi, en son program kalitesi. Çakışma kaçınılmazsa SUits denenmiş çözüm düğmeleri sunar."},
-      {t:"5. Tercihlerini söyle",
+      {t:"6. Tercihlerini söyle",
        d:"Başlangıç–bitiş saati, boş gün, dersler arası boşluk, hoca veya belirli bir section. Bir tercih mümkün değilse SUits sessizce yutmaz: nedenini yazar ve hangi alternatifin mümkün olduğunu söyler."},
-      {t:"6. Section'ı kilitle",
+      {t:"7. Section'ı kilitle",
        d:"Bir section'ı arkadaşınla aynı almak istiyorsan kilit simgesine bas; o section bir daha değişmez. Kilitler yüzünden çakışmasız program kurulamıyorsa uyarı çıkar."},
-      {t:"7. Manuel mod",
+      {t:"8. Çakışmayı onayla",
+       d:"Hocadan onay alıp çakışan iki dersi birlikte alabiliyorsan, uyarıdaki <b>onayladım</b> rozetine bas. O çift artık kırmızı değil sarı görünür — ızgarada ve gün gün listede de öyle. SUits yine de çakışmasız programı aramaya devam eder: bu senin bilinçli tercihin, çözücünün hedefi değil."},
+      {t:"9. Manuel mod",
        d:"Üstteki Manuel sekmesi programı sana bırakır: SUchedule'daki gibi soldaki listeden section'ları tek tek seçersin, çakışmalar anında görünür. Otomatik programın son hali oraya taşınır."},
+      {t:"10. Tüm yılı planla",
+       d:"Üstteki <b>Tüm yılı planla</b> düğmesi yeni bir sekme açar. Yıl boyunca alman gereken dersleri eklersin, SUits hangisinin Fall'a hangisinin Spring'e düşeceğini çıkarır: yalnız bir dönemde açılan ders oraya sabitlenir, kalanlar ders ve kredi dengesine göre dağıtılır, ön koşul sırası gözetilir. Fall ve Spring yan yana durur, her birinin altında o dönemin haftalık programı vardır ve üstteki düğmelerden alternatiflere bakabilirsin. Bu sekmenin havuzu dönem planından bağımsızdır."},
       {t:"Son adım",
        d:"Programı paylaşabilir, yazdırabilir, CRN'leri tek tıkla kopyalayabilir ya da telefon duvar kâğıdı olarak kaydedebilirsin. Bu rehberi üstteki “?” düğmesinden tekrar açabilirsin."}
     ]
@@ -1571,6 +1713,36 @@ const STR = {
     okpOnTip:"Remove the approval and make the warning red again",
     manualOkT:n=>`${n} hours of overlap — you have approval`,
     okpNote:"You marked this overlap as approved. The solver still prefers a conflict-free schedule.",
+    yrBtn:"Plan the whole year",
+    yrBtnTip:"Pick the courses you need this year and let SUits work out which term each one falls into (new tab).",
+    yrTitle:"Year plan",
+    yrBack:"← Back to the term planner",
+    yrLoading:"Downloading both terms…",
+    yrLoadErr:"Could not download the term data. Check your connection and reload.",
+    yrNoYear:"Could not find two terms to plan side by side (one Fall + one Spring needed).",
+    yrPick:"1 · What you'll take this year",
+    yrSearchPh:"Search course code or name…",
+    yrPickHint:"Add the courses you need this year. SUits looks at which term each one is offered in and splits the year in two.",
+    yrEmpty:"No courses added yet.",
+    yrCap:"At most",
+    yrCapU:"courses per term",
+    yrPlan:"2 · Term split",
+    yrAlt:n=>`Alternative ${n}`,
+    yrBest:"Best split",
+    yrNone:"No working split for these courses. Drop one or raise the per-term course limit.",
+    yrTermEmpty:"Nothing landed in this term.",
+    yrSum:(n,c)=>`${n} courses · ${c} credits`,
+    yrPinAuto:"auto", yrPinF:"pin to Fall", yrPinS:"pin to Spring",
+    yrPinTip:"Click to cycle: auto → Fall → Spring",
+    yrWhyOnly:t=>`only offered in ${t}`,
+    yrWhyPin:"you pinned it",
+    yrWhyPre:l=>`its prerequisite comes first: ${l}`,
+    yrWhyFree:"offered in both, placed here for balance",
+    yrPreWarn:l=>`Prerequisite order looks off: ${l}. The source data drops the "and/or" distinction, so this is a warning, not a block — ignore it if you already took it or one of the options is enough.`,
+    yrClashWarn:t=>`In ${t} these courses do not all fit without an overlap; the grid shows the clashes.`,
+    yrGridOf:t=>`${t} weekly schedule`,
+    yrCalc:"working…",
+    yrOffF:"Fall", yrOffS:"Spring", yrOffB:"both",
     poolLaw:"The <b>pool</b> holds candidates, the <b>blue tick</b> marks what is in the schedule right now. Tiers matter to the solver: <b>must-take</b> courses are in every schedule, <b>preferred</b> ones win between schedules with the same number of courses but can still drop if keeping them would mean fewer courses, <b>maybe</b> ones are added only if there is room. In the <b>course count</b> range up top the ceiling is hard (neither you nor the solver can pass it) and the floor is a wish: if it cannot be reached, the best schedule is built and the reason is spelled out.",
     autoTip:"Keeps every must-take course, aims for the most courses, favours the preferred ones on a tie, and picks the best section for each.",
     inSched:(n,c)=>`In schedule: ${n} courses · ${c} credits`,
@@ -1716,16 +1888,22 @@ const STR = {
        d:"Search and add from the panel on the left. Pick your major and courses get tagged Required / Core / Area / University. The pool is a shortlist, you do not have to take all of it. The <b>blue tick</b> on a row is a separate thing: it means that course is in the schedule right now. You can build the schedule by hand with those ticks, and \"Find the best combination\" rebuilds them for you, saying what it added and removed."},
       {t:"2. Must, preferred, maybe",
        d:"Each course row has a three-way switch; one tap sets its tier. <b>Must-take</b> courses are in every schedule and cannot be dropped. <b>Preferred</b> ones win between schedules with the same number of courses, but can still drop if keeping them would mean fewer courses. <b>Maybe</b> ones are added only if there is room."},
-      {t:"3. Course and credit range",
+      {t:"3. \"Any one of these\" groups",
+       d:"If several courses satisfy the same requirement and you do not care which one you take, group them: hit <b>Group</b> at the top of the pool and pick two or more courses. SUits puts <b>exactly one</b> course from that group into the schedule — whichever fits best. A group member cannot be must-take, and ticking one drops the other one automatically."},
+      {t:"4. Course and credit range",
        d:"Set how many courses and credits you want as a low–high range in the top bar. The <b>ceiling is hard</b>: ticking by hand, manual mode and the solver all respect it, and when it blocks something it says so and offers to raise it in one click. If you mark more must-take courses than the ceiling, the ceiling follows them. The <b>floor is a wish</b>: if that many courses cannot fit, SUits does not come back empty, it builds the best schedule and tells you how many actually fit."},
-      {t:"4. Find the best combination",
+      {t:"5. Find the best combination",
        d:"This button picks the courses and their sections together. The order is: must-take courses never drop, then the most courses, then preferred ones on a tie, then credits, then schedule quality. If a clash is unavoidable, SUits offers tested one-click fixes."},
-      {t:"5. Set your preferences",
+      {t:"6. Set your preferences",
        d:"Earliest and latest hour, a free day, short gaps between classes, a specific instructor or section. If a preference is impossible, SUits says why instead of silently dropping it, and tells you what is possible instead."},
-      {t:"6. Lock a section",
+      {t:"7. Lock a section",
        d:"Taking a section with a friend? Hit the lock icon and that section stays put. If the locks make a clash-free schedule impossible, you get a clear warning."},
-      {t:"7. Manual mode",
+      {t:"8. Approve a clash",
+       d:"Got the instructor's permission to take two overlapping courses together? Hit the <b>approved</b> badge in the warning. That pair turns amber instead of red, in the grid and the day-by-day list too. SUits still keeps looking for a clash-free schedule: this is your deliberate call, not the solver's goal."},
+      {t:"9. Manual mode",
        d:"The Manual tab hands the schedule back to you: pick sections one by one from the left, SUchedule style, with clashes shown instantly. Your automatic schedule carries over as the starting point."},
+      {t:"10. Plan the whole year",
+       d:"<b>Plan the whole year</b> up top opens a new tab. You add the courses you need this year and SUits works out which of them land in Fall and which in Spring: a course offered in only one term is pinned there, the rest are spread for a balanced course and credit load, and prerequisite order is taken into account. Fall and Spring sit side by side, each with its own weekly schedule underneath, and the buttons on top show alternative splits. That tab keeps its own pool, separate from the term planner."},
       {t:"That's it",
        d:"Share the schedule as a link, print it, copy the CRNs with one click, or save it as a phone wallpaper. You can reopen this guide any time from the “?” button up top."}
     ]
@@ -2967,6 +3145,55 @@ function renderResults(){
 }
 document.getElementById("q").addEventListener("input", renderResults);
 subjSel.addEventListener("change", renderResults);
+
+/* ================= küçük sürpriz ================= */
+/* Arama kutusuna gizli cümleyi yazıp enter'a basınca kalp yağmuru + kısa bir
+   ezgi. Ses ve görüntü tamamen kodla üretiliyor, siteye tek bayt dosya eklemez.
+   Enter bir kullanıcı hareketi olduğu için tarayıcı sesi engellemiyor. */
+const LOVE_WORDS = ["seni cok seviyorum"];
+function loveMelody(){
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  const ac = new AC();
+  const out = ac.createGain();
+  out.gain.value = .22;                       // kulağı tırmalamayacak kadar kısık
+  out.connect(ac.destination);
+  [523.25, 659.25, 783.99, 1046.50].forEach((hz, i) => {   // do–mi–sol–do'
+    const t = ac.currentTime + i * .18;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = "sine"; o.frequency.value = hz;
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(1, t + .02);
+    g.gain.exponentialRampToValueAtTime(.0001, t + .55);   // uzun sönüm = yankı hissi
+    o.connect(g); g.connect(out);
+    o.start(t); o.stop(t + .6);
+  });
+  setTimeout(() => ac.close(), 2500);
+}
+function loveEgg(){
+  document.getElementById("egg")?.remove();
+  const box = document.createElement("div");
+  box.id = "egg"; box.className = "eggwrap"; box.setAttribute("aria-hidden", "true");
+  let html = `<div class="eggbig">♥</div>`;
+  for (let i = 0; i < 30; i++){
+    const r = (a,b) => a + Math.random() * (b - a);
+    html += `<span class="eggheart" style="left:${r(0,100).toFixed(1)}%;` +
+      ` font-size:${r(14,40).toFixed(0)}px; animation-delay:${r(0,1.4).toFixed(2)}s;` +
+      ` animation-duration:${r(2.6,4.4).toFixed(2)}s;` +
+      ` --dx:${r(-70,70).toFixed(0)}px; --o:${r(.45,1).toFixed(2)}">♥</span>`;
+  }
+  box.innerHTML = html;
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 5600);
+  loveMelody();
+}
+document.getElementById("q").addEventListener("keydown", e => {
+  if (e.key !== "Enter") return;
+  if (!LOVE_WORDS.includes(norm(e.target.value.trim()))) return;
+  e.preventDefault();
+  e.target.value = ""; renderResults();
+  loveEgg();
+});
 
 
 /* ================= havuz listesi ================= */
@@ -4968,6 +5195,9 @@ function applyStatic(){
   document.documentElement.lang = LANG;
   set("lblLimit", S.limit); set("lblCred", S.limitCred);
   set("btnClear", S.clear); set("btnAuto", S.auto);
+  set("btnYear", S.yrBtn);
+  const yb = document.getElementById("btnYear");
+  if (yb) yb.title = S.yrBtnTip;
   set("lblPool", S.poolTitle); set("poolHeadLbl", S.poolHead);
   set("lblManual", S.manualTitle); set("manualHint", S.manualHint);
   set("mdAuto", S.modeAuto); set("mdManual", S.modeManual);
@@ -5069,7 +5299,20 @@ const GD_ART = [
       }
       return g;
     }).join("")),
-  /* 3 · ders ve kredi aralığı */
+  /* 3 · biri yeter grupları: G1 rozetli üç ders, yalnız biri programda */
+  () => gdWrap(
+    gdCard(40,12,240,108) +
+    [0,1,2].map(i => {
+      const y = 26 + i*32, on = i === 1;
+      return gdRect(52, y, 216, 22, on ? "var(--accent)" : "var(--surface2)", 6, on ? .14 : 1) +
+        gdRect(62, y+8, 44, 6, "var(--line2)", 3) +
+        gdRect(112, y+8, 32, 6, "var(--line2)", 3, .5) +
+        gdRect(206, y+5, 24, 12, "var(--accent)", 6, .22) +
+        `<text x="218" y="${y+14.5}" text-anchor="middle" font-size="7.5" font-weight="700" fill="var(--accent)">G1</text>` +
+        `<circle cx="252" cy="${y+11}" r="6.5" fill="none" stroke="${on?"var(--accent)":"var(--line2)"}" stroke-width="1.6"/>` +
+        (on ? `<circle cx="252" cy="${y+11}" r="3.2" fill="var(--accent)"/>` : "");
+    }).join("")),
+  /* 4 · ders ve kredi aralığı */
   () => gdWrap(
     gdCard(14,34,292,50) +
     gdRect(28,52,34,14,"var(--line2)",4,.55) +
@@ -5083,7 +5326,7 @@ const GD_ART = [
     gdRect(246,50,26,18,"var(--surface2)",5) + `<text x="259" y="63" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)">30</text>` +
     `<path d="M83 88v10M125 88v10M217 88v10M259 88v10" stroke="var(--line2)" stroke-width="1" stroke-dasharray="2 3"/>` +
     gdRect(60,100,90,10,"var(--accent)",5,.18) + gdRect(196,100,86,10,"var(--accent)",5,.18)),
-  /* 4 · en iyi kombinasyonu bul */
+  /* 5 · en iyi kombinasyonu bul */
   () => gdWrap(
     gdRect(14,52,84,26,"var(--accent)",13) +
     gdRect(28,62,56,6,"var(--accent-ink)",3,.9) +
@@ -5091,7 +5334,7 @@ const GD_ART = [
     gdMini(140, 16, 166, 100,
       [[0,4,26,"var(--c1)"],[2,4,26,"var(--c1)"],[1,36,20,"var(--c2)"],[3,36,20,"var(--c2)"],
        [0,62,18,"var(--c3)"],[4,10,24,"var(--c4)"],[2,62,18,"var(--c5)"],[3,62,18,"var(--c5)"]])),
-  /* 5 · tercihler: erken saatler kapalı, cuma boş, mümkün değilse açıklama */
+  /* 6 · tercihler: erken saatler kapalı, cuma boş, mümkün değilse açıklama */
   () => gdWrap(
     gdMini(14, 12, 168, 108,
       [[0,26,22,"var(--c1)"],[1,26,22,"var(--c1)"],[2,54,20,"var(--c2)"],[3,54,20,"var(--c2)"],[0,80,14,"var(--c3)"]],
@@ -5101,7 +5344,7 @@ const GD_ART = [
     gdRect(208,38,52,7,"var(--line2)",3) +
     [0,1,2].map(i => gdRect(208, 54+i*14, i===2?58:86, 6, "var(--line2)", 3, .5)).join("") +
     `<circle cx="290" cy="41" r="8" fill="var(--warn)" opacity=".18"/><text x="290" y="45" text-anchor="middle" font-size="11" font-weight="700" fill="var(--warn)">!</text>`),
-  /* 6 · section kilidi */
+  /* 7 · section kilidi */
   () => gdWrap(
     gdMini(60, 14, 200, 104,
       [[0,6,26,"var(--c1)"],[2,6,26,"var(--c1)"],[1,40,22,"var(--c2)"],[3,40,22,"var(--c2)"],[4,68,16,"var(--c3)"]]) +
@@ -5110,7 +5353,19 @@ const GD_ART = [
        <rect x="-6" y="-1" width="12" height="9.5" rx="2.2" fill="var(--accent)"/>
        <path d="M-3.4 -1v-3.4a3.4 3.4 0 0 1 6.8 0V-1" fill="none" stroke="var(--accent)" stroke-width="1.8"/>
      </g>`),
-  /* 7 · manuel mod */
+  /* 8 · onaylı çakışma: çakışan hücre kırmızı değil sarı, yanında onay rozeti */
+  () => gdWrap(
+    gdMini(14, 14, 168, 104, [[0,6,22,"var(--c1)"],[3,6,22,"var(--c3)"],[4,60,18,"var(--c5)"]]) +
+    gdRect(81, 60, 33, 30, "var(--warn)", 3, .38) +
+    gdRect(84, 63, 12, 24, "var(--c2)", 2.5, .95) +
+    gdRect(99, 63, 12, 24, "var(--c4)", 2.5, .95) +
+    gdCard(200, 30, 106, 70) +
+    gdRect(212, 42, 46, 7, "var(--line2)", 3) +
+    gdRect(212, 56, 68, 6, "var(--line2)", 3, .5) +
+    gdRect(212, 72, 62, 16, "var(--warn)", 8, .2) +
+    `<path d="M220 80.5l3.5 3.5 6-7" fill="none" stroke="var(--warn)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>` +
+    gdRect(235, 77, 30, 6, "var(--warn)", 3, .65)),
+  /* 9 · manuel mod */
   () => gdWrap(
     gdCard(14,14,112,104) +
     gdRect(24,24,54,7,"var(--line2)",3) +
@@ -5119,7 +5374,13 @@ const GD_ART = [
     `<path d="M92 76l0 12 3.5-3.5 2.5 5 2.5-1.2-2.5-5H103z" fill="var(--ink)"/>` +
     gdMini(140, 14, 166, 104,
       [[0,6,24,"var(--c1)"],[2,6,24,"var(--c1)"],[1,38,20,"var(--c2)"],[4,38,20,"var(--c4)"],[3,64,18,"var(--c3)"]])),
-  /* 8 · paylaş, yazdır, duvar kâğıdı */
+  /* 10 · yıl planı: Fall ve Spring yan yana */
+  () => gdWrap(
+    `<text x="14" y="18" font-size="9.5" font-weight="700" fill="var(--muted)">Fall</text>` +
+    gdMini(14, 24, 138, 94, [[0,6,22,"var(--c1)"],[2,6,22,"var(--c1)"],[1,34,18,"var(--c2)"],[4,58,16,"var(--c3)"]]) +
+    `<text x="168" y="18" font-size="9.5" font-weight="700" fill="var(--muted)">Spring</text>` +
+    gdMini(168, 24, 138, 94, [[1,6,20,"var(--c4)"],[3,6,20,"var(--c4)"],[0,32,22,"var(--c5)"],[2,58,18,"var(--c6)"]])),
+  /* 11 · paylaş, yazdır, duvar kâğıdı */
   () => gdWrap(
     gdMini(14, 14, 150, 104,
       [[0,6,24,"var(--c1)"],[2,6,24,"var(--c1)"],[1,36,20,"var(--c2)"],[3,36,20,"var(--c2)"],[4,64,18,"var(--c4)"]]) +
@@ -5186,6 +5447,7 @@ function setLang(l){
   LANG = l;
   try{ localStorage.setItem("dk-lang", l); }catch(e){}
   applyStatic(); refreshBrand(); rebuildSubjects(); buildLvl(); buildCurSelectors(); render(); repaintChip();
+  if (document.body.classList.contains("yearmode") && YT){ yShell(); yRefresh(); return; }
   const note = document.getElementById("curNote");
   if (note){
     const ps = curProgs();
@@ -5283,6 +5545,11 @@ function refreshBrand(){
      okula ait olduğu sayfanın kendi metninden okunabilsin (arama motorları
      bunu meta etiketten değil, görünen içerikten çıkarıyor). */
   const S = T();
+  /* yıl görünümünde iki dönem yan yana; tek dönem adı yazmak yanıltıcı olur */
+  if (document.body.classList.contains("yearmode") && YT){
+    document.getElementById("brandSub").textContent = `${S.uni} · ${YT[0].name} + ${YT[1].name}`;
+    return;
+  }
   const rest = TERM ? `${TERM} · ${S.poolCount(DATA.length)}` : S.tagline(DATA.length);
   document.getElementById("brandSub").textContent = `${S.uni} · ${rest}`;
 }
@@ -5463,7 +5730,431 @@ document.getElementById("srcChip").onclick = () => {
   try{ localStorage.removeItem(cacheKeyFor(TERMCODE)); }catch(e){}
   loadLive(true);
 };
-loadLive(false);
-loadTermList();
+
+/* ================= yıl planı (?year=1) =================
+   Aynı dosya, ayrı görünüm: ana ekran gizlenir, #yearView açılır. Böylece
+   tek dosyalık yapı bozulmuyor. Havuz ve sabitlemeler ana planlayıcıdan
+   tamamen bağımsız (dk-yr-*), dönem değişince de sıfırlanmıyor. */
+const YEARMODE = new URLSearchParams(location.search).has("year");
+document.getElementById("btnYear").onclick = () =>
+  window.open(location.pathname + "?year=1", "_blank", "noopener");
+
+const yGet = (k, d) => {
+  try{ const v = JSON.parse(localStorage.getItem(k) || "null"); return v === null ? d : v; }
+  catch(e){ return d; }
+};
+const ySet = (k, v) => { try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
+
+let YPOOL = yGet("dk-yr-pool", []);
+let YPIN  = yGet("dk-yr-pin", {});
+let YCAP  = clampInt(yGet("dk-yr-cap", 5), 1, 8, 5);
+if (!Array.isArray(YPOOL)) YPOOL = [];
+if (!YPIN || typeof YPIN !== "object") YPIN = {};
+
+let YT = null;                  // [{term,name,data,by}] — 0: Fall, 1: Spring
+let YCUR = -1;                  // globallere şu an yüklü dönem
+const YOPT = [new Map(), new Map()];
+let YPLANS = [], YSEL = 0;
+const YFREE_MAX = 15;           // arama üstel: bu kadar serbest ders taranır
+
+/* Çözücü altyapısı (optsOf, buildOptions) global DATA/BY üzerinden çalışıyor.
+   Refaktör yerine dönemi takas edip önbellekleri temizliyoruz; sonuçlar
+   YOPT'ta dönem dönem saklandığı için takas nadiren gerekiyor. */
+function useYTerm(i){
+  if (YCUR === i) return;
+  YCUR = i;
+  DATA = YT[i].data; BY = YT[i].by;
+  _opts.clear(); _pair.clear(); _allow.clear(); _offRep.clear(); _winRep.clear();
+}
+function yOpts(i, code){
+  const m = YOPT[i];
+  if (m.has(code)) return m.get(code);
+  let o = [];
+  if (YT[i].by[code]){ useYTerm(i); o = optsOf(code); }
+  m.set(code, o);
+  return o;
+}
+const yHas  = (i, code) => !!YT[i].by[code];
+const yOf   = code => YT[0].by[code] || YT[1].by[code] || null;
+const yName = code => (yOf(code) || {}).name || code;
+const yPre  = code => (yOf(code) || {}).pre || [];
+const yCred = code => {
+  for (const i of [0,1]){ const c = YT[i].by[code]; if (c && +c.cr > 0) return +c.cr; }
+  return 0;
+};
+const yColor = code => {
+  const i = YPOOL.indexOf(code);
+  return `var(${PALETTE[Math.max(0,i) % PALETTE.length]})`;
+};
+
+/* ---- veri: iki dönem yan yana ---- */
+async function yFetch(term){
+  const CK = cacheKeyFor(term);
+  /* normalize() global TERM'i yazıyor; yıl görünümünde iki dönem var,
+     adı geri döndürüp global TERM'e dokunmuyoruz. */
+  const grab = raw => {
+    const keep = TERM;
+    const list = normalize(raw);
+    const nm = TERM || term;
+    TERM = keep;
+    return {list, nm};
+  };
+  try{
+    const c = JSON.parse(localStorage.getItem(CK) || "null");
+    if (c && Date.now() - c.t < MAX_AGE_MS){
+      const g = grab(c.d);
+      if (sane(g.list)) return g;
+    }
+  }catch(e){}
+  const j = await getJSON(bwSrc(term), 15000);
+  const g = grab(j);
+  if (!sane(g.list)) throw new Error("bozuk veri");
+  try{ localStorage.setItem(CK, JSON.stringify({t:Date.now(), d:j, label:"BannerWeb"})); }catch(e){}
+  return g;
+}
+/* Akademik yıl = aynı yıl önekli 01 (Fall) + 02 (Spring) çifti. */
+function yPickYear(){
+  const by = {};
+  for (const t of TERMLIST){
+    if (!t || typeof t.term !== "string") continue;
+    const y = t.term.slice(0,4), k = t.term.slice(4);
+    if (k !== "01" && k !== "02") continue;
+    (by[y] = by[y] || {})[k] = t;
+  }
+  const full = Object.keys(by).filter(y => by[y]["01"] && by[y]["02"]).sort();
+  if (!full.length) return null;
+  const want = String(yGet("dk-yr-year", "") || TERMCODE.slice(0,4));
+  const y = full.includes(want) ? want : full[full.length-1];
+  return {y, f: by[y]["01"], s: by[y]["02"]};
+}
+
+/* ---- dağılım çözücüsü ----
+   Sert kısıt: dersin açıldığı dönem, kullanıcının sabitlemesi ve dönem
+   başına ders sınırı. Yumuşak: ön koşul sırası, ders/kredi dengesi,
+   dönem içinde çakışmasız yerleşebilme. */
+function yFit(lists, budget){
+  const order = lists.map((l,i) => i).sort((a,b) => lists[a].length - lists[b].length);
+  const mask = new Set(), chosen = new Array(lists.length);
+  let steps = 0, done = false;
+  const walk = j => {
+    if (done || ++steps > budget) return;
+    if (j === order.length){ done = true; return; }
+    const idx = order[j];
+    for (const opt of lists[idx]){
+      let ok = true;
+      for (const k of opt.mask) if (mask.has(k)){ ok = false; break; }
+      if (!ok) continue;
+      for (const k of opt.mask) mask.add(k);
+      chosen[idx] = opt;
+      walk(j+1);
+      if (done) return;
+      for (const k of opt.mask) mask.delete(k);
+    }
+  };
+  walk(0);
+  /* yerleşmiyorsa da bir program göster: çakışma ızgarada görünsün */
+  return done ? {picks:chosen, ok:true} : {picks: lists.map(l => l[0]), ok:false};
+}
+function yWhere(codes, asg){
+  const at = {};
+  codes.forEach((c,i) => at[c] = asg[i]);
+  return at;
+}
+function yCost(codes, asg){
+  const at = yWhere(codes, asg);
+  let nF = 0, nS = 0, cF = 0, cS = 0, bad = 0;
+  codes.forEach((c,i) => {
+    const cr = yCred(c);
+    if (asg[i] === 0){ nF++; cF += cr; } else { nS++; cS += cr; }
+    for (const p of yPre(c)) if (at[p] !== undefined && at[p] >= asg[i]) bad++;
+  });
+  return bad*40 + Math.abs(nF-nS)*3 + Math.abs(cF-cS);
+}
+function ySolve(){
+  YPLANS = [];
+  const codes = YPOOL.filter(c => yHas(0,c) || yHas(1,c));
+  if (!codes.length) return;
+  const dom = codes.map(c => {
+    const f = yHas(0,c), s = yHas(1,c);
+    if (!(f && s)) return f ? [0] : [1];
+    const p = YPIN[c];
+    return p === "F" ? [0] : p === "S" ? [1] : [0,1];
+  });
+  const base = dom.map(d => d[0]);
+  const free = [];
+  dom.forEach((d,i) => { if (d.length === 2) free.push(i); });
+  const search = free.slice(0, YFREE_MAX), rest = free.slice(YFREE_MAX);
+  const cands = [];
+  const n = 1 << search.length;
+  for (let m = 0; m < n; m++){
+    const asg = base.slice();
+    search.forEach((idx,b) => { asg[idx] = (m >> b) & 1; });
+    if (rest.length){
+      /* tarama dışı kalanlar: krediyi hafif olan döneme düşsün */
+      let cF = 0, cS = 0;
+      codes.forEach((c,i) => {
+        if (rest.includes(i)) return;
+        if (asg[i] === 0) cF += yCred(c); else cS += yCred(c);
+      });
+      for (const i of rest){
+        const cr = yCred(codes[i]);
+        if (cF <= cS){ asg[i] = 0; cF += cr; } else { asg[i] = 1; cS += cr; }
+      }
+    }
+    let nF = 0;
+    for (const x of asg) if (x === 0) nF++;
+    if (nF > YCAP || asg.length - nF > YCAP) continue;
+    cands.push({asg, cost: yCost(codes, asg)});
+  }
+  cands.sort((a,b) => a.cost - b.cost);
+  /* çakışma sınaması pahalı: sadece en ucuz adaylarda çalıştır */
+  const out = [];
+  for (const cd of cands.slice(0, 24)){
+    const fit = [0,1].map(i => {
+      const list = codes.filter((c,k) => cd.asg[k] === i && yOpts(i,c).length);
+      const r = list.length ? yFit(list.map(c => yOpts(i,c)), 30000) : {picks:[], ok:true};
+      return {codes:list, picks:r.picks, ok:r.ok};
+    });
+    const clash = fit.filter(f => !f.ok).length;
+    out.push({asg:cd.asg, codes, fit, clash, cost: cd.cost + clash*200});
+  }
+  out.sort((a,b) => a.cost - b.cost);
+  YPLANS = out.slice(0, 5);
+  if (YSEL >= YPLANS.length) YSEL = 0;
+}
+
+/* ---- haftalık ızgara (renderGrid'in HTML döndüren sürümü) ---- */
+function yGridHTML(codes, picks){
+  const S = T();
+  const occ = {};
+  let maxDay = 4, maxSlot = 10;
+  codes.forEach((code, i) => {
+    const opt = picks[i];
+    if (!opt) return;
+    opt.picks.forEach(({cls,sec}) => sec.mt.forEach(m => {
+      if (m.d > maxDay) maxDay = m.d;
+      for (let k = 0; k < m.du; k++){
+        if (m.s+k > maxSlot) maxSlot = m.s+k;
+        const key = m.d*NSLOT + m.s + k;
+        (occ[key] = occ[key] || []).push({code, type:cls.type, place:m.p, first:k===0, crn:sec.crn});
+      }
+    }));
+  });
+  const nDays = maxDay + 1, nRows = Math.min(NSLOT, maxSlot + 1);
+  let html = `<table class="sched"><thead><tr><th class="tcol"></th>` +
+    S.days.slice(0,nDays).map(d => `<th>${d}</th>`).join("") + `</tr></thead><tbody>`;
+  for (let s = 0; s < nRows; s++){
+    html += `<tr><td class="time">${slotStart(s)}</td>`;
+    for (let d = 0; d < nDays; d++){
+      const items = occ[d*NSLOT+s] || [];
+      let inner = "";
+      items.slice(0,2).forEach((it,n) => {
+        const cls = items.length > 1 ? (n === 0 ? "blk half" : "blk half half2") : "blk";
+        const tip = it.code + (it.type ? " " + (S.types[it.type]||it.type) : "") +
+                    " · " + (it.place || "—") + " · CRN " + it.crn;
+        inner += `<div class="${cls}" style="background:${yColor(it.code)}" title="${esc(tip)}">
+            <span class="bc">${esc(it.code)}${it.type?" "+esc(it.type):""}</span>
+            ${it.first?`<span class="bm">${esc(it.place||"")}</span>`:""}
+          </div>`;
+      });
+      html += `<td class="${items.length>1?"clash":""}">${inner}</td>`;
+    }
+    html += "</tr>";
+  }
+  return html + "</tbody></table>";
+}
+
+/* ---- ekran ---- */
+function yOffTag(code){
+  const S = T(), f = yHas(0,code), s = yHas(1,code);
+  if (f && s) return `<span class="ytag b">${S.yrOffB}</span>`;
+  return f ? `<span class="ytag f">${S.yrOffF}</span>` : `<span class="ytag s">${S.yrOffS}</span>`;
+}
+function yAdd(code){
+  if (YPOOL.includes(code)) return;
+  YPOOL.push(code);
+  ySet("dk-yr-pool", YPOOL);
+  yRefresh();
+}
+function yDrop(code){
+  YPOOL = YPOOL.filter(c => c !== code);
+  delete YPIN[code];
+  ySet("dk-yr-pool", YPOOL); ySet("dk-yr-pin", YPIN);
+  yRefresh();
+}
+function yCyclePin(code){
+  const p = YPIN[code];
+  if (!p) YPIN[code] = "F";
+  else if (p === "F") YPIN[code] = "S";
+  else delete YPIN[code];
+  ySet("dk-yr-pin", YPIN);
+  yRefresh();
+}
+function ySearchPaint(){
+  const S = T(), box = document.getElementById("yRes");
+  const q = document.getElementById("ySearch").value.trim().toLowerCase();
+  if (q.length < 2){ box.innerHTML = ""; return; }
+  const seen = new Set(), hits = [];
+  for (const i of [0,1]) for (const c of YT[i].data){
+    if (seen.has(c.code)) continue;
+    if (!(c.code.toLowerCase().includes(q) || (c.name||"").toLowerCase().includes(q))) continue;
+    seen.add(c.code);
+    if (!YPOOL.includes(c.code)) hits.push(c.code);
+  }
+  hits.sort((a,b) => a.localeCompare(b));
+  box.innerHTML = hits.slice(0,40).map(code =>
+    `<div class="yrow" data-code="${esc(code)}">
+       <span class="yc">${esc(code)}</span>
+       <span class="yn">${esc(yName(code))}</span>${yOffTag(code)}
+     </div>`).join("");
+}
+function yPoolPaint(){
+  const S = T();
+  document.getElementById("yCnt").textContent = YPOOL.length ? String(YPOOL.length) : "";
+  const ul = document.getElementById("yList");
+  if (!YPOOL.length){ ul.innerHTML = `<li class="yempty">${S.yrEmpty}</li>`; return; }
+  ul.innerHTML = YPOOL.map(code => {
+    const both = yHas(0,code) && yHas(1,code);
+    const p = YPIN[code];
+    const pin = both
+      ? `<button class="ypin${p==="F"?" f":p==="S"?" s":""}" data-pin="${esc(code)}"
+           title="${esc(S.yrPinTip)}">${p==="F"?S.yrOffF:p==="S"?S.yrOffS:S.yrPinAuto}</button>`
+      : yOffTag(code);
+    const cr = yCred(code);
+    return `<li>
+        <span class="swatch" style="background:${yColor(code)}"></span>
+        <span class="yc">${esc(code)}</span>
+        <span class="yn">${esc(yName(code))}</span>
+        ${pin}
+        <span class="ycr">${cr ? cr + " kr" : ""}</span>
+        <button class="yx" data-del="${esc(code)}" aria-label="×" title="×">×</button>
+      </li>`;
+  }).join("");
+}
+function yPlanPaint(){
+  const S = T(), el = document.getElementById("yOut");
+  if (!YPOOL.length){ el.innerHTML = `<div class="yempty">${S.yrEmpty}</div>`; return; }
+  if (!YPLANS.length){ el.innerHTML = `<div class="yempty">${S.yrNone}</div>`; return; }
+  const P = YPLANS[Math.min(YSEL, YPLANS.length-1)];
+  const at = yWhere(P.codes, P.asg);
+  const viol = [];
+  P.codes.forEach(c => {
+    for (const p of yPre(c)) if (at[p] !== undefined && at[p] >= at[c]) viol.push(`${p} → ${c}`);
+  });
+  const alts = YPLANS.length > 1
+    ? `<div class="yalts">` + YPLANS.map((_,i) =>
+        `<button class="yalt${i===YSEL?" on":""}" data-alt="${i}">${i===0?S.yrBest:S.yrAlt(i+1)}</button>`
+      ).join("") + `</div>`
+    : "";
+  const terms = [0,1].map(i => {
+    const f = P.fit[i];
+    const rows = f.codes.map(c =>
+      `<tr><td class="yc"><span class="swatch" style="background:${yColor(c)}"></span> ${esc(c)}</td>
+         <td>${esc(yName(c))}<div class="ywhy">${esc(yWhy(c, i, at))}</div></td>
+         <td class="ycr">${yCred(c) || ""}</td></tr>`).join("");
+    const cr = f.codes.reduce((s,c) => s + yCred(c), 0);
+    return `<div class="yterm">
+        <h3>${esc(YT[i].name)}<span class="ysum">${S.yrSum(f.codes.length, cr)}</span></h3>
+        ${f.codes.length ? `<table class="yasg"><tbody>${rows}</tbody></table>`
+                         : `<div class="yempty">${S.yrTermEmpty}</div>`}
+        ${!f.ok ? `<div class="ynote bad">${esc(S.yrClashWarn(YT[i].name))}</div>` : ""}
+        ${f.codes.length ? `<div class="ygrid">${yGridHTML(f.codes, f.picks)}</div>` : ""}
+      </div>`;
+  }).join("");
+  el.innerHTML = alts + `<div class="yterms">${terms}</div>` +
+    (viol.length ? `<div class="ynote warn">${esc(S.yrPreWarn([...new Set(viol)].join(", ")))}</div>` : "");
+  el.querySelectorAll("[data-alt]").forEach(b => b.onclick = () => { YSEL = +b.dataset.alt; yPlanPaint(); });
+}
+function yWhy(code, term, at){
+  const S = T();
+  if (!(yHas(0,code) && yHas(1,code))) return S.yrWhyOnly(YT[term].name);
+  if (YPIN[code]) return S.yrWhyPin;
+  const pres = yPre(code).filter(p => at[p] !== undefined && at[p] < term);
+  if (pres.length) return S.yrWhyPre(pres.join(", "));
+  return S.yrWhyFree;
+}
+function yRefresh(){
+  yPoolPaint();
+  ySearchPaint();
+  const el = document.getElementById("yOut");
+  if (YPOOL.length) el.innerHTML = `<div class="yempty">${T().yrCalc}</div>`;
+  /* ağır arama boyamayı bekletmesin */
+  setTimeout(() => { ySolve(); yPlanPaint(); }, 0);
+}
+function yShell(){
+  const S = T(), view = document.getElementById("yearView");
+  const caps = [];
+  for (let i = 2; i <= 8; i++) caps.push(`<option value="${i}"${i===YCAP?" selected":""}>${i}</option>`);
+  view.innerHTML =
+    `<div class="ybar"><h1>${S.yrTitle}</h1><span class="ysep"></span>
+       <a class="btn" href="${location.pathname}">${S.yrBack}</a></div>
+     <div class="ycols">
+       <section class="ycard">
+         <h2>${S.yrPick}<span class="cnt" id="yCnt"></span></h2>
+         <div class="ypad">
+           <input id="ySearch" placeholder="${esc(S.yrSearchPh)}" autocomplete="off" spellcheck="false">
+           <div class="yres" id="yRes"></div>
+           <div class="yhint" style="margin-top:10px">${S.yrPickHint}</div>
+           <div class="yhint" style="margin-top:10px">${S.yrCap}
+             <select id="yCap">${caps.join("")}</select> ${S.yrCapU}</div>
+         </div>
+         <ul class="ypool" id="yList"></ul>
+       </section>
+       <section class="ycard">
+         <h2>${S.yrPlan}</h2>
+         <div id="yOut"></div>
+       </section>
+     </div>`;
+  document.getElementById("ySearch").addEventListener("input", ySearchPaint);
+  document.getElementById("yRes").addEventListener("click", e => {
+    const r = e.target.closest(".yrow");
+    if (r) { document.getElementById("ySearch").value = ""; yAdd(r.dataset.code); }
+  });
+  document.getElementById("yList").addEventListener("click", e => {
+    const d = e.target.closest("[data-del]"), p = e.target.closest("[data-pin]");
+    if (d) yDrop(d.dataset.del);
+    else if (p) yCyclePin(p.dataset.pin);
+  });
+  document.getElementById("yCap").onchange = e => {
+    YCAP = clampInt(e.target.value, 1, 8, 5);
+    ySet("dk-yr-cap", YCAP);
+    yRefresh();
+  };
+}
+async function yearBoot(){
+  const S = T(), view = document.getElementById("yearView");
+  view.hidden = false;
+  const msg = t => view.innerHTML =
+    `<div class="ybar"><h1>${T().yrTitle}</h1><span class="ysep"></span>
+       <a class="btn" href="${location.pathname}">${T().yrBack}</a></div>
+     <div class="ycard"><div class="ypad yhint">${t}</div></div>`;
+  msg(S.yrLoading);
+  await loadTermList();
+  const pair = yPickYear();
+  if (!pair){ msg(T().yrNoYear); return; }
+  ySet("dk-yr-year", pair.y);
+  try{
+    const [f, s] = await Promise.all([yFetch(pair.f.term), yFetch(pair.s.term)]);
+    YT = [
+      {term:pair.f.term, name: pair.f.name || f.nm, data:f.list, by:Object.fromEntries(f.list.map(c => [c.code, c]))},
+      {term:pair.s.term, name: pair.s.name || s.nm, data:s.list, by:Object.fromEntries(s.list.map(c => [c.code, c]))}
+    ];
+  }catch(e){ msg(T().yrLoadErr); return; }
+  YPOOL = YPOOL.filter(c => yHas(0,c) || yHas(1,c));
+  ySet("dk-yr-pool", YPOOL);
+  /* üst bardaki alt satır ana ekranın tek dönemini yazıyor; burada iki dönem var */
+  const bs = document.getElementById("brandSub");
+  if (bs) bs.textContent = `${T().uni} · ${YT[0].name} + ${YT[1].name}`;
+  yShell();
+  yRefresh();
+}
+
+if (YEARMODE){
+  document.body.classList.add("yearmode");
+  yearBoot();
+} else {
+  loadLive(false);
+  loadTermList();
+}
 </script>
 </body></html>
